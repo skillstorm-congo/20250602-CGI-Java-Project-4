@@ -1,0 +1,31 @@
+# Spring Boot will look first for an application.properties file
+# if it doesn't find one with that exact name, it will look for application.yml
+# both do the same exact thing, with different syntaxes
+# indentations are two spaces for each "level"
+# Spring Tool Suite may default to tabs, but these don't work -- delete them and replace them with spaces
+# NOTE -- spring.application.name starts to MATTER with Microservices -- the name we give are what the Eureka server uses when registering services
+# here, it does not matter, because we will only hav ONE Eureka server
+spring:
+  application:
+    name: eureka-server
+  config:
+    import: optional:file:src/main/resources/.env[.properties]
+
+# (see above) importing our external .env file with values we may want to hide from the public
+# the "root" directory of the path is the root project directory, so we're navigating here to the file's location (same directory as this file)
+
+# how this server will behave within the microservices environment
+# register-with-eureka -- we DO NOT want this server to register with itself as a discoverable service (default if not present = true)
+# fetch-registry -- we DO NOT want this server to reach out to itself to find our what services are available (default if not present = true)
+# service-url-defaultZone -- there may be multiple Eureka servers, so this sets up the fallback if a server doesn't specify which one (we only have one)
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: ${DEFAULT_SERVICE_URL}
+
+# 8761 is the default port for a Eureka server -- don't change it unless you absolutely need to
+# note that here and above for service URL, we're grabbing the values from our .env file
+server:
+  port: ${DEFAULT_PORT}

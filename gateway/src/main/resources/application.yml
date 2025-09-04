@@ -1,0 +1,53 @@
+# within here, we create routes to any services the user will need to access
+# routes ONLY used service-to-service DO NOT need routes here
+# ONLY routes the user will employ, either via frontend application or direct API request, need to be noted
+# we set up routes within spring.cloud.gateway.server.webflux.routes, which contains a list
+# each item in the list is demarcated with a - and then the properties for that list item
+# id -- can be whatever you want, it's just an identifier for organizational purposes
+# uri -- Uniform Resource Identifier, indicates which load balancer this route will send traffic to
+# -- NOTE -- the string after lb:// MUST match the spring.application.name property of the related services EXACTLY!!
+# -- when those services come up, they'll register with the Eureka server using that name and become part of the corresponding load balancer
+# predicates -- includes another list with individual Paths that lead to this microservice, and you can have as many as you like
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+          - id: costume-service-route
+            uri: lb://costume-service
+            predicates:
+            - Path=/costume/**
+            - Path=/accessory/**
+          - id: trick-or-treater-service-route
+            uri: lb://trick-or-treater-service
+            predicates:
+            - Path=/trick-or-treater/**
+
+# a typical/standard gateway port
+server:
+  port: 9000
+
+# we DO want this service to register itself and find out what other services are available,
+# so we DO NOT include the false values like in the Eureka server
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+# after adding Spring Boot Actuator as a dependency, we can enable certain endpoints to get info about this server
+management:
+  endpoint:
+    gateway:
+      access: unrestricted # default value
+  endpoints:
+    web:
+      exposure:
+        include: gateway
+
+
+
+
+
