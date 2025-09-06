@@ -205,47 +205,42 @@ USE `project_4`$$
 CREATE DEFINER = CURRENT_USER TRIGGER `project_4`.`pay_stub_BEFORE_INSERT` 
 BEFORE INSERT ON `pay_stub` FOR EACH ROW
 BEGIN
-	SET new.`total_regular_hours` = 
-    (
-		SELECT sum(a.`total_regular_hours`)
-		FROM `project_4`.`time_sheet` AS a
-        INNER JOIN `project_4`.`pay_stub` AS b
-        ON a.id = b.time_sheet_id_1
-		OR a.id = b.time_sheet_id_2
-    );
     
-    SET new.`total_overtime_hours`  = 
-    (
-		SELECT sum(a.`total_overtime_hours`)
-		FROM `project_4`.`time_sheet` AS a
-		INNER JOIN `project_4`.`pay_stub` AS b
-        ON a.id = b.time_sheet_id_1
-		OR a.id = b.time_sheet_id_2
-    );
-    
-    SET new.`total_time_off_hours` = 
-    (
-		SELECT sum(a.`total_time_off_hours`)
-        FROM `project_4`.`time_sheet`AS a
-		INNER JOIN `project_4`.`pay_stub` AS b
-        ON a.id = b.time_sheet_id_1
-		OR a.id = b.time_sheet_id_2
-    );
-    
-    SET new.`total_paid` = ( (new.`total_regular_hours` +  new.`total_time_off_hours`)*(SELECT pay_rate_per_hour
-																						FROM `project_4`.`employee` AS a
-																						INNER JOIN `project_4`.`pay_stub` AS b
-																						on a.id = b.employee_id ) 
-								+ ( (new.`total_overtime_hours` )*(1.5*(SELECT pay_rate_per_hour
-																		FROM `project_4`.`employee` AS a
-																		INNER JOIN `project_4`.`pay_stub` AS b
-																		on a.id = b.employee_id ) 
-																   ) 
-								  ) 
-							) ;
+	SET NEW.`total_regular_hours` = 
+		(
+			SELECT sum(a.`total_regular_hours`)
+			FROM `project_4`.`time_sheet` AS a
+			WHERE a.id = NEW.`time_sheet_id_1` OR a.id = NEW.`time_sheet_id_2`
+		);
+		
+	SET NEW.`total_overtime_hours`  = 
+		(
+			SELECT sum(a.`total_overtime_hours`)
+			FROM `project_4`.`time_sheet` AS a
+			WHERE a.id = NEW.`time_sheet_id_1` OR a.id = NEW.`time_sheet_id_2`
+		);
+		
+	SET NEW.`total_time_off_hours` = 
+		(
+			SELECT sum(a.`total_time_off_hours`)
+			FROM `project_4`.`time_sheet`AS a
+			WHERE a.id = NEW.`time_sheet_id_1` OR a.id = NEW.`time_sheet_id_2`
+		);
+		
+	SET NEW.`total_paid` = ( (NEW.`total_regular_hours` +  NEW.`total_time_off_hours`)*(SELECT pay_rate_per_hour
+																			FROM `project_4`.`employee` AS a
+																			WHERE a.id = NEW.`employee_id`) 
+									+ ( (NEW.`total_overtime_hours` )*(1.5*(SELECT pay_rate_per_hour
+																			FROM `project_4`.`employee` AS a
+																			WHERE a.id = NEW.`employee_id`) 
+																	   ) 
+									  ) 
+								);
+		
 END
 $$
 DELIMITER ;
+
 
 
 # Trigger 2: 
@@ -256,28 +251,37 @@ USE `project_4`$$
 CREATE DEFINER = CURRENT_USER TRIGGER `project_4`.`pay_stub_BEFORE_UPDATE` 
 BEFORE UPDATE ON `pay_stub` FOR EACH ROW
 BEGIN
-	SET new.`total_regular_hours` = 
-    (
-		SELECT sum(`total_regular_hours`)
-		FROM `project_4`.`time_sheet`
-		WHERE id = `pay_stub`.`time_sheet_id_1` OR id = `pay_stub`.`time_sheet_id_2` 
-    );
-    
-    SET new.`total_overtime_hours`  = 
-    (
-		SELECT sum(`total_overtime_hours`)
-		FROM `project_4`.`time_sheet`
-		WHERE id = `pay_stub`.`time_sheet_id_1` OR id = `pay_stub`.`time_sheet_id_2` 
-    );
-    
-    SET new.`total_time_off_hours` = 
-    (
-		SELECT sum(`total_time_off_hours`)
-        FROM `project_4`.`time_sheet`
-		WHERE id = `pay_stub`.`time_sheet_id_1` OR id = `pay_stub`.`time_sheet_id_2` 
-    );
-    
-    SET new.`total_paid` = ( (new.`total_regular_hours` +  new.`total_time_off_hours`)*(`employee`.`pay_rate_per_hour`)) + ( (new.`total_overtime_hours` )*(1.5*`employee`.`pay_rate_per_hour`) ) ;
+	
+    SET NEW.`total_regular_hours` = 
+		(
+			SELECT sum(a.`total_regular_hours`)
+			FROM `project_4`.`time_sheet` AS a
+			WHERE a.id = NEW.`time_sheet_id_1` OR a.id = NEW.`time_sheet_id_2`
+		);
+		
+	SET NEW.`total_overtime_hours`  = 
+		(
+			SELECT sum(a.`total_overtime_hours`)
+			FROM `project_4`.`time_sheet` AS a
+			WHERE a.id = NEW.`time_sheet_id_1` OR a.id = NEW.`time_sheet_id_2`
+		);
+		
+	SET NEW.`total_time_off_hours` = 
+		(
+			SELECT sum(a.`total_time_off_hours`)
+			FROM `project_4`.`time_sheet`AS a
+			WHERE a.id = NEW.`time_sheet_id_1` OR a.id = NEW.`time_sheet_id_2`
+		);
+		
+	SET NEW.`total_paid` = ( (NEW.`total_regular_hours` +  NEW.`total_time_off_hours`)*(SELECT pay_rate_per_hour
+																			FROM `project_4`.`employee` AS a
+																			WHERE a.id = NEW.`employee_id`) 
+									+ ( (NEW.`total_overtime_hours` )*(1.5*(SELECT pay_rate_per_hour
+																			FROM `project_4`.`employee` AS a
+																			WHERE a.id = NEW.`employee_id`) 
+																	   ) 
+									  ) 
+								);
 END
 $$
 DELIMITER ;
@@ -297,7 +301,7 @@ USE `project_4`$$
 CREATE DEFINER = CURRENT_USER TRIGGER `project_4`.`time_sheet_AFTER_UPDATE` 
 AFTER UPDATE ON `time_sheet` FOR EACH ROW
 BEGIN
-	IF `time_sheet`.`approved` = true THEN
+	IF NEW.`time_sheet`.`approved` = true THEN
     
 		# if pay_stub_date is NULL then it hasn't been finalized/paid out
 		IF `pay_stub`.`pay_stub_date` IS NULL THEN
