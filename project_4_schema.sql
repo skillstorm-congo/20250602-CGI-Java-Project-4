@@ -76,7 +76,6 @@ CREATE TABLE `project_4`.`time_off`
 (
   `id` INT NOT NULL,
   `employee_id` INT NULL,
-  `manager_id` INT NULL,
   `fiscal_week_fiscal_year` VARCHAR(100) NULL,
   `date_start` DATETIME NULL,
   `date_end` DATETIME NULL,
@@ -86,15 +85,9 @@ CREATE TABLE `project_4`.`time_off`
   `submitted` BOOLEAN NULL,
   PRIMARY KEY (`id`),
   INDEX `employee_id_2_idx` (`employee_id` ASC) VISIBLE,
-  INDEX `manager_id_2_idx` (`manager_id` ASC) VISIBLE,
   CONSTRAINT `employee_id_2`
     FOREIGN KEY (`employee_id`)
     REFERENCES `project_4`.`employee` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE CASCADE,
-  CONSTRAINT `manager_id_2`
-    FOREIGN KEY (`manager_id`)
-    REFERENCES `project_4`.`manager` (`id`)
     ON DELETE NO ACTION
     ON UPDATE CASCADE
 );
@@ -105,12 +98,11 @@ CREATE TABLE `project_4`.`time_sheet`
 (
   `id` INT NOT NULL,
   `employee_id` INT NOT NULL,
-  `manager_id` INT NOT NULL,
   `fiscal_week_fiscal_year` VARCHAR(100) NOT NULL,
   `date_start` DATETIME NOT NULL,
   `date_end` DATETIME NOT NULL,
-  `submitted` TINYINT NULL,
-  `approved` TINYINT NULL,
+  `submitted` BOOLEAN NULL,
+  `approved` BOOLEAN NULL,
   `approved_date` DATETIME NULL,
   `comment` VARCHAR(200) NULL,
   `time_off_id` INT NULL,
@@ -120,40 +112,28 @@ CREATE TABLE `project_4`.`time_sheet`
   `regular_hours_day_3` DECIMAL(10,2) NULL,
   `regular_hours_day_4` DECIMAL(10,2) NULL,
   `regular_hours_day_5` DECIMAL(10,2) NULL,
-  `regular_hours_day_6` DECIMAL(10,2) NULL,
-  `regular_hours_day_7` DECIMAL(10,2) NULL,
-  `total_regular_hours` DECIMAL(10, 2) NULL,
+  `total_regular_hours` DECIMAL(10, 2) GENERATED ALWAYS AS (`regular_hours_day_1` + `regular_hours_day_2` + `regular_hours_day_3` + `regular_hours_day_4` + `regular_hours_day_5`) VIRTUAL,
   
   `overtime_hours_day_1` DECIMAL(10,2) NULL,
   `overtime_hours_day_2` DECIMAL(10,2) NULL,
   `overtime_hours_day_3` DECIMAL(10,2) NULL,
   `overtime_hours_day_4` DECIMAL(10,2) NULL,
   `overtime_hours_day_5` DECIMAL(10,2) NULL,
-  `overtime_hours_day_6` DECIMAL(10,2) NULL,
-  `overtime_hours_day_7` DECIMAL(10,2) NULL,
-  `total_overtime_hours` DECIMAL(10,2) NULL,
+  `total_overtime_hours` DECIMAL(10,2) GENERATED ALWAYS AS (`overtime_hours_day_1` + `overtime_hours_day_2` + `overtime_hours_day_3`  + `overtime_hours_day_4`  + `overtime_hours_day_5`) VIRTUAL,
   
   `time_off_hours_day_1` DECIMAL(10,2) NULL,
   `time_off_hours_day_2` DECIMAL(10,2) NULL,
   `time_off_hours_day_3` DECIMAL(10,2) NULL,
   `time_off_hours_day_4` DECIMAL(10,2) NULL,
   `time_off_hours_day_5` DECIMAL(10,2) NULL,
-  `time_off_hours_day_6` DECIMAL(10,2) NULL,
-  `time_off_hours_day_7` DECIMAL(10,2) NULL,
-  `total_time_off_hours` DECIMAL(10,2) NULL,
+  `total_time_off_hours` DECIMAL(10,2) GENERATED ALWAYS AS (`time_off_hours_day_1` + `time_off_hours_day_2` + `time_off_hours_day_3` + `time_off_hours_day_4` + `time_off_hours_day_5`) VIRTUAL,
   
   PRIMARY KEY (`id`),
   INDEX `employee_id_3_idx` (`employee_id` ASC) VISIBLE,
-  INDEX `manager_id_3_idx` (`manager_id` ASC) VISIBLE,
   INDEX `time_off_id_1_idx` (`time_off_id` ASC) VISIBLE,
   CONSTRAINT `employee_id_3`
     FOREIGN KEY (`employee_id`)
     REFERENCES `project_4`.`employee` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE CASCADE,
-  CONSTRAINT `manager_id_3`
-    FOREIGN KEY (`manager_id`)
-    REFERENCES `project_4`.`manager` (`id`)
     ON DELETE NO ACTION
     ON UPDATE CASCADE,
   CONSTRAINT `time_off_id_1`
@@ -177,14 +157,7 @@ CREATE TABLE `project_4`.`pay_stub`
   `fiscal_week_fiscal_year_end` VARCHAR(100) NULL,
   `date_start` DATETIME NULL,
   `date_end` DATETIME NULL,
-  `pay_rate_per_hour` DECIMAL(10,2) NULL,
   `pay_stub_date` DATETIME NULL,
-  `ts1_total_regular_hours` DECIMAL(10,2) NULL,
-  `ts1_total_overtime_hours` DECIMAL(10,2) NULL,
-  `ts1_total_time_off_hours` DECIMAL(10,2) NULL,
-  `ts2_total_regular_hours` DECIMAL(10,2) NULL,
-  `ts2_total_overtime_hours` DECIMAL(10,2) NULL,
-  `ts2_total_time_off_hours` DECIMAL(10,2) NULL,
   `total_regular_hours` DECIMAL(10,2) NULL,
   `total_overtime_hours` DECIMAL(10,2) NULL,
   `total_time_off_hours` DECIMAL(10,2) NULL,
@@ -221,3 +194,123 @@ CREATE TABLE `project_4`.`pay_stub`
     ON DELETE NO ACTION
     ON UPDATE CASCADE
 );
+
+# Trigger 1: 
+DROP TRIGGER IF EXISTS `project_4`.`pay_stub_BEFORE_INSERT`;
+
+DELIMITER $$
+USE `project_4`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `project_4`.`pay_stub_BEFORE_INSERT` 
+BEFORE INSERT ON `pay_stub` FOR EACH ROW
+BEGIN
+	SET new.`total_regular_hours` = 
+    (
+		SELECT sum(`total_regular_hours`)
+		FROM `project_4`.`time_sheet`
+		WHERE id = `pay_stub`.`time_sheet_id_1` and id = `pay_stub`.`time_sheet_id_2` 
+    );
+    
+    SET new.`total_overtime_hours`  = 
+    (
+		SELECT sum(`total_overtime_hours`)
+		FROM `project_4`.`time_sheet`
+		WHERE id = `pay_stub`.`time_sheet_id_1` and id = `pay_stub`.`time_sheet_id_2` 
+    );
+    
+    SET new.`total_time_off_hours` = 
+    (
+		SELECT sum(`total_time_off_hours`)
+        FROM `project_4`.`time_sheet`
+		WHERE id = `pay_stub`.`time_sheet_id_1` and id = `pay_stub`.`time_sheet_id_2` 
+    );
+    
+    SET new.`total_paid` = ( (new.`total_regular_hours` +  new.`total_time_off_hours`)*(`employee`.`pay_rate_per_hour`)) + ( (new.`total_overtime_hours` )*(1.5*`employee`.`pay_rate_per_hour`) ) ;
+END
+$$
+DELIMITER ;
+
+
+# Trigger 2: 
+DROP TRIGGER IF EXISTS `project_4`.`pay_stub_BEFORE_UPDATE`;
+
+DELIMITER $$
+USE `project_4`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `project_4`.`pay_stub_BEFORE_UPDATE` 
+BEFORE UPDATE ON `pay_stub` FOR EACH ROW
+BEGIN
+	SET new.`total_regular_hours` = 
+    (
+		SELECT sum(`total_regular_hours`)
+		FROM `project_4`.`time_sheet`
+		WHERE id = `pay_stub`.`time_sheet_id_1` and id = `pay_stub`.`time_sheet_id_2` 
+    );
+    
+    SET new.`total_overtime_hours`  = 
+    (
+		SELECT sum(`total_overtime_hours`)
+		FROM `project_4`.`time_sheet`
+		WHERE id = `pay_stub`.`time_sheet_id_1` and id = `pay_stub`.`time_sheet_id_2` 
+    );
+    
+    SET new.`total_time_off_hours` = 
+    (
+		SELECT sum(`total_time_off_hours`)
+        FROM `project_4`.`time_sheet`
+		WHERE id = `pay_stub`.`time_sheet_id_1` and id = `pay_stub`.`time_sheet_id_2` 
+    );
+    
+    SET new.`total_paid` = ( (new.`total_regular_hours` +  new.`total_time_off_hours`)*(`employee`.`pay_rate_per_hour`)) + ( (new.`total_overtime_hours` )*(1.5*`employee`.`pay_rate_per_hour`) ) ;
+END
+$$
+DELIMITER ;
+
+/*Adding triggers for 'before insert' and 'before update' to a timecard? Before a time card can be a pay stub their 'approve' property MUST be TRUE and 
+the manger MUST CREATE a pay stub by inserting 2 time sheet ids so I think we don't need these triggers to update pay stub table b/c a APPROVED time sheet
+will NOT be updated
+
+Unless we create triggers that look at 'approved = True' then we can add a trigger for update time sheet
+insert new time sheet is irrelevant b/c a new time sheet will never have approved = true */
+
+# Trigger 3: 
+DROP TRIGGER IF EXISTS `project_4`.`time_sheet_AFTER_UPDATE`;
+
+DELIMITER $$
+USE `project_4`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `project_4`.`time_sheet_AFTER_UPDATE` 
+AFTER UPDATE ON `time_sheet` FOR EACH ROW
+BEGIN
+	IF `time_sheet`.`approved` = true THEN
+    
+		UPDATE `pay_stub`
+		SET 
+			`total_regular_hours` = 
+			(
+				SELECT sum(`total_regular_hours`)
+				FROM `project_4`.`time_sheet`
+				WHERE id = `pay_stub`.`time_sheet_id_1` and id = `pay_stub`.`time_sheet_id_2` 
+			),
+			
+			`total_overtime_hours`  = 
+			(
+				SELECT sum(`total_overtime_hours`)
+				FROM `project_4`.`time_sheet`
+				WHERE id = `pay_stub`.`time_sheet_id_1` and id = `pay_stub`.`time_sheet_id_2` 
+			),
+			
+			`total_time_off_hours` = 
+			(
+				SELECT sum(`total_time_off_hours`)
+				FROM `project_4`.`time_sheet`
+				WHERE id = `pay_stub`.`time_sheet_id_1` and id = `pay_stub`.`time_sheet_id_2` 
+			),
+			
+			`total_paid` = ( (new.`total_regular_hours` +  new.`total_time_off_hours`)*(`employee`.`pay_rate_per_hour`)) + ( (new.`total_overtime_hours` )*(1.5*`employee`.`pay_rate_per_hour`) ) 
+			
+        WHERE id = `pay_stub`.`time_sheet_id_1` OR id = `pay_stub`.`time_sheet_id_2` ;
+        
+    END IF;
+    
+END
+$$
+DELIMITER ;
+
