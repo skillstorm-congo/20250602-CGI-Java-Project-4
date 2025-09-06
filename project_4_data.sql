@@ -71,3 +71,31 @@ insert into `project_4`.`time_sheet` (id, employee_id, date_start, date_end, sub
 insert into `project_4`.`time_sheet` (id, employee_id, date_start, date_end, submitted, submitted_date, approved, approved_date, comment, time_off_id, regular_hours_day_1, regular_hours_day_2, regular_hours_day_3, regular_hours_day_4, regular_hours_day_5, overtime_hours_day_1, overtime_hours_day_2, overtime_hours_day_3, overtime_hours_day_4, overtime_hours_day_5, time_off_hours_day_1, time_off_hours_day_2, time_off_hours_day_3, time_off_hours_day_4, time_off_hours_day_5  )  values (104,65,'2025-08-18','2025-08-22',1,'2025-08-22',1,'2025-08-25',NULL,NULL,8,8,8,8,8,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 insert into `project_4`.`time_sheet` (id, employee_id, date_start, date_end, submitted, submitted_date, approved, approved_date, comment, time_off_id, regular_hours_day_1, regular_hours_day_2, regular_hours_day_3, regular_hours_day_4, regular_hours_day_5, overtime_hours_day_1, overtime_hours_day_2, overtime_hours_day_3, overtime_hours_day_4, overtime_hours_day_5, time_off_hours_day_1, time_off_hours_day_2, time_off_hours_day_3, time_off_hours_day_4, time_off_hours_day_5  )  values (79,42,'2025-08-11','2025-08-15',1,'2025-08-15',1,'2025-08-18',NULL,NULL,8,8,8,8,8,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 insert into `project_4`.`time_sheet` (id, employee_id, date_start, date_end, submitted, submitted_date, approved, approved_date, comment, time_off_id, regular_hours_day_1, regular_hours_day_2, regular_hours_day_3, regular_hours_day_4, regular_hours_day_5, overtime_hours_day_1, overtime_hours_day_2, overtime_hours_day_3, overtime_hours_day_4, overtime_hours_day_5, time_off_hours_day_1, time_off_hours_day_2, time_off_hours_day_3, time_off_hours_day_4, time_off_hours_day_5  )  values (93,42,'2025-08-18','2025-08-22',1,'2025-08-22',1,'2025-08-25',NULL,NULL,8,8,8,8,8,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+
+################################################################################
+# insert data(10 records) into pay_stub table (table 6 of 6)
+################################################################################
+insert into `project_4`.`pay_stub` (id, employee_id, time_sheet_id_1, time_sheet_id_2, date_start, date_end, pay_stub_date )  values (13,83,97,62,'2025-08-11','2025-08-22','2025-09-02');
+insert into `project_4`.`pay_stub` (id, employee_id, time_sheet_id_1, time_sheet_id_2, date_start, date_end, pay_stub_date )  values (91,73,78,154,'2025-08-11','2025-08-22',NULL);
+
+#error Error Code: 1242. Subquery returns more than 1 row
+insert into `project_4`.`pay_stub` (id, employee_id, time_sheet_id_1, time_sheet_id_2, date_start, date_end, pay_stub_date )  values (88,95,306,148,'2025-08-11','2025-08-22','2025-09-02');
+
+insert into `project_4`.`pay_stub` (id, employee_id, time_sheet_id_1, time_sheet_id_2, date_start, date_end, pay_stub_date )  values (28,34,196,60,'2025-08-11','2025-08-22','2025-09-02');
+insert into `project_4`.`pay_stub` (id, employee_id, time_sheet_id_1, time_sheet_id_2, date_start, date_end, pay_stub_date )  values (82,84,103,161,'2025-08-11','2025-08-22',NULL);
+insert into `project_4`.`pay_stub` (id, employee_id, time_sheet_id_1, time_sheet_id_2, date_start, date_end, pay_stub_date )  values (12,64,86,197,'2025-07-28','2025-08-08','2025-08-18');
+insert into `project_4`.`pay_stub` (id, employee_id, time_sheet_id_1, time_sheet_id_2, date_start, date_end, pay_stub_date )  values (100,64,133,113,'2025-08-11','2025-08-22','2025-09-02');
+insert into `project_4`.`pay_stub` (id, employee_id, time_sheet_id_1, time_sheet_id_2, date_start, date_end, pay_stub_date )  values (99,72,74,75,'2025-08-11','2025-08-22','2025-09-02');
+insert into `project_4`.`pay_stub` (id, employee_id, time_sheet_id_1, time_sheet_id_2, date_start, date_end, pay_stub_date )  values (78,65,72,104,'2025-08-11','2025-08-22','2025-09-02');
+insert into `project_4`.`pay_stub` (id, employee_id, time_sheet_id_1, time_sheet_id_2, date_start, date_end, pay_stub_date )  values (95,42,79,93,'2025-08-11','2025-08-22',NULL);
+
+
+Error Code: 1054. Unknown column 'pay_stub.time_sheet_id_1' in 'where clause'
+Error Code: 1109. Unknown table 'employee' in field list
+
+Error Code: 1242. Subquery returns more than 1 row
+
+
+
+
+
