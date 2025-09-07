@@ -35,7 +35,7 @@ WHERE id = 99;
 
 select * from `project_4`.`pay_stub` where id = 99 ;
 
-#reset back to 0
+#reset back to original date
 UPDATE `project_4`.`pay_stub`
 SET `date_start` = '2025-08-11'
 WHERE id = 99;
