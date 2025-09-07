@@ -286,12 +286,12 @@ END
 $$
 DELIMITER ;
 
-/*Adding triggers for 'before insert' and 'before update' to a timecard? Before a time card can be a pay stub their 'approve' property MUST be TRUE and 
-the manger MUST CREATE a pay stub by inserting 2 time sheet ids so I think we don't need these triggers to update pay stub table b/c a APPROVED time sheet
-will NOT be updated
+/*
+Before a time card can be a pay stub their 'approve' property MUST be TRUE (1) and the manger MUST CREATE a pay stub by inserting 2 time sheet ids.
+An APPROVED time sheet CAN be updated but a pay stub CAN only be UPDATED if its pays stub date is NULL. 
 
-Unless we create triggers that look at 'approved = True' then we can add a trigger for update time sheet
-insert new time sheet is irrelevant b/c a new time sheet will never have approved = true */
+If a pay stub date is NOT NULL then that indicates that the pay stub has been PAID OUT.
+*/
 
 # Trigger 3: 
 DROP TRIGGER IF EXISTS `project_4`.`time_sheet_AFTER_UPDATE`;
@@ -301,36 +301,46 @@ USE `project_4`$$
 CREATE DEFINER = CURRENT_USER TRIGGER `project_4`.`time_sheet_AFTER_UPDATE` 
 AFTER UPDATE ON `time_sheet` FOR EACH ROW
 BEGIN
-	IF NEW.`time_sheet`.`approved` = true THEN
+	IF NEW.`approved` = 1 THEN
     
 		# if pay_stub_date is NULL then it hasn't been finalized/paid out
-		IF `pay_stub`.`pay_stub_date` IS NULL THEN
+        IF (SELECT `pay_stub`.`pay_stub_date`
+			FROM `project_4`.`pay_stub`
+			WHERE `pay_stub`.`time_sheet_id_1` = NEW.`id` or `pay_stub`.`time_sheet_id_2` = NEW.`id`) IS NULL THEN
+            
 			UPDATE `pay_stub`
-			SET 
-				`total_regular_hours` = 
+			SET `total_regular_hours` = 
 				(
-					SELECT sum(`total_regular_hours`)
-					FROM `project_4`.`time_sheet`
-					WHERE id = `pay_stub`.`time_sheet_id_1` OR id = `pay_stub`.`time_sheet_id_2` 
+					SELECT sum(a.`total_regular_hours`)
+					FROM `project_4`.`time_sheet` AS a
+					WHERE a.id = `time_sheet_id_1` OR a.id = `time_sheet_id_2`
 				),
 				
-				`total_overtime_hours`  = 
+			`total_overtime_hours`  = 
 				(
-					SELECT sum(`total_overtime_hours`)
-					FROM `project_4`.`time_sheet`
-					WHERE id = `pay_stub`.`time_sheet_id_1` OR id = `pay_stub`.`time_sheet_id_2` 
+					SELECT sum(a.`total_overtime_hours`)
+					FROM `project_4`.`time_sheet` AS a
+					WHERE a.id = `time_sheet_id_1` OR a.id = `time_sheet_id_2`
 				),
 				
-				`total_time_off_hours` = 
+			`total_time_off_hours` = 
 				(
-					SELECT sum(`total_time_off_hours`)
-					FROM `project_4`.`time_sheet`
-					WHERE id = `pay_stub`.`time_sheet_id_1` OR id = `pay_stub`.`time_sheet_id_2` 
+					SELECT sum(a.`total_time_off_hours`)
+					FROM `project_4`.`time_sheet`AS a
+					WHERE a.id = `time_sheet_id_1` OR a.id = `time_sheet_id_2`
 				),
 				
-				`total_paid` = ( (new.`total_regular_hours` +  new.`total_time_off_hours`)*(`employee`.`pay_rate_per_hour`)) + ( (new.`total_overtime_hours` )*(1.5*`employee`.`pay_rate_per_hour`) ) 
-				
-			WHERE id = `pay_stub`.`time_sheet_id_1` OR id = `pay_stub`.`time_sheet_id_2` ;
+			`total_paid` = ( (`total_regular_hours` +  `total_time_off_hours`)*(SELECT pay_rate_per_hour
+																					FROM `project_4`.`employee` AS a
+																					WHERE a.id = `employee_id`) 
+											+ ( (`total_overtime_hours` )*(1.5*(SELECT pay_rate_per_hour
+																					FROM `project_4`.`employee` AS a
+																					WHERE a.id = `employee_id`) 
+																			   ) 
+											  ) 
+										)
+                                        
+			WHERE `pay_stub`.`time_sheet_id_1` = NEW.`id` or `pay_stub`.`time_sheet_id_2` = NEW.`id`;
 		END IF;
         
     END IF;
