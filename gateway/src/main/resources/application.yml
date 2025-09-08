@@ -20,8 +20,8 @@ spring:
             uri: lb://timesheet-service
             predicates:
             - Path=/timesheet/**
-          - id: request-time-off-service-route
-            uri: lb://request-time-off-service
+          - id: time-off-service-route
+            uri: lb://time-off-service
             predicates:
             - Path=/request-time-off/**
           - id: paystubs-service-route
