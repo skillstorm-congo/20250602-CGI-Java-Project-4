@@ -39,7 +39,7 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: ${DEFAULT_SERVICE_URL}
+      defaultZone: http://localhost:8761/eureka
 
 # after adding Spring Boot Actuator as a dependency, we can enable certain endpoints to get info about this server
 management:
