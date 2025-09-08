@@ -31,7 +31,7 @@ spring:
 
 # a typical/standard gateway port
 server:
-  port: ${DEFAULT_PORT}}
+  port: 9000
 
 # we DO want this service to register itself and find out what other services are available,
 # so we DO NOT include the false values like in the Eureka server
