@@ -2,6 +2,10 @@
 spring:
     application:
       name: timesheet-service
+    datasource:
+      url: jdbc:mysql://localhost:3306/project_4
+      username: root
+      password: ${DB_PASS}
 
 # because we're running everything on localhost, we must create distinct ports for all our services
 # default if you don't enter a port for Spring Boot app is 8080
