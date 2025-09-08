@@ -241,8 +241,6 @@ END
 $$
 DELIMITER ;
 
-
-
 # Trigger 2: 
 DROP TRIGGER IF EXISTS `project_4`.`pay_stub_BEFORE_UPDATE`;
 
@@ -251,37 +249,41 @@ USE `project_4`$$
 CREATE DEFINER = CURRENT_USER TRIGGER `project_4`.`pay_stub_BEFORE_UPDATE` 
 BEFORE UPDATE ON `pay_stub` FOR EACH ROW
 BEGIN
-	
-    SET NEW.`total_regular_hours` = 
-		(
-			SELECT sum(a.`total_regular_hours`)
-			FROM `project_4`.`time_sheet` AS a
-			WHERE a.id = NEW.`time_sheet_id_1` OR a.id = NEW.`time_sheet_id_2`
-		);
-		
-	SET NEW.`total_overtime_hours`  = 
-		(
-			SELECT sum(a.`total_overtime_hours`)
-			FROM `project_4`.`time_sheet` AS a
-			WHERE a.id = NEW.`time_sheet_id_1` OR a.id = NEW.`time_sheet_id_2`
-		);
-		
-	SET NEW.`total_time_off_hours` = 
-		(
-			SELECT sum(a.`total_time_off_hours`)
-			FROM `project_4`.`time_sheet`AS a
-			WHERE a.id = NEW.`time_sheet_id_1` OR a.id = NEW.`time_sheet_id_2`
-		);
-		
-	SET NEW.`total_paid` = ( (NEW.`total_regular_hours` +  NEW.`total_time_off_hours`)*(SELECT pay_rate_per_hour
-																			FROM `project_4`.`employee` AS a
-																			WHERE a.id = NEW.`employee_id`) 
-									+ ( (NEW.`total_overtime_hours` )*(1.5*(SELECT pay_rate_per_hour
-																			FROM `project_4`.`employee` AS a
-																			WHERE a.id = NEW.`employee_id`) 
-																	   ) 
-									  ) 
-								);
+
+	# if pay_stub_date is NULL then it hasn't been finalized/paid out
+	IF (NEW.`pay_stub_date`IS NULL) THEN
+
+		SET NEW.`total_regular_hours` = 
+			(
+				SELECT sum(a.`total_regular_hours`)
+				FROM `project_4`.`time_sheet` AS a
+				WHERE a.id = NEW.`time_sheet_id_1` OR a.id = NEW.`time_sheet_id_2`
+			);
+			
+		SET NEW.`total_overtime_hours`  = 
+			(
+				SELECT sum(a.`total_overtime_hours`)
+				FROM `project_4`.`time_sheet` AS a
+				WHERE a.id = NEW.`time_sheet_id_1` OR a.id = NEW.`time_sheet_id_2`
+			);
+			
+		SET NEW.`total_time_off_hours` = 
+			(
+				SELECT sum(a.`total_time_off_hours`)
+				FROM `project_4`.`time_sheet`AS a
+				WHERE a.id = NEW.`time_sheet_id_1` OR a.id = NEW.`time_sheet_id_2`
+			);
+			
+		SET NEW.`total_paid` = ( (NEW.`total_regular_hours` +  NEW.`total_time_off_hours`)*(SELECT pay_rate_per_hour
+																				FROM `project_4`.`employee` AS a
+																				WHERE a.id = NEW.`employee_id`) 
+										+ ( (NEW.`total_overtime_hours` )*(1.5*(SELECT pay_rate_per_hour
+																				FROM `project_4`.`employee` AS a
+																				WHERE a.id = NEW.`employee_id`) 
+																		   ) 
+										  ) 
+									);
+	END IF;
 END
 $$
 DELIMITER ;
