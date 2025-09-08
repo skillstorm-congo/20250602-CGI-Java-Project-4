@@ -8,6 +8,7 @@ spring:
 server:
   port: 8081
 
+#.env for l16
 # we need our Eureka configuration, just like in the gateway
 eureka:
   client:
