@@ -1,0 +1,15 @@
+# we MUST name our service with the name that matches the route leading to this service
+spring:
+    application:
+      name: timesheet-service
+
+# because we're running everything on localhost, we must create distinct ports for all our services
+# default if you don't enter a port for Spring Boot app is 8080
+server:
+  port: 8091
+
+# we need our Eureka configuration, just like in the gateway
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
