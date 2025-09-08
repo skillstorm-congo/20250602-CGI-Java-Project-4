@@ -16,15 +16,18 @@ spring:
       server:
         webflux:
           routes:
-          - id: costume-service-route
-            uri: lb://costume-service
+          - id: timesheet-service-route
+            uri: lb://timesheet-service
             predicates:
-            - Path=/costume/**
-            - Path=/accessory/**
-          - id: trick-or-treater-service-route
-            uri: lb://trick-or-treater-service
+            - Path=/timesheet/**
+          - id: request-time-off-service-route
+            uri: lb://request-time-off-service
             predicates:
-            - Path=/trick-or-treater/**
+            - Path=/request-time-off/**
+          - id: paystubs-service-route
+            uri: lb://paystubs-service
+            predicates:
+            - Path=/paystubs/**
 
 # a typical/standard gateway port
 server:
