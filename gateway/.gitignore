@@ -4,6 +4,9 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+### IGNORING OUR .env file TO KEEP SECRET INFO OUT OF THE REPO, should see "nothing to commit" if only trying to commit this part
+*.env
+
 ### STS ###
 .apt_generated
 .classpath

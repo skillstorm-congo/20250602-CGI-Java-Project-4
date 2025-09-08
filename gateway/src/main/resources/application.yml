@@ -31,7 +31,7 @@ spring:
 
 # a typical/standard gateway port
 server:
-  port: 9000
+  port: ${DEFAULT_PORT}}
 
 # we DO want this service to register itself and find out what other services are available,
 # so we DO NOT include the false values like in the Eureka server
@@ -39,7 +39,7 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: ${DEFAULT_SERVICE_URL}
 
 # after adding Spring Boot Actuator as a dependency, we can enable certain endpoints to get info about this server
 management:
