@@ -26,9 +26,15 @@ select * from `project_4`.`time_sheet`;
 ######################################################################################
 
 ############################################################################
-## TESTING TRIGGER #2 | TESTING BEFORE UPDATE TRIGGER ON PAY STUB TABLE
+/* TESTING TRIGGER #2 | TESTING BEFORE UPDATE TRIGGER ON PAY STUB TABLE
+
+3 Situations to Test:
+1. Update a field in a pay stub record that does not effect calculated columns, expect no changes to calculated columns
+2. Update a field in a pay stub record that does effect calculated columns and pay stub date is NOT NULL, expect no changes to calculated columns
+3. Update a field in a pay stub record that does effect calculated columns and pay stub date is NULL, expect changes to calculated columns
+*/
 ############################################################################
-# Test 1: update a record in pay stub table & check if the triggered columns output the expected output (expected no change to calculated outputs)
+# Test 1: update a field in pay stub record & check if the triggered columns output the expected output (expected no change to calculated outputs)
 UPDATE `project_4`.`pay_stub`
 SET `date_start` = current_date()
 WHERE id = 99;
@@ -42,7 +48,7 @@ WHERE id = 99;
 
 select * from `project_4`.`pay_stub` where id = 99 ;
 
-#Test 2: Update a time sheet id and pay stub is APPROVED so new calculations ARE NOT suppose to take place
+#Test 2: Update a time sheet id and pay stub date is NOT NULL so new calculations ARE NOT suppose to take place
 select * from `project_4`.`time_sheet` where employee_id = 64; #see what other time sheet ids are avaiable to assign to a pay stub record
 select * from `project_4`.`pay_stub` where employee_id = 64 ; #Note: for id = 12 & total paid  = 3156.00
 
@@ -78,7 +84,7 @@ UPDATE `project_4`.`pay_stub`
 SET `time_sheet_id_2` = 18
 WHERE id = 95;
 
-#Note: for id = 95, total paid = 6553.60, expected (6553.60 + (1.5*81.92) = 6676.48)
+#Note: for id = 95, total paid = 6676.48, expected (6553.60 + (1.5*81.92) = 6676.48)
 #time_sheet_id_2 has been set to 18 (this is the correct anticipated action)
 select * from `project_4`.`pay_stub` where employee_id = 42; 
 
