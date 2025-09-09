@@ -16,10 +16,10 @@ public class Timesheet {
 	
 	@Id //primary key, manual and not auto-generated
 	@Column(name = "id") 
-	private Integer id; 
+	private int id; 
 	
 	@Column(name = "employee_id", nullable = false)
-	private Integer employeeId;
+	private int employeeId;
 	
 	@Column(name = "fiscal_year_fiscal_week", length=100, insertable = false, updatable = false)
 	private String fiscalYearFiscalWeek;
