@@ -24,7 +24,7 @@ spring:
             uri: lb://time-off-service
             predicates:
             - Path=/time-off/**
-          - id: paystub-service-route
+          - id: pay-stub-service-route
             uri: lb://pay-stub-service
             predicates:
             - Path=/pay-stub/**
