@@ -29,7 +29,7 @@ public class PayStubController
 
 	//find all pay stub records with Error Response (Method 1 of 3)
 	@GetMapping
-	public ResponseEntity<Iterable<PayStub>> findAll()
+	public ResponseEntity<Iterable<PayStub>> findAll() //issue is here
 	{
 		return this.service.findAll();
 	}
