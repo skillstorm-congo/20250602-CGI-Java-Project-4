@@ -16,7 +16,7 @@ spring:
       server:
         webflux:
           routes:
-          - id: timesheet-service-route
+          - id: timesheet-route
             uri: lb://timesheet-service
             predicates:
             - Path=/timesheet/**

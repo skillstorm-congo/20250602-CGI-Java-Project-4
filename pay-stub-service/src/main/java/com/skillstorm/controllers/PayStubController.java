@@ -3,14 +3,19 @@ package com.skillstorm.controllers;
 import java.time.LocalDate;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.skillstorm.models.PayStub;
 import com.skillstorm.services.PayStubService;
+
 
 
 @RestController
@@ -29,7 +34,7 @@ public class PayStubController
 
 	//find all pay stub records with Error Response (Method 1 of 3)
 	@GetMapping
-	public ResponseEntity<Iterable<PayStub>> findAll() //issue is here
+	public ResponseEntity<Iterable<PayStub>> findAll() 
 	{
 		return this.service.findAll();
 	}
@@ -43,31 +48,51 @@ public class PayStubController
 	}
 	
 	//find a pay stub record(s) by employee id with Error Response (Method 3 of 4)
-	@GetMapping //("/")
+	@GetMapping("/employee-id")
 	public ResponseEntity<Iterable<PayStub>> findByEmployeeId(@RequestParam(required=true) int employeeId)
 	{
 		return this.service.findByEmployeeId(employeeId);
 	}
 	
 	//find a pay stub record(s) by employee id with Error Response (Method 3 of 4)
-	@GetMapping //("/")
+	@GetMapping("/manager-id")
 	public ResponseEntity<Iterable<PayStub>> findByManagerId(@RequestParam(required=true) int managerId)
 	{
 		return this.service.findByManagerId(managerId);
 	}
 	
 	//find a pay stub record(s) by date with Error Response (Method 3 of 4)
-	@GetMapping //("/")
+	@GetMapping("/date")
 	public ResponseEntity<Iterable<PayStub>> findByDate(@RequestParam(required=true) LocalDate date)
 	{
 		return this.service.findByDate(date);
 	}
 
 	
+	//create a pay stub (Method X of Y)
+	@PostMapping
+	public ResponseEntity<PayStub> createPayStub(@RequestBody PayStub payStub)
+	{
+		PayStub newPayStub = this.service.createPayStub(payStub);
+		
+		return this.service.findByPayStubId(newPayStub.getId());
+	}
 	
-	//post/create payStub()
+	//update a pay stub (Method X of Y)
+	@PutMapping("/{id}")
+	public ResponseEntity<PayStub> updatePayStub(@PathVariable int id, @RequestBody PayStub payStub) 
+	{
+		PayStub newPayStub = this.service.updatePayStub(id, payStub);
+		
+		return this.service.findByPayStubId(newPayStub.getId());
+	}
 	
-	//put/update payStub()
+	//delete a pay stub (Method X of Y)
+	@DeleteMapping("/{id}")
+	public ResponseEntity<PayStub> deleteById(@PathVariable int id)
+	{
+			return this.service.deletById(id);
+	}
 
 	
 	

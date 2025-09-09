@@ -1,0 +1,41 @@
+{
+	"info": {
+		"_postman_id": "0bb62d0c-69e1-4fb0-91b3-5ad9557e44ff",
+		"name": "Project 4",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45548510"
+	},
+	"item": [
+		{
+			"name": "Gateway",
+			"item": [
+				{
+					"name": "Pay Stub",
+					"item": [
+						{
+							"name": "findAll()",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Pay Stub",
+			"item": [
+				{
+					"name": "findAll()",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

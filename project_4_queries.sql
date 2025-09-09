@@ -151,3 +151,8 @@ select * from `project_4`.`pay_stub` where time_sheet_id_1 = 60 or time_sheet_id
 UPDATE `project_4`.`time_sheet` 
 SET `time_sheet`.`overtime_hours_day_3` = 0
 WHERE `time_sheet`.`id` = 60;
+
+## Pay Stub Repository SQL #####
+SELECT * FROM `project_4`.`pay_stub` WHERE employee_id in (select id from `project_4`.`employee` where manager_id = 2 );
+
+select id from `project_4`.`employee` where manager_id = 2 ;
