@@ -25,9 +25,9 @@ spring:
             predicates:
             - Path=/time-off/**
           - id: paystub-service-route
-            uri: lb://paystub-service
+            uri: lb://pay-stub-service
             predicates:
-            - Path=/paystub/**
+            - Path=/pay-stub/**
 
 # a typical/standard gateway port
 server:

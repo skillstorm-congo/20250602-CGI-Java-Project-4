@@ -76,7 +76,7 @@ CREATE TABLE `project_4`.`time_off`
 (
   `id` INT NOT NULL,
   `employee_id` INT NULL,
-  `fiscal_week_fiscal_year` VARCHAR(100) GENERATED ALWAYS AS (YEARWEEK(`date_start`, 3)),
+  `fiscal_year_fiscal_week` VARCHAR(100) GENERATED ALWAYS AS (YEARWEEK(`date_start`, 3)),
   `date_start` DATE NULL,
   `date_end` DATE NULL,
   `comment` VARCHAR(45) NULL,
@@ -99,7 +99,7 @@ CREATE TABLE `project_4`.`time_sheet`
 (
   `id` INT NOT NULL,
   `employee_id` INT NOT NULL,
-  `fiscal_week_fiscal_year` VARCHAR(100) GENERATED ALWAYS AS (YEARWEEK(`date_start`, 3)),
+  `fiscal_year_fiscal_week` VARCHAR(100) GENERATED ALWAYS AS (YEARWEEK(`date_start`, 3)),
   `date_start` DATE NOT NULL,
   `date_end` DATE NOT NULL,
   `submitted` BOOLEAN NULL,
@@ -155,8 +155,8 @@ CREATE TABLE `project_4`.`pay_stub`
   `time_sheet_id_2` INT NULL,
   `time_off_id_1` INT NULL,
   `time_off_id_2` INT NULL,
-  `fiscal_week_fiscal_year_start` VARCHAR(100) GENERATED ALWAYS AS (YEARWEEK(`date_start`, 3)),
-  `fiscal_week_fiscal_year_end` VARCHAR(100) GENERATED ALWAYS AS (YEARWEEK(`date_end`, 3)),
+  `fiscal_year_fiscal_week_start` VARCHAR(100) GENERATED ALWAYS AS (YEARWEEK(`date_start`, 3)),
+  `fiscal_year_fiscal_week_end` VARCHAR(100) GENERATED ALWAYS AS (YEARWEEK(`date_end`, 3)),
   `date_start` DATE NULL,
   `date_end` DATE NULL,
   `pay_stub_date` DATE NULL,
