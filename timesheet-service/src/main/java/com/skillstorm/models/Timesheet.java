@@ -112,7 +112,6 @@ public class Timesheet {
     public Timesheet(
     		int id, 
     		int employeeId, 
-    		String fiscalYearFiscalWeek, 
     		LocalDate dateStart, 
     		LocalDate dateEnd, 
     		boolean submitted,
@@ -126,24 +125,20 @@ public class Timesheet {
     		BigDecimal regularHoursDay3,
     		BigDecimal regularHoursDay4,
     		BigDecimal regularHoursDay5,
-    		BigDecimal totalRegularHours,
     		BigDecimal overtimeHoursDay1,
     		BigDecimal overtimeHoursDay2,
     		BigDecimal overtimeHoursDay3,
     		BigDecimal overtimeHoursDay4,
     		BigDecimal overtimeHoursDay5,
-    		BigDecimal totalOvertimeHours,
     		BigDecimal timeOffHoursDay1,
     		BigDecimal timeOffHoursDay2,
     		BigDecimal timeOffHoursDay3,
     		BigDecimal timeOffHoursDay4,
-    		BigDecimal timeOffHoursDay5,
-    		BigDecimal totalTimeOffHours) {
+    		BigDecimal timeOffHoursDay5) {
     	
     	super();
     	this.id = id;
     	this.employeeId = employeeId;
-    	this.fiscalYearFiscalWeek = fiscalYearFiscalWeek;
     	this.dateStart = dateStart;
     	this.dateEnd = dateEnd;
     	this.submitted = submitted;
@@ -157,19 +152,16 @@ public class Timesheet {
     	this.regularHoursDay3 = regularHoursDay3;
     	this.regularHoursDay4 = regularHoursDay4;
     	this.regularHoursDay5 = regularHoursDay5;
-    	this.totalRegularHours = totalRegularHours;
     	this.overtimeHoursDay1 = overtimeHoursDay1;
     	this.overtimeHoursDay2 = overtimeHoursDay2;
     	this.overtimeHoursDay3 = overtimeHoursDay3;
     	this.overtimeHoursDay4 = overtimeHoursDay4;
     	this.overtimeHoursDay5 = overtimeHoursDay5;
-    	this.totalOvertimeHours = totalOvertimeHours;
     	this.timeOffHoursDay1 = timeOffHoursDay1;
     	this.timeOffHoursDay2 = timeOffHoursDay2;
     	this.timeOffHoursDay3 = timeOffHoursDay3;
     	this.timeOffHoursDay4 = timeOffHoursDay4;
     	this.timeOffHoursDay5 = timeOffHoursDay5;
-    	this.totalTimeOffHours = totalTimeOffHours;
     }
 
 	public Integer getId() {
@@ -192,9 +184,6 @@ public class Timesheet {
 		return fiscalYearFiscalWeek;
 	}
 
-	//public void setFiscalYearFiscalWeek(String fiscalYearFiscalWeek) {
-	//	this.fiscalYearFiscalWeek = fiscalYearFiscalWeek;
-	//}
 
 	public LocalDate getDateStart() {
 		return dateStart;
@@ -304,9 +293,6 @@ public class Timesheet {
 		return totalRegularHours;
 	}
 
-	//public void setTotalRegularHours(BigDecimal totalRegularHours) {
-	//	this.totalRegularHours = totalRegularHours;
-	//}
 
 	public BigDecimal getOvertimeHoursDay1() {
 		return overtimeHoursDay1;
@@ -352,9 +338,6 @@ public class Timesheet {
 		return totalOvertimeHours;
 	}
 
-	//public void setTotalOvertimeHours(BigDecimal totalOvertimeHours) {
-	//	this.totalOvertimeHours = totalOvertimeHours;
-	//}
 
 	public BigDecimal getTimeOffHoursDay1() {
 		return timeOffHoursDay1;
@@ -399,10 +382,6 @@ public class Timesheet {
 	public BigDecimal getTotalTimeOffHours() {
 		return totalTimeOffHours;
 	}
-
-	//public void setTotalTimeOffHours(BigDecimal totalTimeOffHours) {
-	//	this.totalTimeOffHours = totalTimeOffHours;
-	//}
     
 
 }
