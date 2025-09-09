@@ -40,15 +40,15 @@ public class PayStub
 	private int employeeId;
 	
 	@Column(name = "time_sheet_id_1", nullable = false)
-	private int timeOffId1;
+	private int timesheetId1;
 	
 	@Column(name = "time_sheet_id_2", nullable = true)
-	private int timeOffId2;
+	private Integer timesheetId2;
 	
-	@Column(name = "fiscal_year_fiscal_week_start", length = 100)
+	@Column(name = "fiscal_year_fiscal_week_start", length = 100, insertable = false, updatable = false)
 	private String fiscalYearFiscalWeekStart;
 	
-	@Column(name = "fiscal_year_fiscal_week_end", length = 100)
+	@Column(name = "fiscal_year_fiscal_week_end", length = 100, insertable = false, updatable = false)
 	private String fiscalYearFiscalWeekEnd;
 	
 	@Column(name = "date_start", nullable = true)
@@ -60,36 +60,40 @@ public class PayStub
 	@Column(name = "pay_stub_date", nullable = true)
 	private LocalDate payStubDate;
 	
-	@Column(name = "total_regular_hours", precision = 10, scale = 2)
+	@Column(name = "total_regular_hours", precision = 10, scale = 2, insertable = false, updatable = false)
 	private BigDecimal totalRegularHours;
 	
-	@Column(name = "total_overtime_hours", precision = 10, scale = 2)
+	@Column(name = "total_overtime_hours", precision = 10, scale = 2, insertable = false, updatable = false)
 	private BigDecimal totalOvertimeHours;
 	
-	@Column(name = "total_time_off_hours", precision = 10, scale = 2)
+	@Column(name = "total_time_off_hours", precision = 10, scale = 2, insertable = false, updatable = false)
 	private BigDecimal totalTimeOffHours;
 	
-	@Column(name = "total_paid", precision = 10, scale = 2)
+	@Column(name = "total_paid", precision = 10, scale = 2, insertable = false, updatable = false)
 	private BigDecimal totalPaid;
 
 	//constructors
 	public PayStub() {
 		super();
 	}
+	
+	//constructor used for NOT FOUND PAY STUB
+	public PayStub(int id) 
+	{
+		this.id = id;
+	}
 
-	public PayStub(int id, int employeeId, int timeOffId1, int timeOffId2, LocalDate dateStart, LocalDate dateEnd,
-			LocalDate payStubDate) {
+	public PayStub(int id, int employeeId, int timesheetId1, Integer timesheetId2, LocalDate dateStart, LocalDate dateEnd, LocalDate payStubDate) {
 		super();
 		this.id = id;
 		this.employeeId = employeeId;
-		this.timeOffId1 = timeOffId1;
-		this.timeOffId2 = timeOffId2;
+		this.timesheetId1 = timesheetId1;
+		this.timesheetId2 = timesheetId2;
 		this.dateStart = dateStart;
 		this.dateEnd = dateEnd;
 		this.payStubDate = payStubDate;
 	}
-	
-	//setters & getters
+
 	public int getId() {
 		return id;
 	}
@@ -106,20 +110,20 @@ public class PayStub
 		this.employeeId = employeeId;
 	}
 
-	public int getTimeOffId1() {
-		return timeOffId1;
+	public int getTimesheetId1() {
+		return timesheetId1;
 	}
 
-	public void setTimeOffId1(int timeOffId1) {
-		this.timeOffId1 = timeOffId1;
+	public void setTimesheetId1(int timesheetId1) {
+		this.timesheetId1 = timesheetId1;
 	}
 
-	public int getTimeOffId2() {
-		return timeOffId2;
+	public Integer getTimesheetId2() {
+		return timesheetId2;
 	}
 
-	public void setTimeOffId2(int timeOffId2) {
-		this.timeOffId2 = timeOffId2;
+	public void setTimesheetId2(Integer timesheetId2) {
+		this.timesheetId2 = timesheetId2;
 	}
 
 	public String getFiscalYearFiscalWeekStart() {
@@ -130,7 +134,6 @@ public class PayStub
 	public String getFiscalYearFiscalWeekEnd() {
 		return fiscalYearFiscalWeekEnd;
 	}
-
 
 	public LocalDate getDateStart() {
 		return dateStart;
@@ -165,7 +168,6 @@ public class PayStub
 		return totalOvertimeHours;
 	}
 
-
 	public BigDecimal getTotalTimeOffHours() {
 		return totalTimeOffHours;
 	}
@@ -175,5 +177,8 @@ public class PayStub
 		return totalPaid;
 	}
 
+
+
+	
 
 }

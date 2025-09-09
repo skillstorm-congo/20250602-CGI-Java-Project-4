@@ -74,13 +74,53 @@ public class PayStubService
 		return ResponseEntity.ok(payStub);
 	}
 		
-		
-		
-		
-		
-	//put/update payStub()
 	
-	//post/create payStub()
+	//create a pay stub (Method X of Y)
+	public PayStub createPayStub(PayStub payStub)
+	{
+		//If ID DNE, create a new record, else return Error Response, we do not want to overwrite an existing record
+		if (!this.repo.existsById(payStub.getId()))
+		{
+
+			//insert the new product object to payStub table
+			this.repo.save(payStub);
+			
+			return payStub;
+		}
+		
+		//create a non-existent pay stub object
+		PayStub payStubError = new PayStub(-99);
+		
+		return payStubError; 
+	}
+	
+	//update an existing pay stub record (Method 5 of 7)
+	public PayStub updatePayStub(int id, PayStub payStub) 
+	{
+		//if ID exists, update the record else return 404 Error Response
+		if (this.repo.existsById(id))
+		{
+			//update the record
+			this.repo.save(payStub);
+						
+			return payStub;
+		}
+		
+		//id does not exist so you can not update it - create a non-existent pay stub object
+		PayStub payStubError = new PayStub(-99);
+		
+		return payStubError; 
+	}
+	
+	
+	//delete a pay stub record (Method 6 of 7)
+	public ResponseEntity<PayStub> deletById(int id)
+	{
+		this.repo.deleteById(id);
+		
+		return ResponseEntity.noContent().build();
+	}
+	
 
 	
 	

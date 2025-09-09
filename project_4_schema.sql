@@ -153,8 +153,6 @@ CREATE TABLE `project_4`.`pay_stub`
   `employee_id` INT NOT NULL,
   `time_sheet_id_1` INT NOT NULL,
   `time_sheet_id_2` INT NULL,
-  `time_off_id_1` INT NULL,
-  `time_off_id_2` INT NULL,
   `fiscal_year_fiscal_week_start` VARCHAR(100) GENERATED ALWAYS AS (YEARWEEK(`date_start`, 3)),
   `fiscal_year_fiscal_week_end` VARCHAR(100) GENERATED ALWAYS AS (YEARWEEK(`date_end`, 3)),
   `date_start` DATE NULL,
@@ -168,8 +166,6 @@ CREATE TABLE `project_4`.`pay_stub`
   INDEX `employee_id_4_idx` (`employee_id` ASC) VISIBLE,
   INDEX `time_sheet_1_idx` (`time_sheet_id_1` ASC) VISIBLE,
   INDEX `time_sheet_2_idx` (`time_sheet_id_2` ASC) VISIBLE,
-  INDEX `time_off_id_2_idx` (`time_off_id_1` ASC) VISIBLE,
-  INDEX `time_off_id_3_idx` (`time_off_id_2` ASC) VISIBLE,
   CONSTRAINT `employee_id_4`
     FOREIGN KEY (`employee_id`)
     REFERENCES `project_4`.`employee` (`id`)
@@ -183,16 +179,6 @@ CREATE TABLE `project_4`.`pay_stub`
   CONSTRAINT `time_sheet_id_2`
     FOREIGN KEY (`time_sheet_id_2`)
     REFERENCES `project_4`.`time_sheet` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE CASCADE,
-  CONSTRAINT `time_off_id_2`
-    FOREIGN KEY (`time_off_id_1`)
-    REFERENCES `project_4`.`time_off` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE CASCADE,
-  CONSTRAINT `time_off_id_3`
-    FOREIGN KEY (`time_off_id_2`)
-    REFERENCES `project_4`.`time_off` (`id`)
     ON DELETE NO ACTION
     ON UPDATE CASCADE
 );
