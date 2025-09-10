@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "5b7cdc9a-8c26-4d6a-bbb5-15e843fac329",
+		"_postman_id": "b56ed189-0f91-4fad-930e-e4af1abba4dc",
 		"name": "Project 4",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "45548510"
+		"_exporter_id": "26834563"
 	},
 	"item": [
 		{
@@ -227,7 +227,10 @@
 							"name": "findByTimeOffId()",
 							"request": {
 								"method": "GET",
-								"header": []
+								"header": [],
+								"url": {
+									"raw": ""
+								}
 							},
 							"response": []
 						},
@@ -379,6 +382,269 @@
 									"path": [
 										"time-off",
 										"666"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Timesheet",
+					"item": [
+						{
+							"name": "deleteTimesheet()",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "localhost:9000/timesheet/delete/303",
+									"host": [
+										"localhost"
+									],
+									"port": "9000",
+									"path": [
+										"timesheet",
+										"delete",
+										"303"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "findAll()",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:9000/timesheet",
+									"host": [
+										"localhost"
+									],
+									"port": "9000",
+									"path": [
+										"timesheet"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "findById()",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:9000/timesheet/18",
+									"host": [
+										"localhost"
+									],
+									"port": "9000",
+									"path": [
+										"timesheet",
+										"18"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "findByEmployeeId()",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:9000/timesheet/by-employee/42",
+									"host": [
+										"localhost"
+									],
+									"port": "9000",
+									"path": [
+										"timesheet",
+										"by-employee",
+										"42"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "findByManagerId()",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": 308,\n    \"employeeId\": 42,\n    \"dateStart\": \"2025-08-29\",\n    \"dateEnd\": null,\n    \"approved\": false,\n    \"approvedDate\": null,\n    \"comment\": \"Testing week of nth time of year\",\n    \"regularHoursDay1\": 8.00,\n    \"regularHoursDay2\": 8.00,\n    \"regularHoursDay3\": 0.00,\n    \"regularHoursDay4\": 10.00,\n    \"regularHoursDay5\": 13.00,\n    \"overtimeHoursDay1\": 0.00,\n    \"overtimeHoursDay2\": 3.00,\n    \"overtimeHoursDay3\": null,\n    \"overtimeHoursDay4\": null,\n    \"overtimeHoursDay5\": 4.50,\n    \"timeOffHoursDay1\": null,\n    \"timeOffHoursDay2\": null,\n    \"timeOffHoursDay3\": null,\n    \"timeOffHoursDay4\": null,\n    \"timeOffHoursDay5\": null\n}"
+								},
+								"url": {
+									"raw": "localhost:9000/timesheet/manager-id/3",
+									"host": [
+										"localhost"
+									],
+									"port": "9000",
+									"path": [
+										"timesheet",
+										"manager-id",
+										"3"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "byDate()",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:9000/timesheet/by-date?date=2025-08-29",
+									"host": [
+										"localhost"
+									],
+									"port": "9000",
+									"path": [
+										"timesheet",
+										"by-date"
+									],
+									"query": [
+										{
+											"key": "date",
+											"value": "2025-08-29"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "logHours()",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": 308,\n    \"employeeId\": 42,\n    \"dateStart\": \"2025-08-29\",\n    \"dateEnd\": null,\n    \"approved\": false,\n    \"approvedDate\": null,\n    \"comment\": \"Testing week of nth time of year\",\n    \"regularHoursDay1\": 8.00,\n    \"regularHoursDay2\": 8.00,\n    \"regularHoursDay3\": 0.00,\n    \"regularHoursDay4\": 10.00,\n    \"regularHoursDay5\": 13.00,\n    \"overtimeHoursDay1\": 0.00,\n    \"overtimeHoursDay2\": 3.00,\n    \"overtimeHoursDay3\": null,\n    \"overtimeHoursDay4\": null,\n    \"overtimeHoursDay5\": 4.50,\n    \"timeOffHoursDay1\": null,\n    \"timeOffHoursDay2\": null,\n    \"timeOffHoursDay3\": null,\n    \"timeOffHoursDay4\": null,\n    \"timeOffHoursDay5\": null\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:9000/timesheet/log-hours",
+									"host": [
+										"localhost"
+									],
+									"port": "9000",
+									"path": [
+										"timesheet",
+										"log-hours"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateHours()",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": 303,\n    \"employeeId\": 42,\n    \"dateStart\": \"2025-08-29\",\n    \"dateEnd\": null,\n    \"approved\": false,\n    \"comment\": \"Testing week of nth time of year now for updating hours\",\n    \"regularHoursDay1\": 8.00,\n    \"regularHoursDay2\": 8.00,\n    \"regularHoursDay3\": 2.00,\n    \"regularHoursDay4\": 10.00,\n    \"regularHoursDay5\": 4.00,\n    \"overtimeHoursDay1\": 0.00,\n    \"overtimeHoursDay2\": 3.00,\n    \"overtimeHoursDay3\": null,\n    \"overtimeHoursDay4\": null,\n    \"overtimeHoursDay5\": 4.50,\n    \"timeOffHoursDay1\": null,\n    \"timeOffHoursDay2\": null,\n    \"timeOffHoursDay3\": null,\n    \"timeOffHoursDay4\": null,\n    \"timeOffHoursDay5\": null\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:9000/timesheet/update-hours",
+									"host": [
+										"localhost"
+									],
+									"port": "9000",
+									"path": [
+										"timesheet",
+										"update-hours"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "submit()",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "localhost:9000/timesheet/18/submit",
+									"host": [
+										"localhost"
+									],
+									"port": "9000",
+									"path": [
+										"timesheet",
+										"18",
+										"submit"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "approveTimesheet()",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "localhost:9000/timesheet/18/approve-by-manager/3",
+									"host": [
+										"localhost"
+									],
+									"port": "9000",
+									"path": [
+										"timesheet",
+										"18",
+										"approve-by-manager",
+										"3"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "unapproveTimesheet()",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "localhost:9000/timesheet/18/unapprove",
+									"host": [
+										"localhost"
+									],
+									"port": "9000",
+									"path": [
+										"timesheet",
+										"18",
+										"unapprove"
 									]
 								}
 							},
@@ -632,7 +898,10 @@
 					"name": "findAll()",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": ""
+						}
 					},
 					"response": []
 				},
@@ -659,7 +928,10 @@
 					"name": "findByEmployeeId()",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": ""
+						}
 					},
 					"response": []
 				},
@@ -782,6 +1054,280 @@
 							"path": [
 								"time-off",
 								"666"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Timesheet",
+			"item": [
+				{
+					"name": "deleteTimesheet()",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:20000/timesheet/delete/303",
+							"host": [
+								"localhost"
+							],
+							"port": "20000",
+							"path": [
+								"timesheet",
+								"delete",
+								"303"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findAll()",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:20000/timesheet",
+							"host": [
+								"localhost"
+							],
+							"port": "20000",
+							"path": [
+								"timesheet"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findById()",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:20000/timesheet/18",
+							"host": [
+								"localhost"
+							],
+							"port": "20000",
+							"path": [
+								"timesheet",
+								"18"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findByEmployeeId()",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:20000/timesheet/by-employee/42",
+							"host": [
+								"localhost"
+							],
+							"port": "20000",
+							"path": [
+								"timesheet",
+								"by-employee",
+								"42"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findByManagerId()",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:20000/timesheet/manager-id/3",
+							"host": [
+								"localhost"
+							],
+							"port": "20000",
+							"path": [
+								"timesheet",
+								"manager-id",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "byDate()",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:20000/timesheet/by-date?date=2025-08-29",
+							"host": [
+								"localhost"
+							],
+							"port": "20000",
+							"path": [
+								"timesheet",
+								"by-date"
+							],
+							"query": [
+								{
+									"key": "date",
+									"value": "2025-08-29"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logHours()",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 303,\n    \"employeeId\": 42,\n    \"dateStart\": \"2025-08-29\",\n    \"dateEnd\": null,\n    \"approved\": false,\n    \"approvedDate\": null,\n    \"comment\": \"Testing week of nth time of year\",\n    \"regularHoursDay1\": 8.00,\n    \"regularHoursDay2\": 8.00,\n    \"regularHoursDay3\": 0.00,\n    \"regularHoursDay4\": 10.00,\n    \"regularHoursDay5\": 13.00,\n    \"overtimeHoursDay1\": 0.00,\n    \"overtimeHoursDay2\": 3.00,\n    \"overtimeHoursDay3\": null,\n    \"overtimeHoursDay4\": null,\n    \"overtimeHoursDay5\": 4.50,\n    \"timeOffHoursDay1\": null,\n    \"timeOffHoursDay2\": null,\n    \"timeOffHoursDay3\": null,\n    \"timeOffHoursDay4\": null,\n    \"timeOffHoursDay5\": null\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:20000/timesheet/log-hours",
+							"host": [
+								"localhost"
+							],
+							"port": "20000",
+							"path": [
+								"timesheet",
+								"log-hours"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateHours()",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 303,\n    \"employeeId\": 42,\n    \"dateStart\": \"2025-08-29\",\n    \"dateEnd\": null,\n    \"approved\": false,\n    \"comment\": \"Testing week of nth time of year now for updating hours\",\n    \"regularHoursDay1\": 8.00,\n    \"regularHoursDay2\": 8.00,\n    \"regularHoursDay3\": 2.00,\n    \"regularHoursDay4\": 10.00,\n    \"regularHoursDay5\": 4.00,\n    \"overtimeHoursDay1\": 0.00,\n    \"overtimeHoursDay2\": 3.00,\n    \"overtimeHoursDay3\": null,\n    \"overtimeHoursDay4\": null,\n    \"overtimeHoursDay5\": 4.50,\n    \"timeOffHoursDay1\": null,\n    \"timeOffHoursDay2\": null,\n    \"timeOffHoursDay3\": null,\n    \"timeOffHoursDay4\": null,\n    \"timeOffHoursDay5\": null\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:20000/timesheet/update-hours",
+							"host": [
+								"localhost"
+							],
+							"port": "20000",
+							"path": [
+								"timesheet",
+								"update-hours"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "submit()",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "localhost:20000/timesheet/303/submit",
+							"host": [
+								"localhost"
+							],
+							"port": "20000",
+							"path": [
+								"timesheet",
+								"303",
+								"submit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "approveTimesheet()",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "localhost:20000/timesheet/18/approve-by-manager/3",
+							"host": [
+								"localhost"
+							],
+							"port": "20000",
+							"path": [
+								"timesheet",
+								"18",
+								"approve-by-manager",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "unapproveTimesheet()",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "localhost:20000/timesheet/18/unapprove",
+							"host": [
+								"localhost"
+							],
+							"port": "20000",
+							"path": [
+								"timesheet",
+								"18",
+								"unapprove"
 							]
 						}
 					},
