@@ -19,6 +19,183 @@
 								"header": []
 							},
 							"response": []
+						},
+						{
+							"name": "findByPayStubId()",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:9000/pay-stub/12",
+									"host": [
+										"localhost"
+									],
+									"port": "9000",
+									"path": [
+										"pay-stub",
+										"12"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "findByEmployeeId()",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:9000/pay-stub/employee-id?employeeId=64",
+									"host": [
+										"localhost"
+									],
+									"port": "9000",
+									"path": [
+										"pay-stub",
+										"employee-id"
+									],
+									"query": [
+										{
+											"key": "employeeId",
+											"value": "64"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "findByManagerId()",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:9000/pay-stub/manager-id?managerId=2",
+									"host": [
+										"localhost"
+									],
+									"port": "9000",
+									"path": [
+										"pay-stub",
+										"manager-id"
+									],
+									"query": [
+										{
+											"key": "managerId",
+											"value": "2"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "findByDate()",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:9000/pay-stub/date?date=2025-08-22",
+									"host": [
+										"localhost"
+									],
+									"port": "9000",
+									"path": [
+										"pay-stub",
+										"date"
+									],
+									"query": [
+										{
+											"key": "date",
+											"value": "2025-08-22"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createPayStub()",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8081/pay-stub",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"pay-stub"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updatePayStub()",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:9000/pay-stub/",
+									"host": [
+										"localhost"
+									],
+									"port": "9000",
+									"path": [
+										"pay-stub",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deleteById() Copy",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:9000/pay-stub/",
+									"host": [
+										"localhost"
+									],
+									"port": "9000",
+									"path": [
+										"pay-stub",
+										""
+									]
+								}
+							},
+							"response": []
 						}
 					]
 				}
@@ -32,6 +209,213 @@
 					"request": {
 						"method": "GET",
 						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "findByPayStubId()",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8081/pay-stub/12",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"pay-stub",
+								"12"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findByEmployeeId()",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8081/pay-stub/employee-id?employeeId=64",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"pay-stub",
+								"employee-id"
+							],
+							"query": [
+								{
+									"key": "employeeId",
+									"value": "64"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findByManagerId()",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8081/pay-stub/manager-id?managerId=2",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"pay-stub",
+								"manager-id"
+							],
+							"query": [
+								{
+									"key": "managerId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findByDate()",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8081/pay-stub/date?date=2025-08-22",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"pay-stub",
+								"date"
+							],
+							"query": [
+								{
+									"key": "date",
+									"value": "2025-08-22"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createPayStub()",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8081/pay-stub",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"pay-stub"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updatePayStub()",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8081/pay-stub/",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"pay-stub",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteById()",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8081/pay-stub/",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"pay-stub",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Employee",
+			"item": [
+				{
+					"name": "findByManagerId()",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8091/employee/manager-id?managerId=3",
+							"host": [
+								"localhost"
+							],
+							"port": "8091",
+							"path": [
+								"employee",
+								"manager-id"
+							],
+							"query": [
+								{
+									"key": "managerId",
+									"value": "3"
+								}
+							]
+						}
 					},
 					"response": []
 				}
