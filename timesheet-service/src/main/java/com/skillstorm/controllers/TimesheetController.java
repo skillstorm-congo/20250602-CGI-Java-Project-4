@@ -1,6 +1,5 @@
 package com.skillstorm.controllers;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -48,11 +47,6 @@ public class TimesheetController {
 	}
 
 	//GET findByManagerId() 4 of 11
-	/*@GetMapping("/manager-id")
-	public ResponseEntity<Iterable<Timesheet>> findByManagerId(@RequestParam(required=true) int managerId)
-	{
-		return this.svc.findByManagerId(managerId);
-	}*/
 	@GetMapping("/manager-id/{managerId}")
 	public ResponseEntity<Iterable<Timesheet>> findByManagerId(@PathVariable int managerId) {
 	  return this.svc.findByManagerId(managerId);
