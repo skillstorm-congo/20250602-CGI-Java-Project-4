@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.skillstorm.clients.EmployeeServiceClient;
 import com.skillstorm.models.PayStub;
 import com.skillstorm.services.PayStubService;
 
@@ -31,7 +32,7 @@ public class PayStubController
 		this.service = service;
 	}
 	
-
+	
 	//find all pay stub records with Error Response (Method 1 of 3)
 	@GetMapping
 	public ResponseEntity<Iterable<PayStub>> findAll() 

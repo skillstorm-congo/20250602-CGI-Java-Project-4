@@ -1,6 +1,7 @@
 package com.skillstorm.repositories;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -32,8 +33,8 @@ public interface PayStubRepository extends CrudRepository< PayStub, Integer>
 	//method to see all available pay stubs associated to a manager id (Method 1 of 2)
 	@Transactional
 	@Modifying
-	@Query(value = "SELECT * FROM pay_stub WHERE employee_id in (select id from employee where manager_id = ?1 )", nativeQuery = true)
-	Iterable<PayStub> findByManagerId(int managerId);
+	@Query(value = "SELECT * FROM pay_stub WHERE employee_id in ?1", nativeQuery = true)
+	Iterable<PayStub> findByManagerId(ArrayList<Integer> employeeList);
 
 	
 	//method to see all available pay stubs associated to date match (Method 1 of 2)

@@ -14,11 +14,9 @@ spring:
 server:
   port: 8081 #20000
 
-#.env for l16
 # we need our Eureka configuration, just like in the gateway
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka
 
-# need to add MySQL database info here

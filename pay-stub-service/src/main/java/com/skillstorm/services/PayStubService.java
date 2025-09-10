@@ -1,12 +1,15 @@
 package com.skillstorm.services;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.skillstorm.clients.EmployeeServiceClient;
+import com.skillstorm.models.Employee;
 import com.skillstorm.models.PayStub;
 import com.skillstorm.repositories.PayStubRepository;
 
@@ -17,10 +20,15 @@ public class PayStubService
 	//inject repository bean
 	private final PayStubRepository repo;
 	
+	//inject EmployeeServiceClient bean & add to constructor
+	private final EmployeeServiceClient employeeServiceClient;
+
+	
 	//constructor injection, only every going to have one of this class, annotation is optional since it's the only constructor
-	public PayStubService(PayStubRepository repo) 
+	public PayStubService(PayStubRepository repo, EmployeeServiceClient employeeServiceClient) 
 	{
 		this.repo = repo;
+		this.employeeServiceClient = employeeServiceClient;
 	}
 	
 
@@ -57,8 +65,20 @@ public class PayStubService
 	//find a pay stub record(s) by manager id (Method 3 of 4)
 	public ResponseEntity<Iterable<PayStub>> findByManagerId(int managerId)
 	{
-		Iterable<PayStub> payStub = this.repo.findByManagerId(managerId);
+		//get all employee ids associated to a manager id
+		ResponseEntity<Iterable<Employee>> employees = this.employeeServiceClient.findByManagerId(managerId);
 		
+		//iterate through each employee and add the employee id to a list
+		ArrayList<Integer> employeeList = new ArrayList<Integer>();
+				
+		for (Employee employee : employees.getBody())
+		{
+			employeeList.add(employee.getId());
+		}
+		
+		//find all pay stubs where employee ids are in the employeeList
+		Iterable<PayStub> payStub = this.repo.findByManagerId(employeeList);
+
 		if (!payStub.iterator().hasNext())
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 		return ResponseEntity.ok(payStub);
