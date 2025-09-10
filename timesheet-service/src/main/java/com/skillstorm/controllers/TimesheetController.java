@@ -48,10 +48,14 @@ public class TimesheetController {
 	}
 
 	//GET findByManagerId() 4 of 11
-	@GetMapping("/manager-id")
+	/*@GetMapping("/manager-id")
 	public ResponseEntity<Iterable<Timesheet>> findByManagerId(@RequestParam(required=true) int managerId)
 	{
 		return this.svc.findByManagerId(managerId);
+	}*/
+	@GetMapping("/manager-id/{managerId}")
+	public ResponseEntity<Iterable<Timesheet>> findByManagerId(@PathVariable int managerId) {
+	  return this.svc.findByManagerId(managerId);
 	}
 
 	//GET findByDate() 5 of 11
@@ -98,7 +102,7 @@ public class TimesheetController {
 	}
 
 	//DELETE deleteTimesheet() 11 of 11
-	@DeleteMapping("/{id}")
+	@DeleteMapping("/delete/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteTimesheet(@PathVariable int id) { 
 		svc.delete(id); 

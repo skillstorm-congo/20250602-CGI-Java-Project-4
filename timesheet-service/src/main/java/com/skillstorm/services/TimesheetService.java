@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -258,6 +259,7 @@ public class TimesheetService {
 
 	public void delete(int id) {
 	  repo.deleteById(id);
+
 	}
 
 	//helper methods
