@@ -76,10 +76,11 @@ CREATE TABLE `project_4`.`time_off`
 (
   `id` INT NOT NULL,
   `employee_id` INT NULL,
-  `fiscal_year_fiscal_week` VARCHAR(100) GENERATED ALWAYS AS (YEARWEEK(`date_start`, 3)),
+  `fiscal_year_fiscal_week_start` VARCHAR(100) GENERATED ALWAYS AS (YEARWEEK(`date_start`, 3)),
+  `fiscal_year_fiscal_week_end` VARCHAR(100) GENERATED ALWAYS AS (YEARWEEK(`date_end`, 3)),
   `date_start` DATE NULL,
   `date_end` DATE NULL,
-  `comment` VARCHAR(45) NULL,
+  `comment` VARCHAR(200) NULL,
   `approved` BOOLEAN NULL,
   `approved_date` DATE NULL,
   `submitted` BOOLEAN NULL,

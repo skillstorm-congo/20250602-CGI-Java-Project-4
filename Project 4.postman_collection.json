@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "0bb62d0c-69e1-4fb0-91b3-5ad9557e44ff",
+		"_postman_id": "5b7cdc9a-8c26-4d6a-bbb5-15e843fac329",
 		"name": "Project 4",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "45548510"
@@ -16,7 +16,10 @@
 							"name": "findAll()",
 							"request": {
 								"method": "GET",
-								"header": []
+								"header": [],
+								"url": {
+									"raw": ""
+								}
 							},
 							"response": []
 						},
@@ -198,6 +201,190 @@
 							"response": []
 						}
 					]
+				},
+				{
+					"name": "Time Off",
+					"item": [
+						{
+							"name": "findAll()",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:9000/time-off",
+									"host": [
+										"localhost"
+									],
+									"port": "9000",
+									"path": [
+										"time-off"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "findByTimeOffId()",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						},
+						{
+							"name": "findByEmployeeId()",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:9000/time-off/employee-id?employeeId=64",
+									"host": [
+										"localhost"
+									],
+									"port": "9000",
+									"path": [
+										"time-off",
+										"employee-id"
+									],
+									"query": [
+										{
+											"key": "employeeId",
+											"value": "64"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "findByManagerId()",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:9000/time-off/manager-id?managerId=3",
+									"host": [
+										"localhost"
+									],
+									"port": "9000",
+									"path": [
+										"time-off",
+										"manager-id"
+									],
+									"query": [
+										{
+											"key": "managerId",
+											"value": "3"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "findByDate()",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:9000/time-off/date?date=2025-10-31",
+									"host": [
+										"localhost"
+									],
+									"port": "9000",
+									"path": [
+										"time-off",
+										"date"
+									],
+									"query": [
+										{
+											"key": "date",
+											"value": "2025-10-31"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createTimeOff()",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": 666,\n    \"employeeId\": 95,\n    \"fiscalYearFiscalWeekStart\": \"202544\",\n    \"fiscalYearFiscalWeekEnd\": \"202544\",\n    \"dateStart\": \"2025-10-30\",\n    \"dateEnd\": \"2025-10-31\",\n    \"comment\": \"Vacation\",\n    \"approved\": null,\n    \"approvedDate\": null,\n    \"submitted\": false,\n    \"submittedDate\": null\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8080/time-off",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"time-off"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateTimeOff()",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": 666,\n    \"employeeId\": 95,\n    \"fiscalYearFiscalWeekStart\": \"202544\",\n    \"fiscalYearFiscalWeekEnd\": \"202544\",\n    \"dateStart\": \"2025-10-30\",\n    \"dateEnd\": \"2025-10-31\",\n    \"comment\": \"Vacation\",\n    \"approved\": null,\n    \"approvedDate\": null,\n    \"submitted\": false,\n    \"submittedDate\": null\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:9000/time-off/666",
+									"host": [
+										"localhost"
+									],
+									"port": "9000",
+									"path": [
+										"time-off",
+										"666"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deleteById()",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": 666,\n    \"employeeId\": 95,\n    \"fiscalYearFiscalWeekStart\": \"202544\",\n    \"fiscalYearFiscalWeekEnd\": \"202544\",\n    \"dateStart\": \"2025-10-30\",\n    \"dateEnd\": \"2025-10-31\",\n    \"comment\": \"Vacation\",\n    \"approved\": null,\n    \"approvedDate\": null,\n    \"submitted\": false,\n    \"submittedDate\": null\n}"
+								},
+								"url": {
+									"raw": "localhost:9000/time-off/666",
+									"host": [
+										"localhost"
+									],
+									"port": "9000",
+									"path": [
+										"time-off",
+										"666"
+									]
+								}
+							},
+							"response": []
+						}
+					]
 				}
 			]
 		},
@@ -206,9 +393,26 @@
 			"item": [
 				{
 					"name": "findAll()",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 666,\n    \"employeeId\": 95,\n    \"fiscalYearFiscalWeekStart\": \"202544\",\n    \"fiscalYearFiscalWeekEnd\": \"202544\",\n    \"dateStart\": \"2025-10-30\",\n    \"dateEnd\": \"2025-10-31\",\n    \"comment\": \"Vacation\",\n    \"approved\": null,\n    \"approvedDate\": null,\n    \"submitted\": false,\n    \"submittedDate\": null\n}"
+						},
+						"url": {
+							"raw": "localhost:8081/pay-stub",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"pay-stub"
+							]
+						}
 					},
 					"response": []
 				},
@@ -414,6 +618,170 @@
 									"key": "managerId",
 									"value": "3"
 								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Time Off",
+			"item": [
+				{
+					"name": "findAll()",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "findByTimeOffId()",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/time-off/14",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"time-off",
+								"14"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findByEmployeeId()",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "findByManagerId()",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/time-off/manager-id?managerId=2",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"time-off",
+								"manager-id"
+							],
+							"query": [
+								{
+									"key": "managerId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findByDate()",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/time-off/date?date=2025-07-17",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"time-off",
+								"date"
+							],
+							"query": [
+								{
+									"key": "date",
+									"value": "2025-07-17"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createTimeOff()",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 666,\n    \"employeeId\": 95,\n    \"fiscalYearFiscalWeekStart\": \"202544\",\n    \"fiscalYearFiscalWeekEnd\": \"202544\",\n    \"dateStart\": \"2025-10-30\",\n    \"dateEnd\": \"2025-10-31\",\n    \"comment\": \"Vacation\",\n    \"approved\": null,\n    \"approvedDate\": null,\n    \"submitted\": false,\n    \"submittedDate\": null\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/time-off",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"time-off"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateTimeOff()",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 666,\n    \"employeeId\": 95,\n    \"fiscalYearFiscalWeekStart\": \"202544\",\n    \"fiscalYearFiscalWeekEnd\": \"202544\",\n    \"dateStart\": \"2025-10-30\",\n    \"dateEnd\": \"2025-10-31\",\n    \"comment\": \"StayCation\",\n    \"approved\": null,\n    \"approvedDate\": null,\n    \"submitted\": false,\n    \"submittedDate\": null\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/time-off/666",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"time-off",
+								"666"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteById()",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/time-off/666",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"time-off",
+								"666"
 							]
 						}
 					},
