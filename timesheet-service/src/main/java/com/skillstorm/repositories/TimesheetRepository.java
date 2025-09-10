@@ -1,13 +1,17 @@
 package com.skillstorm.repositories;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import com.skillstorm.models.Timesheet;
+
+import jakarta.transaction.Transactional;
 
 import org.springframework.data.repository.query.Param;
 
@@ -17,15 +21,26 @@ public interface TimesheetRepository extends CrudRepository<Timesheet, Integer> 
 	//getting a list of time sheets for an employee
 	List<Timesheet> findByEmployeeId(Integer employeeId);
 	
-	// Filter by manager via join to employee table
-	  @Query(value = """
-	      SELECT t.* FROM time_sheet t
-	      JOIN employee e ON e.id = t.employee_id
-	      WHERE e.manager_id = :managerId
-	      """, nativeQuery = true)
-	  List<Timesheet> findByManagerId(@Param("managerId") Integer managerId);
+	//filter by manager via join to employee table
+	@Query(value = """
+      SELECT t.* FROM time_sheet t
+      JOIN employee e ON e.id = t.employee_id
+      WHERE e.manager_id = :managerId
+      """, nativeQuery = true)
+	List<Timesheet> findByManagerId(@Param("managerId") Integer managerId);
 
-	  @Query("SELECT t FROM Timesheet t WHERE t.dateStart >= :start AND t.dateEnd <= :end")
-	  List<Timesheet> findByDateRange(@Param("start") LocalDate start,
-	                                  @Param("end") LocalDate end);
+	@Query("SELECT t FROM Timesheet t "
+			+ "WHERE t.dateStart >= :start AND t.dateEnd <= :end")
+	List<Timesheet> findByDateRange(@Param("start") LocalDate start,
+                                  @Param("end") LocalDate end);
+	
+	@Query("SELECT t FROM Timesheet t WHERE t.dateStart <= :date AND t.dateEnd >= :date")
+	List<Timesheet> findCoveringDate(@Param("date") LocalDate date);
+  
+	//method to see all available pay stubs associated to a manager id (Method 1 of 2)
+	@Transactional
+	@Modifying
+	@Query(value = "SELECT * FROM time_sheet"
+			+ " WHERE employee_id in ?1", nativeQuery = true)
+	Iterable<Timesheet> findByManagerId(ArrayList<Integer> employeeList);
 }

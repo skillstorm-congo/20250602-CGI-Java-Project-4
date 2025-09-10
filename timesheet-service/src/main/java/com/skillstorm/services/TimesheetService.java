@@ -7,8 +7,13 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import com.skillstorm.clients.EmployeeServiceClient;
+import com.skillstorm.models.Employee;
 import com.skillstorm.models.Timesheet;
 import com.skillstorm.repositories.TimesheetRepository;
 
@@ -19,8 +24,14 @@ public class TimesheetService {
 	
 	private final TimesheetRepository repo;
 	
-	public TimesheetService(TimesheetRepository repo) {
+	//inject EmployeeServiceClient bean & add to constructor
+	private final EmployeeServiceClient employeeServiceClient;
+
+		
+	
+	public TimesheetService(TimesheetRepository repo, EmployeeServiceClient employeeServiceClient) {
 		this.repo = repo;
+		this.employeeServiceClient = employeeServiceClient;
 	}
 
 	public List<Timesheet> getAll() {
@@ -38,25 +49,43 @@ public class TimesheetService {
 	  return repo.findByEmployeeId(employeeId);
 	}
 
-	public List<Timesheet> byManager(int managerId) {
-	  return repo.findByManagerId(managerId);
-	}
+	//public List<Timesheet> byManager(int managerId) {
+	  //return repo.findByManagerId(managerId);
+	//}
+	//find a pay stub record(s) by manager id (Method 3 of 4)
+	public ResponseEntity<Iterable<Timesheet>> findByManagerId(int managerId){
+		//get all employee ids associated to a manager id
+		ResponseEntity<Iterable<Employee>> employees = this.employeeServiceClient.findByManagerId(managerId);
+		
+		//iterate through each employee and add the employee id to a list
+		ArrayList<Integer> employeeList = new ArrayList<Integer>();
+				
+		for (Employee employee : employees.getBody())
+		{
+		employeeList.add(employee.getId());
+		}
+		
+		//find all pay stubs where employee ids are in the employeeList
+		Iterable<Timesheet> payStub = this.repo.findByManagerId(employeeList);
 
-	public List<Timesheet> byDate(LocalDate start, LocalDate end) {
-	  return repo.findByDateRange(start, end);
+		if (!payStub.iterator().hasNext())
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+		return ResponseEntity.ok(payStub);
+		}
+
+	//update CHECK -- by date in general
+	public List<Timesheet> byDate(LocalDate date) {
+	  return repo.findCoveringDate(date);
 	}
 
 	//write action
 	@Transactional
 	public Timesheet create(Timesheet ts) {
-	  if (ts.getId() == null) {
-	    throw new IllegalArgumentException("id is required (DB is not AUTO_INCREMENT)");
-	  }
 	  repo.save(ts);
 	  return reload(ts.getId()); //read back to populate generated columns
 	}
 
-	/** Partial update: copies only non-null mutable fields from 'patch' onto the stored entity. */
+	/* Partial update: copies only non-null mutable fields from 'patch' onto the stored entity. */
 	@Transactional
 	public Timesheet patch(int id, Timesheet patch) {
 	  Timesheet t = get(id);
@@ -102,12 +131,39 @@ public class TimesheetService {
 	  return reload(id);
 	}
 
+	//UPDATE to be approved by manager id
 	@Transactional
-	public Timesheet approve(int id) {
+	public Timesheet approve(int id, int managerId) {
 	  Timesheet t = get(id);
+	  
+	  if (t.getApproved() != null && t.getApproved()) {
+	   // already approved – choose behavior; 409 is common
+	   throw new ResponseStatusException(HttpStatus.CONFLICT, "Timesheet already approved.");
+	  }
+	  
 	  if (t.getSubmitted() == null || !t.getSubmitted()) {
 	    throw new IllegalStateException("Cannot approve a timesheet that hasn't been submitted.");
 	  }
+	  
+	//pull employees under this manager from the employee-service
+	  var employeesResp = employeeServiceClient.findByManagerId(managerId);
+	  var employees = employeesResp != null ? employeesResp.getBody() : null;
+	  boolean managesThisEmployee = false;
+	  if (employees != null) {
+	    for (Employee e : employees) {
+	      if (e.getId() == t.getEmployeeId()) {
+	        managesThisEmployee = true;
+	        break;
+	      }
+	    }
+	  }
+
+	  if (!managesThisEmployee) {
+	    //manager is not authorized to approve this ts
+	    throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+	        "Manager " + managerId + " is not allowed to approve timesheet " + id);
+	  }
+	  
 	  t.setApproved(true);
 	  t.setApprovedDate(LocalDate.now());
 	  repo.save(t);

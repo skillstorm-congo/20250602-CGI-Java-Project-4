@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import com.skillstorm.models.Timesheet;
 import com.skillstorm.services.TimesheetService;
@@ -41,20 +42,16 @@ public class TimesheetController {
 	  return svc.byEmployee(employeeId);
 	}
 
-	//NEED TO MAKE A SEEDED FIELD TO WORK<<<<-----
-	//look into employee folder -- refer to clickup 
-	@GetMapping("/by-manager/{managerId}")
-	public List<Timesheet> findByManagerId(@PathVariable int managerId) {
-	  return svc.byManager(managerId);
+	@GetMapping("/manager-id")
+	public ResponseEntity<Iterable<Timesheet>> findByManagerId(@RequestParam(required=true) int managerId)
+	{
+		return this.svc.findByManagerId(managerId);
 	}
 
-	//add/or approved date as well
-	//just one (start) or the other (end) would be good too
 	@GetMapping("/by-date")
 	public List<Timesheet> findByDate(
-	    @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
-	    @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
-	  return svc.byDate(start, end);
+	    @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+	  return svc.byDate(date);
 	}
 
 	//request params, enter more than 1x day/hours at a time
@@ -70,8 +67,11 @@ public class TimesheetController {
 	public Timesheet submit(@PathVariable int id) { return svc.submit(id); }
 
 	//update to approveByManagerId()
-	@PutMapping("/{id}/approve")
-	public Timesheet approveTimesheet(@PathVariable int id) { return svc.approve(id); }
+	@PutMapping("/{id}/approve-by-manager/{managerId}")
+	public Timesheet approvedByManagerId(
+			@PathVariable("id") int id, 
+			@PathVariable("managerId") int managerId) {
+		return svc.approve(id, managerId); }
 
 	//paste from POST and update as needed
 	@PutMapping("/{id}/update-hours")

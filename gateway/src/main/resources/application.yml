@@ -28,6 +28,10 @@ spring:
             uri: lb://pay-stub-service
             predicates:
             - Path=/pay-stub/**
+          - id: employee-service-route
+            uri: lb://employee-service
+            predicates:
+            - Path=/employee-service/**
 
 # a typical/standard gateway port
 server:
