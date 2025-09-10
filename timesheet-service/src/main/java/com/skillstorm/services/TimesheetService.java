@@ -24,11 +24,8 @@ public class TimesheetService {
 	
 	private final TimesheetRepository repo;
 	
-	//inject EmployeeServiceClient bean & add to constructor
 	private final EmployeeServiceClient employeeServiceClient;
 
-		
-	
 	public TimesheetService(TimesheetRepository repo, EmployeeServiceClient employeeServiceClient) {
 		this.repo = repo;
 		this.employeeServiceClient = employeeServiceClient;
@@ -49,10 +46,6 @@ public class TimesheetService {
 	  return repo.findByEmployeeId(employeeId);
 	}
 
-	//public List<Timesheet> byManager(int managerId) {
-	  //return repo.findByManagerId(managerId);
-	//}
-	//find a pay stub record(s) by manager id (Method 3 of 4)
 	public ResponseEntity<Iterable<Timesheet>> findByManagerId(int managerId){
 		//get all employee ids associated to a manager id
 		ResponseEntity<Iterable<Employee>> employees = this.employeeServiceClient.findByManagerId(managerId);
@@ -73,53 +66,76 @@ public class TimesheetService {
 		return ResponseEntity.ok(payStub);
 		}
 
-	//update CHECK -- by date in general
 	public List<Timesheet> byDate(LocalDate date) {
 	  return repo.findCoveringDate(date);
 	}
 
-	//write action
+	//write actions to postman to db
 	@Transactional
 	public Timesheet create(Timesheet ts) {
 	  repo.save(ts);
-	  return reload(ts.getId()); //read back to populate generated columns
+	  return reload(ts.getId());
 	}
 
-	/* Partial update: copies only non-null mutable fields from 'patch' onto the stored entity. */
 	@Transactional
-	public Timesheet patch(int id, Timesheet patch) {
-	  Timesheet t = get(id);
+	public Timesheet updateHoursByBody(Timesheet patch) {
+	  if (patch == null || patch.getId() == null) {
+	    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "id is required.");
+	  }
 
-	  if (patch.getEmployeeId() != null) t.setEmployeeId(patch.getEmployeeId());
-	  if (patch.getDateStart() != null)  t.setDateStart(patch.getDateStart());
-	  if (patch.getDateEnd() != null)    t.setDateEnd(patch.getDateEnd());
-	  if (patch.getSubmitted() != null)  t.setSubmitted(patch.getSubmitted());
-	  if (patch.getSubmittedDate() != null) t.setSubmittedDate(patch.getSubmittedDate());
-	  if (patch.getApproved() != null)   t.setApproved(patch.getApproved());
-	  if (patch.getApprovedDate() != null) t.setApprovedDate(patch.getApprovedDate());
-	  if (patch.getComment() != null)    t.setComment(patch.getComment());
-      if (patch.getTimeOffId() != null)  t.setTimeOffId(patch.getTimeOffId());
+	  Timesheet t = get(patch.getId());
 
-	  if (patch.getRegularHoursDay1() != null) t.setRegularHoursDay1(patch.getRegularHoursDay1());
-	  if (patch.getRegularHoursDay2() != null) t.setRegularHoursDay2(patch.getRegularHoursDay2());
-	  if (patch.getRegularHoursDay3() != null) t.setRegularHoursDay3(patch.getRegularHoursDay3());
-	  if (patch.getRegularHoursDay4() != null) t.setRegularHoursDay4(patch.getRegularHoursDay4());
-	  if (patch.getRegularHoursDay5() != null) t.setRegularHoursDay5(patch.getRegularHoursDay5());
+	  //block edits once approved
+	  if (Boolean.TRUE.equals(t.getApproved())) {
+	    throw new ResponseStatusException(HttpStatus.CONFLICT, "Timesheet already approved.");
+	  }
 
-	  if (patch.getOvertimeHoursDay1() != null) t.setOvertimeHoursDay1(patch.getOvertimeHoursDay1());
-	  if (patch.getOvertimeHoursDay2() != null) t.setOvertimeHoursDay2(patch.getOvertimeHoursDay2());
-	  if (patch.getOvertimeHoursDay3() != null) t.setOvertimeHoursDay3(patch.getOvertimeHoursDay3());
-	  if (patch.getOvertimeHoursDay4() != null) t.setOvertimeHoursDay4(patch.getOvertimeHoursDay4());
-	  if (patch.getOvertimeHoursDay5() != null) t.setOvertimeHoursDay5(patch.getOvertimeHoursDay5());
+	  // validate non-negative if provided
+	  validateNonNegative(patch.getRegularHoursDay1(),  "regularHoursDay1");
+	  validateNonNegative(patch.getRegularHoursDay2(),  "regularHoursDay2");
+	  validateNonNegative(patch.getRegularHoursDay3(),  "regularHoursDay3");
+	  validateNonNegative(patch.getRegularHoursDay4(),  "regularHoursDay4");
+	  validateNonNegative(patch.getRegularHoursDay5(),  "regularHoursDay5");
 
-	  if (patch.getTimeOffHoursDay1() != null) t.setTimeOffHoursDay1(patch.getTimeOffHoursDay1());
-	  if (patch.getTimeOffHoursDay2() != null) t.setTimeOffHoursDay2(patch.getTimeOffHoursDay2());
-	  if (patch.getTimeOffHoursDay3() != null) t.setTimeOffHoursDay3(patch.getTimeOffHoursDay3());
-	  if (patch.getTimeOffHoursDay4() != null) t.setTimeOffHoursDay4(patch.getTimeOffHoursDay4());
-	  if (patch.getTimeOffHoursDay5() != null) t.setTimeOffHoursDay5(patch.getTimeOffHoursDay5());
+	  validateNonNegative(patch.getOvertimeHoursDay1(), "overtimeHoursDay1");
+	  validateNonNegative(patch.getOvertimeHoursDay2(), "overtimeHoursDay2");
+	  validateNonNegative(patch.getOvertimeHoursDay3(), "overtimeHoursDay3");
+	  validateNonNegative(patch.getOvertimeHoursDay4(), "overtimeHoursDay4");
+	  validateNonNegative(patch.getOvertimeHoursDay5(), "overtimeHoursDay5");
+
+	  validateNonNegative(patch.getTimeOffHoursDay1(),  "timeOffHoursDay1");
+	  validateNonNegative(patch.getTimeOffHoursDay2(),  "timeOffHoursDay2");
+	  validateNonNegative(patch.getTimeOffHoursDay3(),  "timeOffHoursDay3");
+	  validateNonNegative(patch.getTimeOffHoursDay4(),  "timeOffHoursDay4");
+	  validateNonNegative(patch.getTimeOffHoursDay5(),  "timeOffHoursDay5");
+
+	  //copy ONLY hour fields + comment/timeOffId. Ignore dates, employeeId, submitted/approved, totals, fiscal week.
+	  copyIfNotNull(patch.getRegularHoursDay1(),  t::setRegularHoursDay1);
+	  copyIfNotNull(patch.getRegularHoursDay2(),  t::setRegularHoursDay2);
+	  copyIfNotNull(patch.getRegularHoursDay3(),  t::setRegularHoursDay3);
+	  copyIfNotNull(patch.getRegularHoursDay4(),  t::setRegularHoursDay4);
+	  copyIfNotNull(patch.getRegularHoursDay5(),  t::setRegularHoursDay5);
+
+	  copyIfNotNull(patch.getOvertimeHoursDay1(), t::setOvertimeHoursDay1);
+	  copyIfNotNull(patch.getOvertimeHoursDay2(), t::setOvertimeHoursDay2);
+	  copyIfNotNull(patch.getOvertimeHoursDay3(), t::setOvertimeHoursDay3);
+	  copyIfNotNull(patch.getOvertimeHoursDay4(), t::setOvertimeHoursDay4);
+	  copyIfNotNull(patch.getOvertimeHoursDay5(), t::setOvertimeHoursDay5);
+
+	  copyIfNotNull(patch.getTimeOffHoursDay1(),  t::setTimeOffHoursDay1);
+	  copyIfNotNull(patch.getTimeOffHoursDay2(),  t::setTimeOffHoursDay2);
+	  copyIfNotNull(patch.getTimeOffHoursDay3(),  t::setTimeOffHoursDay3);
+	  copyIfNotNull(patch.getTimeOffHoursDay4(),  t::setTimeOffHoursDay4);
+	  copyIfNotNull(patch.getTimeOffHoursDay5(),  t::setTimeOffHoursDay5);
+
+	  if (patch.getComment() != null)   
+		  t.setComment(patch.getComment());
+	  
+	  if (patch.getTimeOffId() != null) 
+		  t.setTimeOffId(patch.getTimeOffId());
 
 	  repo.save(t);
-	  return reload(id);
+	  return reload(t.getId());
 	}
 
 	@Transactional
@@ -131,13 +147,12 @@ public class TimesheetService {
 	  return reload(id);
 	}
 
-	//UPDATE to be approved by manager id
 	@Transactional
 	public Timesheet approve(int id, int managerId) {
 	  Timesheet t = get(id);
-	  
+	    
 	  if (t.getApproved() != null && t.getApproved()) {
-	   // already approved – choose behavior; 409 is common
+	   //NOTE: already approved 409
 	   throw new ResponseStatusException(HttpStatus.CONFLICT, "Timesheet already approved.");
 	  }
 	  
@@ -145,7 +160,7 @@ public class TimesheetService {
 	    throw new IllegalStateException("Cannot approve a timesheet that hasn't been submitted.");
 	  }
 	  
-	//pull employees under this manager from the employee-service
+	  //pull employees under manager from the employee-service
 	  var employeesResp = employeeServiceClient.findByManagerId(managerId);
 	  var employees = employeesResp != null ? employeesResp.getBody() : null;
 	  boolean managesThisEmployee = false;
@@ -159,7 +174,7 @@ public class TimesheetService {
 	  }
 
 	  if (!managesThisEmployee) {
-	    //manager is not authorized to approve this ts
+	    //manager is not authorized to approve this ts bc it's not their employee
 	    throw new ResponseStatusException(HttpStatus.FORBIDDEN,
 	        "Manager " + managerId + " is not allowed to approve timesheet " + id);
 	  }
@@ -169,13 +184,76 @@ public class TimesheetService {
 	  repo.save(t);
 	  return reload(id);
 	}
-
+	
 	@Transactional
-	public Timesheet logHours(int id, int day, String type, BigDecimal hours) {
+	public Timesheet unapprove(int id) {
 	  Timesheet t = get(id);
-	  applyHours(t, day, type, hours);
+	  t.setApproved(false);
+	  t.setApprovedDate(null);
 	  repo.save(t);
 	  return reload(id);
+	}
+
+	@Transactional
+	public Timesheet logHours(Timesheet input) {
+	  if (input == null || input.getId() == null || input.getEmployeeId() == null || input.getDateStart() == null) {
+	    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "id, employeeId, and dateStart are required.");
+	  }
+
+	  boolean exists = repo.existsById(input.getId());
+	  Timesheet t = exists ? get(input.getId()) : new Timesheet();
+
+	  if (exists) {
+	    //blocks edits if already approved
+	    if (Boolean.TRUE.equals(t.getApproved())) {
+	      throw new ResponseStatusException(HttpStatus.CONFLICT, "Timesheet already approved.");
+	    }
+	    //allow date range/comment/timeOffId adjustments BEFORE approval
+	    if (input.getDateEnd() != null) 
+	    	t.setDateEnd(input.getDateEnd());
+	    
+	    if (input.getComment() != null) 
+	    	t.setComment(input.getComment());
+	    
+	    if (input.getTimeOffId() != null) 
+	    	t.setTimeOffId(input.getTimeOffId());
+	  	} else {
+	    //create new record with clean fields
+	    t.setId(input.getId());
+	    t.setEmployeeId(input.getEmployeeId());
+	    LocalDate ds = input.getDateStart();
+	    LocalDate de = (input.getDateEnd() != null) ? input.getDateEnd() : ds; // default end = start
+	    t.setDateStart(ds);
+	    t.setDateEnd(de);
+	    t.setSubmitted(Boolean.FALSE);
+	    t.setApproved(Boolean.FALSE);
+	    t.setSubmittedDate(null);
+	    t.setApprovedDate(null);
+	    t.setComment(input.getComment());
+	    if (input.getTimeOffId() != null) t.setTimeOffId(input.getTimeOffId());
+	  }
+
+	  //copy ONLY hour fields ->>>ignore fiscal week & totals
+	  copyIfNotNull(input.getRegularHoursDay1(),  t::setRegularHoursDay1);
+	  copyIfNotNull(input.getRegularHoursDay2(),  t::setRegularHoursDay2);
+	  copyIfNotNull(input.getRegularHoursDay3(),  t::setRegularHoursDay3);
+	  copyIfNotNull(input.getRegularHoursDay4(),  t::setRegularHoursDay4);
+	  copyIfNotNull(input.getRegularHoursDay5(),  t::setRegularHoursDay5);
+
+	  copyIfNotNull(input.getOvertimeHoursDay1(), t::setOvertimeHoursDay1);
+	  copyIfNotNull(input.getOvertimeHoursDay2(), t::setOvertimeHoursDay2);
+	  copyIfNotNull(input.getOvertimeHoursDay3(), t::setOvertimeHoursDay3);
+	  copyIfNotNull(input.getOvertimeHoursDay4(), t::setOvertimeHoursDay4);
+	  copyIfNotNull(input.getOvertimeHoursDay5(), t::setOvertimeHoursDay5);
+
+	  copyIfNotNull(input.getTimeOffHoursDay1(),  t::setTimeOffHoursDay1);
+	  copyIfNotNull(input.getTimeOffHoursDay2(),  t::setTimeOffHoursDay2);
+	  copyIfNotNull(input.getTimeOffHoursDay3(),  t::setTimeOffHoursDay3);
+	  copyIfNotNull(input.getTimeOffHoursDay4(),  t::setTimeOffHoursDay4);
+	  copyIfNotNull(input.getTimeOffHoursDay5(),  t::setTimeOffHoursDay5);
+
+	  repo.save(t);
+	  return reload(t.getId());
 	}
 
 	public void delete(int id) {
@@ -187,25 +265,17 @@ public class TimesheetService {
 	  return repo.findById(id).orElseThrow(() ->
 	      new NoSuchElementException("Timesheet " + id + " disappeared after save"));
 	}
-
-	private static void applyHours(Timesheet t, int day, String rawType, BigDecimal hours) {
-	  if (day < 1 || day > 5) throw new IllegalArgumentException("day must be 1..5");
-	  if (hours == null || hours.signum() < 0) throw new IllegalArgumentException("hours must be >= 0");
-	  String type = rawType == null ? "" : rawType.toLowerCase();
-
-	  switch (type) {
-	    case "regular" -> setDay(hours, day,
-	        t::setRegularHoursDay1, t::setRegularHoursDay2, t::setRegularHoursDay3, t::setRegularHoursDay4, t::setRegularHoursDay5);
-	    case "overtime" -> setDay(hours, day,
-	        t::setOvertimeHoursDay1, t::setOvertimeHoursDay2, t::setOvertimeHoursDay3, t::setOvertimeHoursDay4, t::setOvertimeHoursDay5);
-	    case "timeoff", "time_off", "pto" -> setDay(hours, day,
-	        t::setTimeOffHoursDay1, t::setTimeOffHoursDay2, t::setTimeOffHoursDay3, t::setTimeOffHoursDay4, t::setTimeOffHoursDay5);
-	    default -> throw new IllegalArgumentException("type must be one of: regular | overtime | timeOff");
-	  }
+	
+	public boolean exists(Integer id) { 
+		return id != null && repo.existsById(id); 
 	}
 
-	@SafeVarargs
-	private static void setDay(BigDecimal v, int day, Consumer<BigDecimal>... setters) {
-	  setters[day - 1].accept(v);
+	private static <T> void copyIfNotNull(T v, java.util.function.Consumer<T> set) {
+		if (v != null) set.accept(v); 
 	}
+	private static void validateNonNegative(BigDecimal v, String field) {
+		  if (v != null && v.signum() < 0) {
+		    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, field + " must be >= 0");
+		  }
+		}
 }
