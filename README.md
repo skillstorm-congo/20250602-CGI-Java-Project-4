@@ -13,67 +13,139 @@ Create a full-stack web application that will facilitate employee time tracking 
 ### **Project Requirements**  
 
 + <details>
-  <summary>Functional Requirements:</summary><br>
-  Frontend:
+  <summary>Employee Features</summary><br>
+
+      - View Time Sheets
+        - Employees can view their own time sheets, detailing their logged hours
     
-      - A React SPA consisting of at least the following pages:
-        - Quiz List Page
-          - All available quizzes should be displayed
-          - Quizzes will be logically separated into subdivisions based on quiz category (i.e., Math, Science, History, etc.)
-          - Basic quiz information should be displayed here (i.e., number of questions, quiz name, etc.)
-          - Clicking one of the displayed quizzes will redirect user to the quiz preview page
-            
-        - Quiz Taking Page
-          - Prior to the quiz starting, display a brief description of the quiz, number of questions, and an option to either start the quiz or return to the quiz list page
-          - Upon quiz start, show all questions and their possible answers
-          - Upon submitting the quiz, the quiz is graded and the user is redirected to a page displaying their score
-            
-        - Quiz Score Page
-          - The total score of the user is displayed on the screen
-          - The user has the ability to view the questions answered and see the questions they got wrong
-          - Have a button that returns them to the home page when clicked
-      
-    Backend:
+      - Log Hours
+        - Employees can manually add hours they worked
+    
+      - View Pay Stubs
+        - Employees can view their previous pay stubs
+    
+      - Request Time Off
+        - Employees can submit requests for time off
+
+</details>
+
++ <details>
+  <summary>Manager Features</summary><br>
+
+      - View All Time Sheets
+        - Managers can view the time sheets of all employees
+
+      - Approve Time Sheets
+        - Managers can approve or reject the time sheets submitted by all employees
   
-          - Data must be stored in a MySQL database
-          - Database schema design must logically separate entities such as quiz data and question data
-          - Data must be made available to the frontend through a Spring Boot web API
+      - Approve Time Off
+        - Managers can approve or reject the time-off requests submitted by all employees
+
+</details>
+
+------------------------------------
+
+### **Technical Specifications**  
+
++ <details>
+  <summary>1. Frontend</summary><br>
+
+    - Framework: React
+    - UI/UX: Design a user-friendly interface that allows seamless navigation and interaction for both employees and managers
+
+</details>
+
++ <details>
+  <summary>2. Backend</summary><br>
+
+    - Framework: Spring Boot Microservices (minimum 2, plus Gateway and Service Discovery servers)
+    - RESTful APIs: Develop RESTful services to handle all client requests, including CRUD operations for time sheets,
+                    pay stubs, and time-off requests
+    - Spring Security: Basic Auth, Authentication and role-based Authorization
+
+</details>
+
++ <details>
+  <summary>3. Database</summary><br>
+
+    - Engine: MySQL
+    - Schema Design: Create a database schema to manage users, time sheets, pay stubs,and time-off requests efficiently
+
+</details>
+
+------------------------------------
+
+### **Development Guidelines** 
+
++ <details>
+  <summary>1. Project Setup</summary><br>
+  
+    - Version Control: Use Git for version control. Establish a repository on GitHub for collaborative development
+    - Branching Strategy: Implement a branching strategy to manage feature development, bug fixes, and releases
+
+</details>
+
++ <details>
+  <summary>2. Task Allocation</summary><br>
+
+    - Divide the project into distinct tasks such as frontend development, backend development, database design, and deployment
+    - Assign tasks to group members based on their strengths and areas of interest
+
+</details>
+
++ <details>
+  <summary>3. Code Quality</summary><br>
+
+    - Follow best practices for code quality, including code reviews, consistent naming conventions, and thorough documentation
+    - Test the code to ensure the reliability and robustness of the application
+
+</details>
+
++ <details>
+  <summary>4. Communication</summary><br>
+
+    - Hold regular team meetings to discuss progress, challenges, and next steps
+    - Use collaborative tools like Slack, Trello, or Microsoft Teams to facilitate communication and project management
+
+</details>
+
+------------------------------------
+
+### **Deliverables** 
+
++ <details>
+  <summary>Click Here</summary><br>
+  
+      1. Project Plan
+         - A detailed project plan outlining the timeline, milestones, and responsibilities
+  
+      2. Design Documents
+         - UI/UX mockups
+         - Database schema API specifications
+         - API endpoint specifications
+    
+      3. Source Code
+         - Complete source code of the application available in one or more GitHub Repositories
+  
+      4. Final Presentation
+         - A presentation demonstrating the features of the application, the development process, important features in the code itself, and lessons learned
+
   </details>
+
+------------------------------------
+
+### **Bonus** 
++ <details>
+  <summary>Deployment</summary><br>
   
-+ <details>
-  <summary>Non-Functional Requirements:</summary><br>
-    &emsp;- Well-documented code <br>
-    &emsp;- Code uploaded to GitHub prior to project presentation <br>
-    &emsp;- Code upholds industry best practices (SOLID/DRY) 
-</details>
+  - Cloud Platform: AWS
+  - Cloud Architecture: Deploy the frontend, backend, and database using S3, EC2/Elastic Beanstalk, and RDS
 
-+ <details>
-  <summary>UI/UX Requirements:</summary>
-  &emsp;- Website should look and feel professional <br>
-  &emsp;- Navigation should be easy and intuitive <br>
-  &emsp;- Errors (and successes) should be clearly communicated to the user
-</details>
+  </details>
 
-+ <details>
-  <summary>Technologies:</summary>
-  &emsp;- React — HTML, CSS, TypeScript <br>
-  &emsp;- You may optionally use a CSS Framework (Bootstrap, Tailwind, MaterialUI, etc.)<br>
-  &emsp;- Spring Boot <br>
-  &emsp;- MySQL<br>
- </details>
 
-+ <details> 
-  <summary>Bonus Challenges:</summary>
-   &emsp;- Deploy your application to AWS  <br>
-   &emsp;- Setup a CI/CD pipeline <br>
-   &emsp;- Add a timer for quizzes <br>
-   &emsp;- Add a section for the user to select related quizzes upon finishing <br>
-   &emsp;- Have quizzes with multiple question types (i.e. multiple choice, select multiple, etc.) <br>
-   &emsp;- Add user login to save a record of their results <br>
-     &emsp; &emsp;- Add a Quiz History page <br>
-     &emsp; &emsp;- Indicate on the main page which quizzes they have already taken
-</details>
--------------------------------------
+------------------------------------
+
 
 ### **Contents in Github Repository** 
 
@@ -111,7 +183,8 @@ Create a full-stack web application that will facilitate employee time tracking 
       - README.md
 
 </details>
-------------------------------------
+
+<hr>
 
 ### **Quiz Application/Website**  
 
@@ -119,17 +192,16 @@ This application/website provides hours of fun for all users of any age! You can
 
 <hr>
 
-<!-- Beginning of quiz ER image    -->
+<!-- Beginning of project 4 ER image    -->
 
-### **Quiz Entity Relationship(ER) Diagram**
+### **Project 5 Entity Relationship(ER) Diagram**
 
 <details>
 <summary>Click Here to See Image | Legend: Crows Feet = Many & 2 Ticks = One </summary>
-<img alt="ER_Diagram_20250816.png" src="https://github.com/skillstorm-congo/20250602-CGI-Java-Project-3/blob/main/ER_Diagram_20250816.png?raw=true" data-hpc="true" class="Box-sc-g0xbh4-0 fzFXnm">
+<img alt="ER_Diagram_20250909.png" src="https://github.com/skillstorm-congo/20250602-CGI-Java-Project-4/blob/main/ER_Diagram_20250909.png?raw=true" data-hpc="true" class="Box-sc-g0xbh4-0 fzFXnm">
 </details>
 
-
-<!-- End of quiz ER image    -->
+<!-- End of project 4 ER image    -->
 
 <hr>
 
@@ -161,67 +233,6 @@ Quiz Taking Page:
 Quiz Score Page:
 - Quiz results from user input, originates from Quiz Taking Page
 
-  
-------------------------------------
-
-<!-- Begining of Quiz Info -->
-### **Quiz Information**  
-6 Quizzes
-  + <details>
-    <summary>Tea Caffeine Knowledge Check</summary>
-    &emsp;Quiz ID: 1 <br>
-    &emsp;Subject: Health<br>
-    &emsp;Description: Understanding how caffeine from tea differs between types and brewing techniques<br>
-    &emsp;Number of Questions:  8<br>
-    &emsp;Results: Pass or Fail
-    </details>
-
-  + <details>
-    <summary>Do you know where your cafe imports their tea?</summary>
-    &emsp;Quiz ID: 2 <br>
-    &emsp;Subject: Industry<br>
-    &emsp;Description: Learning about popular beverage chains such as Starbucks, Peets, Tim Hortons, Dutch Bros, etc.<br>
-    &emsp;Number of Questions:  10<br>
-    &emsp;Results: Pass or Fail
-  </details>
-
-  + <details>
-     <summary>Tea Etiquette Around the World</summary>
-    &emsp;Quiz ID: 3 <br>
-    &emsp;Subject: Culture<br>
-    &emsp;Description: Exploring customs and traditions of tea drinking from around the world.<br>
-    &emsp;Number of Questions:  10<br>
-    &emsp;Results: Pass or Fail
-    </details>
-
-  + <details>
-    <summary>What kind of unicorn are you?</summary>
-    &emsp;Quiz ID: 4<br>
-    &emsp;Subject: Personality<br>
-    &emsp;Description: Find out what kind of magical unicorn is you.<br>
-    &emsp;Number of Questions: 5 <br>
-    &emsp;Results: winged, white, or black unicorn
-  </details>
-
-  + <details>
-    <summary>Can you pass an elementary geography test?</summary>
-    &emsp;Quiz ID: 5<br>
-    &emsp;Subject: Geography<br>
-    &emsp;Description: Find out if you have the knowledge to pass an elementary geography test.<br>
-    &emsp;Number of Questions: 10 <br>
-    &emsp;Results: Pass or Fail
-    </details>
-
-  + <details>
-    <summary>Are you Mulled Cider or Pumpkin Spiced Latte?</summary>
-    &emsp;Quiz ID: 6<br>
-    &emsp;Subject: Personality<br>
-    &emsp;Description: Find out if you're Mulled Cider or Pumpkin Spiced Latte.<br>
-    &emsp;Number of Questions: 5 <br>
-    &emsp;Results: Mulled Cider or Pumpkin Spiced Latte
-  </details>
-
-<!-- End of Quiz Info -->
 
 ------------------------------------
 
