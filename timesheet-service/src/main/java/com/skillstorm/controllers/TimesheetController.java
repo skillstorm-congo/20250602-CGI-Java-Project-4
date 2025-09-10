@@ -1,6 +1,5 @@
 package com.skillstorm.controllers;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -25,61 +24,81 @@ import com.skillstorm.services.TimesheetService;
 @RestController
 @RequestMapping("/timesheet")
 public class TimesheetController {
+	
 	private final TimesheetService svc;
+	
 	@Autowired
 	public TimesheetController(TimesheetService svc) {
 	  this.svc = svc;
 	}
 
+	//GET findAll() 1 of 11
 	@GetMapping
     public List<Timesheet> findAll() { return svc.getAll(); }
 
+	//GET findById() 2 of 11
 	@GetMapping("/{id}")
 	public Timesheet findById(@PathVariable int id) { return svc.get(id); }
 
+	//GET findByEmployeeId() 3 of 11
 	@GetMapping("/by-employee/{employeeId}")
 	public List<Timesheet> findByEmployeeId(@PathVariable int employeeId) {
 	  return svc.byEmployee(employeeId);
 	}
 
-	@GetMapping("/manager-id")
-	public ResponseEntity<Iterable<Timesheet>> findByManagerId(@RequestParam(required=true) int managerId)
-	{
-		return this.svc.findByManagerId(managerId);
+	//GET findByManagerId() 4 of 11
+	@GetMapping("/manager-id/{managerId}")
+	public ResponseEntity<Iterable<Timesheet>> findByManagerId(@PathVariable int managerId) {
+	  return this.svc.findByManagerId(managerId);
 	}
 
+	//GET findByDate() 5 of 11
 	@GetMapping("/by-date")
 	public List<Timesheet> findByDate(
 	    @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
 	  return svc.byDate(date);
 	}
 
-	//request params, enter more than 1x day/hours at a time
-	@PostMapping("/{id}/log-hours")
-	public Timesheet logHours(@PathVariable int id,
-	                          @RequestParam int day,
-	                          @RequestParam String type,      // regular | overtime | timeOff
-	                          @RequestParam BigDecimal hours) {
-	  return svc.logHours(id, day, type, hours);
+	//POST logHours() 6 of 11
+	@PostMapping("/log-hours")
+	public ResponseEntity<Timesheet> lLogHours(@RequestBody Timesheet body) {
+	  boolean existed = svc.exists(body.getId());
+	  Timesheet saved = svc.logHours(body);
+	  return existed
+	      ? ResponseEntity.ok(saved)
+	      : ResponseEntity.status(HttpStatus.CREATED).body(saved);
 	}
 
+	//PUT submit() 7 of 11
 	@PutMapping("/{id}/submit")
-	public Timesheet submit(@PathVariable int id) { return svc.submit(id); }
+	public Timesheet submit(@PathVariable int id) {
+		return svc.submit(id); 
+	}
 
-	//update to approveByManagerId()
+	//PUT approvedByManagerId() 8 of 11
 	@PutMapping("/{id}/approve-by-manager/{managerId}")
 	public Timesheet approvedByManagerId(
 			@PathVariable("id") int id, 
 			@PathVariable("managerId") int managerId) {
-		return svc.approve(id, managerId); }
-
-	//paste from POST and update as needed
-	@PutMapping("/{id}/update-hours")
-	public Timesheet updateHours(@PathVariable int id, @RequestBody Timesheet patch) {
-	  return svc.patch(id, patch);
+		return svc.approve(id, managerId); 
+	}
+	
+	//PUT unapprove() 9 of 11
+	@PutMapping("/{id}/unapprove")
+	public Timesheet unapprove(@PathVariable int id) {
+		return svc.unapprove(id);
+	}
+	
+	//PUT updateHours() 10 of 11
+	@PutMapping(path = "/update-hours", consumes = "application/json")
+	public Timesheet updateHours(@RequestBody Timesheet body) {
+	  return svc.updateHoursByBody(body);
 	}
 
-	@DeleteMapping("/{id}")
+	//DELETE deleteTimesheet() 11 of 11
+	@DeleteMapping("/delete/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteTimesheet(@PathVariable int id) { svc.delete(id); }
+	public void deleteTimesheet(@PathVariable int id) { 
+		svc.delete(id); 
+	}
 }
