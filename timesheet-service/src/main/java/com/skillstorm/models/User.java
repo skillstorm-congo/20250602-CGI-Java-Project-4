@@ -1,5 +1,13 @@
 package com.skillstorm.models;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -26,7 +34,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "user")
-public class User {
+public class User implements UserDetails{
 	
   @Id
   @Column(name = "id", nullable = false)
@@ -47,6 +55,13 @@ public class User {
   @Column(name = "active_status", nullable = false)
   private boolean activeStatus;
 
+  public User(String username, String password, String role) {
+	  super();
+      this.username = username;
+      this.password = password;
+      this.role = role;
+  }
+  
   public User(int id, int employeeId, String username, String password, String role, boolean activeStatus) {
 	  super();
 	  this.id = id;
@@ -104,5 +119,22 @@ public class User {
 	public void setActiveStatus(boolean activeStatus) {
 		this.activeStatus = activeStatus;
 	}	  
+	
+	@Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+
+        /**
+         * looking to return a collection (list or set) of any object that extends the GrantedAuthority class
+         *      - we will use SimpleGrantedAuthority
+         * 
+         *      - format roles to be like ROLE_*
+         *          - ROLE_ADMIN, ROLE_USER, ROLE_MOD, etc.
+         * 
+         *          - if lowercase (user, admin) -> role.toUpperCase() would be needed
+         */
+        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + role));       
+        return authorities;
+    }
 
 }
