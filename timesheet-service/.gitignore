@@ -5,6 +5,8 @@ target/
 !**/src/test/**/target/
 
 
+*.env
+
 ### STS ###
 .apt_generated
 .classpath
@@ -14,7 +16,6 @@ target/
 .springBeans
 .sts4-cache
 
-*.env
 
 
 ### IntelliJ IDEA ###
