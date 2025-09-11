@@ -8,6 +8,57 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+/*
+ * CREATE TABLE `project_4`.`time_sheet` 
+(
+  `id` INT NOT NULL,
+  `employee_id` INT NOT NULL,
+  `fiscal_year_fiscal_week` VARCHAR(100) GENERATED ALWAYS AS (YEARWEEK(`date_start`, 3)),
+  `date_start` DATE NOT NULL,
+  `date_end` DATE NOT NULL,
+  `submitted` BOOLEAN NULL,
+  `submitted_date` DATE NULL,
+  `approved` BOOLEAN NULL,
+  `approved_date` DATE NULL,
+  `comment` VARCHAR(200) NULL,
+  `time_off_id` INT NULL,
+  
+  `regular_hours_day_1` DECIMAL(10,2) NULL,
+  `regular_hours_day_2` DECIMAL(10,2) NULL,
+  `regular_hours_day_3` DECIMAL(10,2) NULL,
+  `regular_hours_day_4` DECIMAL(10,2) NULL,
+  `regular_hours_day_5` DECIMAL(10,2) NULL,
+  `total_regular_hours` DECIMAL(10, 2) GENERATED ALWAYS AS ( IFNULL(`regular_hours_day_1`, 0) + IFNULL(`regular_hours_day_2`, 0) + IFNULL(`regular_hours_day_3`, 0) + IFNULL(`regular_hours_day_4`, 0) + IFNULL(`regular_hours_day_5`, 0) ) VIRTUAL,
+  
+  `overtime_hours_day_1` DECIMAL(10,2) NULL,
+  `overtime_hours_day_2` DECIMAL(10,2) NULL,
+  `overtime_hours_day_3` DECIMAL(10,2) NULL,
+  `overtime_hours_day_4` DECIMAL(10,2) NULL,
+  `overtime_hours_day_5` DECIMAL(10,2) NULL,
+  `total_overtime_hours` DECIMAL(10,2) GENERATED ALWAYS AS ( IFNULL(`overtime_hours_day_1`, 0) + IFNULL(`overtime_hours_day_2`, 0) + IFNULL(`overtime_hours_day_3`, 0)  + IFNULL(`overtime_hours_day_4`,0)  + IFNULL(`overtime_hours_day_5`, 0) ) VIRTUAL,
+  
+  `time_off_hours_day_1` DECIMAL(10,2) NULL,
+  `time_off_hours_day_2` DECIMAL(10,2) NULL,
+  `time_off_hours_day_3` DECIMAL(10,2) NULL,
+  `time_off_hours_day_4` DECIMAL(10,2) NULL,
+  `time_off_hours_day_5` DECIMAL(10,2) NULL,
+  `total_time_off_hours` DECIMAL(10,2) GENERATED ALWAYS AS ( IFNULL(`time_off_hours_day_1`,0) + IFNULL(`time_off_hours_day_2`,0) + IFNULL(`time_off_hours_day_3`,0) + IFNULL(`time_off_hours_day_4`,0) + IFNULL(`time_off_hours_day_5`,0) ) VIRTUAL,
+  
+  PRIMARY KEY (`id`),
+  INDEX `employee_id_3_idx` (`employee_id` ASC) VISIBLE,
+  INDEX `time_off_id_1_idx` (`time_off_id` ASC) VISIBLE,
+  CONSTRAINT `employee_id_3`
+    FOREIGN KEY (`employee_id`)
+    REFERENCES `project_4`.`employee` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE CASCADE,
+  CONSTRAINT `time_off_id_1`
+    FOREIGN KEY (`time_off_id`)
+    REFERENCES `project_4`.`time_off` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+ */
+
 @Entity
 @Table(name = "time_sheet")
 public class Timesheet {

@@ -15,6 +15,25 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+/*
+ * CREATE TABLE `project_4`.`employee` 
+(
+  `id` INT NOT NULL,
+  `first_name` VARCHAR(100) NULL,
+  `last_name` VARCHAR(100) NULL,
+  `title` VARCHAR(100) NULL,
+  `pay_rate_per_hour` DECIMAL(10,2) NULL,
+  `manager_id` INT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `manager_id_1_idx` (`manager_id` ASC) VISIBLE,
+  CONSTRAINT `manager_id_1`
+    FOREIGN KEY (`manager_id`)
+    REFERENCES `project_4`.`manager` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE CASCADE
+
+ */
+
 @Entity
 @Table(name = "employee")
 public class Employee {
@@ -36,13 +55,13 @@ public class Employee {
 	private BigDecimal payRatePerHour;
 	
 	@Column(name = "manager_id", nullable = true)
-	private int managerId;
+	private Integer managerId;
 
 	public Employee() {
 		super();
 	}
 
-	public Employee(int id, String firstName, String lastName, String title, BigDecimal payRatePerHour, int managerId) {
+	public Employee(int id, String firstName, String lastName, String title, BigDecimal payRatePerHour, Integer managerId) {
 		super();
 		this.id = id;
 		this.firstName = firstName;
@@ -92,11 +111,11 @@ public class Employee {
 		this.payRatePerHour = payRatePerHour;
 	}
 
-	public int getManagerId() {
+	public Integer getManagerId() {
 		return managerId;
 	}
 
-	public void setManagerId(int managerId) {
+	public void setManagerId(Integer managerId) {
 		this.managerId = managerId;
 	}
 
