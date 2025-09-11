@@ -4,10 +4,22 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Employee Management Tool</title>
+    <title>Employee Management Frontend</title>
   </head>
+
+  <!--
+    scaffold your app = npm create vite@latest <app-name>, then follow the prompts, making sure to use TypeScript!
+    cd into the directory, then do npm install to resolve all dependencies
+    npm run dev -- launches your app on the default port of 5173
+    - it can be helpful to launch a second terminal, so you can install packages, etc. without stopping your app
+    - the app will live reload to reflect any/all changes to files
+    if you add/delete/change a dependency in package.json, run npm install (or npm i) again to update the project
+  -->
+
   <body>
     <div id="root"></div>
+    <!-- this is the ONLY HTML page for this website
+         ALL content will end up being placed onto this page via the main.tsx file notated below -->
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
