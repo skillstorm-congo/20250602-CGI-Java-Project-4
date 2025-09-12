@@ -8,7 +8,7 @@ export const Header = () => {
                 Employee Management FRONTEND
                 <nav>
                     <a href="/homepage">HomePage</a>
-                    <a href="/timesheet">Timesheets</a>
+                    <a href="/timesheet">TimesheetPage</a>
                 </nav>
             </header>
         </>

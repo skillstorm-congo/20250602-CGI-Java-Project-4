@@ -1,5 +1,10 @@
+import { BrowserRouter, Route, Routes } from 'react-router'
 import './App.css'
+import { Footer } from './components/Footer'
 import { Header } from './components/Header'
+import { Frame } from './pages/Frame'
+import { HomePage } from './pages/HomePage'
+import { Timesheet } from './pages/TimesheetPage'
 
 function App() {
 
@@ -12,8 +17,18 @@ function App() {
       <h2>Testing to make sure this pops up</h2>
     </main>
 
-    <footer>
-      &copy;2025 CGI Skunkworks</footer>
+    <Footer/>
+
+    <BrowserRouter>
+      <Routes>
+        <Route path ='/timesheet' element={<Frame />}/>
+        <Route index element={<HomePage />}/>
+        <Route path='timesheet' element={<Timesheet />}/>
+
+      </Routes>
+    
+    </BrowserRouter>
+      
     </>
   )
 }
