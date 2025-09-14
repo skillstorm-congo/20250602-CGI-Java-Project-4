@@ -311,7 +311,7 @@ function formatNum(n: any) {
 //HELPER FUNCTION - flag()
 function checkMark(v: boolean | null | undefined) {
   //Unicode resource -- https://unicode.org/charts//PDF/Unicode-10.0/U100-2B00.pdf
-  return v ? " \u2714" : "";
+  return v === true ? "\u2714" : "";
 }
 /*
 DO NOT DELETE UNTIL CLEAN UP --save as a start over
