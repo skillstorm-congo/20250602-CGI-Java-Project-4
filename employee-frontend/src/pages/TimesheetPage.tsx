@@ -31,7 +31,10 @@ Effect #1
 - error handling on Lines 197-209
 - table on Lines 212-260
 
- -------------------------------------------------------------------------------------*/
+Testing Out the Following:
+- nullish coalescing operators - https://www.typescriptlang.org/play/?#code/PTAEBUAsFNQOwK4BskEsDOlQGMD2BDJadbVOAc1FwAdoAnfAF1ztA1Hzg6UfridQA3WM1AAfMQCgQoAO6RU2LHWiMEdOOlCMYoOqnKRGAWnSoAJrGgAPaivRncXVADNtuoi5NnL0sO0QUKlYEOEsXMmhzADpJP1AASS48OEYGdEYAGnExUAR0YlAXQnQATxwYbABrdGyAW2hOMkpOUGg66kZS+Iz9CmD3WEQ6gCN6UAAGOVxkc1AxnCcfeiiikuhY+IBBUHJcXDmbfA6iIpZ3dhdGtRU2LUtCZrlUHVBqfDpGVEJ43BGAK2g2EYWnkiiwkHwwlA4XwyBBchgXHwoCq0HKGDgAHJGG98A5VmRNmReHRithYFtqNQAMJOCLkdQCJygADeklAoBkABFoMV4QAuUAAIgAFHBcPBjtAAJTCgDcbQ6XVAvSeCQAyqBBI9zBypQ0hWqKPK4pyeXy4TwhcYAIyKqbsHVoPWcl7tdBC4ZjOim-UW-nW7R0BDQfX4YFCaBCkb7IicU0AXziLlCkZZCGo5iY0Cp1FFKQZQoACh8voQADx5ulwBlMr5OAB8MrZ-rAAHUXlhAkhjHhCMRSP0aPQmCx9YWDNF+A1QABeRa1qcz2AAflXIvFkpXctNnMn5Gi7rqWgXB6PvBPoHXoDte8XDOiEa+0LP9Knz6j143aVDfvNYA0uoKipKquBIAgDZwBO76Hiu87aKUtC4G457wXOGEisa5DCteD7LtKoBCmKEoGrKCowUuh7HqeiHIahsEXh686YcK3r0LhG7njRRG3valGPp+r50dAKH4YeQmwBhC7CrG4GNHAnHiU+kbQkKv7QP+XJgAAqmY-QSFQtAMMwrBgkoiyzLsX4jPgczZow+ACQRs5vlR06EYZJHbtKu7aTCuCFBKuKEEguCyGcrDCrhZDUJBznUZetHcUlOR8YqMjmIFWjBdwYURS45yOnAcWMAlKkvlJymSWlGkZWAKiheUtnmNkhCyPgpRaBpkjJvEACaMw4K0jVzHULCwPgsaQfAyBoJgiwDiQTxkIMoAAMzRAA7PMYWUNQuAZAKfjxEYjDUJ6ICWIIIx7eg0R1IodCHShjDRHgdTAF0tAkPonTAJwEpps0xjfYOf0mOtxhbcAQA
+
+-------------------------------------------------------------------------------------*/
 
 //Tri-State-Select: "selected", "unselected", "somewhat selected or partial"
 //helpful in the for useState in the filters for constants submitted/approved
@@ -72,7 +75,7 @@ export const Timesheet = () => {
 
         //assign the timesheetData with try{}'s response from the data that Axios pulled from endpoints
         //this is what will will populate the table with the response data
-        let timesheetData: TimesheetType[] = response.data ?? []; 
+        let timesheetData: TimesheetType[] = Array.isArray(response.data) ? response.data : []; 
  
         //SUBMITTED-filter Boolean Response (skip if it stays on "any") - Line 156
         if (submitted !== "any") {
@@ -240,15 +243,15 @@ useEffect(() => {loadTimesheetTable();}, []); //dependency array is empty bc it'
                 <tr key={timesheetRow.id}>
                     <Td>{timesheetRow.id}</Td>
                     <Td>{timesheetRow.employeeId}</Td>
-                    <Td>{String(timesheetRow.fiscalYearFiscalWeek ?? "")}</Td>
+                    <Td>{timesheetRow.fiscalYearFiscalWeek != null ? String(timesheetRow.fiscalYearFiscalWeek) : ""}</Td>
                     <Td>{formatDate(timesheetRow.dateStart)}</Td>
                     <Td>{formatDate(timesheetRow.dateEnd)}</Td>
-                    <Td>{checkMark(timesheetRow.submitted)}</Td>
-                    <Td>{checkMark(timesheetRow.approved)}</Td>
+                    <Td style={{ textAlign: "center" }}>{checkMark(timesheetRow.submitted)}</Td>
+                    <Td style={{ textAlign: "center" }}>{checkMark(timesheetRow.approved)}</Td>
                     <Td>{formatNum(timesheetRow.totalRegularHours)}</Td>
                     <Td>{formatNum(timesheetRow.totalOvertimeHours)}</Td>
                     <Td>{formatNum(timesheetRow.totalTimeOffHours)}</Td>
-                    <Td>{timesheetRow.comment ?? ""}</Td>
+                    <Td>{timesheetRow.comment != null ? timesheetRow.comment : ""}</Td>
                 </tr>
                 ))}
                 {!loading && rows.length === 0 && (
