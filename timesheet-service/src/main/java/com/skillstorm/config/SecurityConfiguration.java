@@ -1,18 +1,23 @@
 package com.skillstorm.config;
 
-import org.springframework.security.config.Customizer;
+//import org.springframework.security.config.Customizer;
+
+import java.util.Arrays;
+import java.util.LinkedList;
+import org.springframework.http.HttpMethod;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+//import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
 
 @Configuration
 public class SecurityConfiguration {
 	
 	//quick security customization via a configuration Bean
-	/*@Bean
+	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		
 		// starting off the process by disabling basic authentication
@@ -40,9 +45,9 @@ public class SecurityConfiguration {
 		
 		return http.build();
 		
-	} */
+	} 
 	
-	@Bean
+	/*@Bean
 	  SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 	    http
 	      .csrf(csrf -> csrf.disable()) //REST + Postman
@@ -59,5 +64,5 @@ public class SecurityConfiguration {
 	  PasswordEncoder passwordEncoder() {
 	    //storing "{password stuff as bcrypt}$2b$..."
 	    return new BCryptPasswordEncoder(10);
-	  }
+	  } */
 }
