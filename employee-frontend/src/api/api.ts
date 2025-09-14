@@ -3,26 +3,80 @@ import axios from "axios"
 //all local host 9000 from the gateway
 const baseUrl = 'http://localhost:9000/';
 
-//rename findAll() to be specific to what's being pulled
-//since it's in React, the method doesn't need to be identical to the backend method
+// ------------------------------------------------------------------
+//TIMESHEET FUNCTIONS
 
-//Add section to note off what controller service is being pulled from
+//1) get all timesheet records
 export const findAllTimesheets = async () => {
-    // we'll use axios for this request -- npm i axios
-    // this library allows for easier API calls with less unpacking, better syntax, etc.
-
-    // change the url after the base per service that matches the controller
     return await axios.get(`${baseUrl}timesheet`);
 }
 
+//2) get all timesheet records by the timesheet's id
+export const findByIdTimesheet = async (id: number) => {
+    return await axios.get(`${baseUrl}timesheet/${id}`);
+}
+
+//3) get all timesheet records related to an employee by their Id
+export const findByEmployeeIdTimesheet = async (employeeId: number) => {
+    return await axios.get(`${baseUrl}timesheet/by-employee/${employeeId}`);
+}
+
+//4) get all timesheet records related to employees by the manager Id
+export const findByManagerIdTimesheet = async (managerId: number) => {
+    return await axios.get(`${baseUrl}timesheet/manager-id/${managerId}`);
+}
+
+//5) get all timesheet records by a date /by-date?date=YYYY-MM-DD
+export const findByDateTimesheet = async (date: string | Date) => {
+    return await axios.get(`${baseUrl}timesheet/by-date`, {params: {date: toISODate(date)},});
+}
+
+//6) let an employee log their hours by JSON body to create
+export const logHoursTimesheet = async (payload: any) => {
+    return await axios.post(`${baseUrl}timesheet/log-hours`, payload);
+}
+
+//7) update an employee's timesheet to SUBMITTED
+export const submitTimesheet = async (id: number) => {
+    return await axios.put(`${baseUrl}timesheet/${id}/submit`);
+}
+
+//8) update an employee's timesheet to APPROVED by their manager
+export const approvedByManagerIdTimesheet = async (id: number, managerId: number) => {
+    return await axios.put(`${baseUrl}timesheet/${id}/approve-by-manager/${managerId}`);
+}
+
+//9) update an employee's timesheet to UNAPPROVED
+export const unapproveTimesheet = async (id: number) => {
+  return await axios.put(`${baseUrl}timesheet/${id}/unapprove`);
+};
+
+//10) update the employee's timesheet hours
+export const updateHoursTimesheet = async (body: any) => {
+  return await axios.put(`${baseUrl}timesheet/update-hours`, body);
+};
+
+//11) delete the timesheet
+export const deleteTimesheet = async (id: number) => {
+  return await axios.delete(`${baseUrl}timesheet/delete/${id}`);
+};
+
+//Helper - byDate(), refer back to type on note about why date is a little weird in TS
+const toISODate = (d: string | Date) =>
+  typeof d === "string" ? d : d.toISOString().slice(0, 10);
+
+// ------------------------------------------------------------------
 //TIME OFF FUNCTIONS//
+
 //get all time off records
 export const getAllTimeOff = async() => 
 {
     return await axios.get(`${baseUrl}time-off`);
 }
 
+// ------------------------------------------------------------------
 //PAY STUB FUNCTIONS//
+
 //get all pay stub records
 export const getAllPayStub= async() => 
 {
