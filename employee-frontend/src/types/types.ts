@@ -26,7 +26,7 @@ export type payStubType = {
     fiscalYearFiscalWeekEnd: String,
     dateStart: Date,
     dateEnd: Date,
-    payStubDate: Date,
+    payStubDate: Date | null,
     totalRegularHours: number,
     totalOvertimeHours: number,
     totalTimeOffHours: number,

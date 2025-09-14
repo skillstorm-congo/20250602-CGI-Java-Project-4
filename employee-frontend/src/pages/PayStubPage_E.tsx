@@ -32,7 +32,7 @@ export const PayStubPage_E = () => {
                 fiscalYearFiscalWeekEnd: "202532",
                 dateStart: new Date("2025-08-11"),
                 dateEnd: new Date("2025-08-22"),
-                payStubDate: new Date("2025-09-02"),
+                payStubDate: null,
                 totalRegularHours: 40,
                 totalOvertimeHours: 5,
                 totalTimeOffHours: 0,
@@ -98,7 +98,7 @@ export const PayStubPage_E = () => {
                                             <td>{payStub.fiscalYearFiscalWeekEnd}</td>
                                             <td>{payStub.dateStart.toLocaleDateString()}</td>
                                             <td>{payStub.dateEnd.toLocaleDateString()}</td>
-                                            <td>{payStub.payStubDate.toLocaleDateString()}</td>
+                                            <td>{payStub.payStubDate ? payStub.payStubDate.toLocaleDateString(): null}</td>
                                             <td>{payStub.totalRegularHours}</td>
                                             <td>{payStub.totalOvertimeHours}</td>
                                             <td>{payStub.totalTimeOffHours}</td>

@@ -90,9 +90,9 @@ export const TimeOffPage_E = () => {
                                             <td>{timeOff.dateStart.toLocaleDateString()}</td>
                                             <td>{timeOff.dateEnd.toLocaleDateString()}</td>
                                             <td>{timeOff.comment}</td>
-                                            <td>{timeOff.approved ? timeOff.approved.toString() ?? null : null}</td>
+                                            <td>{timeOff.approved ? timeOff.approved.toString() : (timeOff.approved.toString() ?? null)}</td>
                                             <td>{timeOff.approvedDate ? timeOff.approvedDate.toLocaleDateString(): null}</td>
-                                            <td>{timeOff.submitted ? timeOff.submitted.toString() ?? "NULL" : null}</td>
+                                            <td>{timeOff.submitted ? timeOff.submitted.toString() : (timeOff.submitted.toString() ?? null)}</td>
                                             <td>{timeOff.submittedDate ? timeOff.submittedDate.toLocaleDateString(): null}</td>
                                         </tr>
                                     )
