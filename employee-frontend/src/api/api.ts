@@ -14,3 +14,17 @@ export const findAllTimesheets = async () => {
     // change the url after the base per service that matches the controller
     return await axios.get(`${baseUrl}timesheet`);
 }
+
+//TIME OFF FUNCTIONS//
+//get all time off records
+export const getAllTimeOff = async() => 
+{
+    return await axios.get(`${baseUrl}time-off`);
+}
+
+//PAY STUB FUNCTIONS//
+//get all pay stub records
+export const getAllPayStub= async() => 
+{
+    return await axios.get(`${baseUrl}pay-stub`);
+}
