@@ -1,16 +1,18 @@
 import { useState } from "react";
 import { useEffect } from "react";
-import { findByIdTimeOff, getAllTimeOff} from "../api/api";
 import type { timeOffType } from "../types/types";
 import { useNavigate, } from "react-router-dom";
 import { useForm, useFormState, type SubmitHandler } from "react-hook-form";
+import { getAllTimeOff, createTimeOff } from "../api/api";
 
 {/* To Do: 
-- fix the employee drop down function
-- fix onSubmit funciton , call on updateTimeOff
-- navigate to time off page
+- fix the employee drop down function -gtg
+- fix onSubmit funciton , call on updateTimeOff - pending CORS issue review with Jon 9.16.25
+- navigate to time off page - gtg
 - 'are you sure you want to submit/update request?'
-- 'clear' button
+- 'clear' button - gtg
+- check if all boxes are filled - gtg
+- quit button - gtg
 */}
 
 export const TimeOffCreatePage = () => {
@@ -19,10 +21,13 @@ export const TimeOffCreatePage = () => {
     const navigate = useNavigate();
 
     //variables for React Hook From
-    const { register, handleSubmit, formState: { errors } } = useForm<Inputs>({ mode: 'all'});
+    const { register, handleSubmit, formState: { errors } , reset} = useForm<Inputs>({ mode: 'all'});
+
+    // setting up some state to use with our error handling
+    const [ , setError ] = useState<string>('');
 
     //setting up local state for the Time Off Object we're going to send to the DB 
-    const [timeOff, setTimeOff] = useState<timeOffType>(
+    const [timeOffExample, setTimeOffExample] = useState<timeOffType>(
         {  
             id:  6,
             employeeId: 66,
@@ -39,8 +44,37 @@ export const TimeOffCreatePage = () => {
 
     );
 
-    //setting up local variables to get all time off records
-    const [timeOffs, setTimeOffs] = useState<timeOffType[]>();
+    //setting up local variables to get all time off records for unique list of employee ids and time off request ids
+    const [timeOffs, setTimeOffs] = useState<timeOffType[]>(
+        [  
+            {  
+                id: 6,
+                employeeId: 66,
+                fiscalYearFiscalWeekStart: "202544",
+                fiscalYearFiscalWeekEnd: "202544",
+                dateStart: "2025-10-30",
+                dateEnd: "2025-10-31",
+                comment: "Vacation",
+                approved: true,
+                approvedDate: null,
+                submitted: false,
+                submittedDate: null    
+            },
+            {
+                id: 666,
+                employeeId: 6666,
+                fiscalYearFiscalWeekStart: "202544",
+                fiscalYearFiscalWeekEnd: "202544",
+                dateStart: "2025-10-30",
+                dateEnd: "2025-10-31",
+                comment: "BBQ",
+                approved: false,
+                approvedDate: null,
+                submitted: true,
+                submittedDate: null   
+            }
+        ]
+    );
 
     //using our API method to retrieve all time off records
     function getTimeOffs() 
@@ -55,17 +89,57 @@ export const TimeOffCreatePage = () => {
     // running the API call when this component loads
     useEffect(() => {
         getTimeOffs();  
-        setTimeOff(timeOff); //see default value
+        setTimeOffExample(timeOffExample); //see default value
     }, [])
 
-        //setting up our React Hook Form
-    type Inputs = {
-
+    //setting up our React Hook Form
+    type Inputs = 
+    {
+        employeeId: number,
+        dateStart: string,
+        dateEnd: string,
+        comment: string,
+        submitted: boolean | null,
+        submittedDate: string | null 
     }
+
 
     //handles the form submission
     const onSubmit: SubmitHandler<Inputs> = formData =>
     {
+        console.log("We are in onSubmit - handles form submission")
+
+        //create a time off object to send to DB to create
+        //generate an time off record id
+        let newId = generateId(timeOffs);
+
+        //create a new time off object
+        const timeOff = 
+        {
+            id: newId,
+            employeeId:formData.employeeId,
+            dateStart: formData.dateStart,
+            dateEnd: formData.dateEnd,
+            comment: formData.comment,
+            submitted: formData.submitted,
+            submittedDate: formData.submittedDate
+        }
+
+        //check out in the console if the object is returning what is expected
+        console.log("New Time Off Object: " + JSON.stringify(timeOff, null, 2));
+
+        //create a new time off record
+        createTimeOff(timeOff)
+            .then(response => {
+                    console.log(response)
+
+                    //navigate to Time Off Page
+                    navigate('/time-off-e')
+                })
+                .catch(err => {console.log(err);
+                    if (err.status == 404)
+                        setError('Time Off Not Submitted')
+                    })
 
     }
 
@@ -103,16 +177,16 @@ export const TimeOffCreatePage = () => {
                     <tbody> 
                         {
                             
-                            <tr key={timeOff.id}>
-                                <Td>{timeOff.id}</Td>
-                                <Td>{timeOff.employeeId}</Td>
-                                <Td>{timeOff.fiscalYearFiscalWeekStart}</Td>
-                                <Td>{timeOff.fiscalYearFiscalWeekEnd}</Td>
-                                <Td>{timeOff.dateStart}</Td>
-                                <Td>{timeOff.dateEnd}</Td>
-                                <Td>{timeOff.comment}</Td>
-                                <Td>{checkMark(timeOff.approved)}</Td> 
-                                <Td>{checkMark(timeOff.submitted)}</Td>
+                            <tr key={timeOffExample.id}>
+                                <Td>{timeOffExample.id}</Td>
+                                <Td>{timeOffExample.employeeId}</Td>
+                                <Td>{timeOffExample.fiscalYearFiscalWeekStart}</Td>
+                                <Td>{timeOffExample.fiscalYearFiscalWeekEnd}</Td>
+                                <Td>{timeOffExample.dateStart}</Td>
+                                <Td>{timeOffExample.dateEnd}</Td>
+                                <Td>{timeOffExample.comment}</Td>
+                                <Td>{checkMark(timeOffExample.approved)}</Td> 
+                                <Td>{checkMark(timeOffExample.submitted)}</Td>
                             </tr>
                         }
 
@@ -129,44 +203,58 @@ export const TimeOffCreatePage = () => {
 
                 {/* employeeid will be deleted once user log in is configured */}
                 <label htmlFor = "employee id"> Employee Id: </label>
-                <select name = "employeeId" id = "employee id">
+                <select id = "employee id" {...register(`employeeId`)}>
                 { 
                     employeeDropDown(timeOffs).map(id => 
                     {
-                        return(<option>{id}</option>)
+                        return(<option key = {id}>{id}</option>)
                     })    
                 }
-                
                 </select>
                 <br></br><br></br>
 
                 <label htmlFor = "date start"> Date Start: </label>
-                <input type = "date" id = "date start" name = "dateStart"></input> 
+                <input type = "date" id = "date start" {...register(`dateStart`, {required: true})}></input> 
+                {errors.dateStart && <p style={{color: 'red'}}>Please Enter a Date Start</p>}
                 <br></br><br></br>
 
                 <label htmlFor = "date end"> Date End: </label> 
-                <input type = "date" id = "date end" name = "dateEnd"></input> 
+                <input type = "date" id = "date end" {...register(`dateEnd`, {required: true})}></input> 
+                {errors.dateEnd && <p style={{color: 'red'}}>Please Enter a Date End</p>}
                 <br></br><br></br>
 
                 <label htmlFor = "comment"> Comment: </label> 
-                <input type = "text" id = "comment" name = "comment" size = {100}></input>
+                <input type = "text" id = "comment" size = {100} {...register(`comment`, {required: true, maxLength:200})}></input>
+                {errors.comment && <p style={{color: 'red'}}>Please Enter a Comment, " " is valid</p>}
                 <br></br><br></br>
 
                 <label htmlFor = "submitted"> Check Box to Submit: </label>
-                <input type = "checkbox" id = "submitted" name = "submitted"></input> 
+                <input type = "checkbox" id = "submitted" {...register(`submitted`)}></input> 
                 <br></br><br></br>
 
                 <label htmlFor = "submitted date"> Submitted Date: </label>
-                <input type = "date" id = "submitted date" name = "submittedDate"></input> 
+                <input type = "date" id = "submitted date" {...register(`submittedDate`)}></input> 
                 <br></br><br></br>
 
-                {/* Submit button to Update Time Off Record */}
+                {/* Clear Button that resets the form*/}
                 <div style={{ marginTop: '50px', marginBottom: '50px' }}>
-                    <input style={{ backgroundColor: 'green', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '5px' }} type="submit" />
-                </div>
+                <button style={{ backgroundColor: 'yellow', color: 'black', padding: '10px 20px', border: 'none', borderRadius: '5px' , margin: '10px'}}
+                    type = "button"
+                    onClick={() => {reset({employeeId: 0, comment: "", dateEnd: "", dateStart: "", submittedDate: "", submitted:false});}} >
+                    Clear
+                </button>
+                    
+                {/* Submit button to Update Time Off Record */}
+                    <input style={{ backgroundColor: 'green', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '5px', margin: '10px' }} type="submit" />
+                </div>  
 
-            
+                        
             </form>
+
+            {/* using useNavigate here to take us to the home page */}
+            <br></br>
+            <button style={{ backgroundColor: 'red', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '5px' }} onClick={() => navigate(`/time-off-e`)}>Cancel</button>
+
             </div>
 
         </main>
@@ -226,10 +314,51 @@ function employeeDropDown(timeOffData :timeOffType[])
         
     } )
 
+    //add "0" for clear state
+    allIds.push(0);
+
     //get all unique ids in the array
     const uniqueIds = [...new Set(allIds)];
 
     return uniqueIds;
 }
+
+//HELPER FUNCTION - Time Off Ids NOT AVAILABLE
+function usedIds(timeOffData :timeOffType[])
+{
+    //set up an empty array
+    const allIds:number[] = [];
+
+    //add all employee id to an array
+    timeOffData.forEach(timeOff => 
+    {
+        allIds.push(timeOff.id);
+    } )
+
+    //get all unique ids in the array
+    const uniqueIds = [...new Set(allIds)];
+
+    return uniqueIds;
+}
+
+//HELPER FUNCTION - Generate a random postive integer for Time Off Id
+function generateId(timeOffs:timeOffType[])
+{
+    let valid = true;
+    let randomNum = 0;
+
+    do {
+        //generate a random positive integer, returns a random integer from 1 to 500:
+        randomNum = Math.floor(Math.random() * 500) + 1;
+
+        //get time off record ids that are NOT AVAILABLE, if new random number is in the list, generate new number
+        usedIds(timeOffs).includes(randomNum) ? valid=true : valid = false;
+        
+    }while(valid)
+
+    return randomNum;
+}
+
+
 
 

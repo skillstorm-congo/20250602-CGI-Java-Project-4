@@ -104,6 +104,15 @@ export const updateTimeOff = async (id: number) => {
     return await axios.put(`${baseUrl}time-off/${id}`);
 }
 
+//7) create a time off record by time off id
+export const createTimeOff = async (timeOff:object) => {
+    return await axios.post(`${baseUrl}time-off`, timeOff, {
+        headers: {
+            "Content-Type":"application/json"
+        }
+    });
+}
+
 // ------------------------------------------------------------------
 //PAY STUB FUNCTIONS//
 
