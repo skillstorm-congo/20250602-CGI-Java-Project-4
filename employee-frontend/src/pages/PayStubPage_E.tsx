@@ -3,11 +3,6 @@ import { useEffect } from "react";
 import { getAllPayStub, findByDatePayStub, findByEmployeeIdPayStub } from "../api/api";
 import type { payStubType} from "../types/types";
 
-//Tri-State-Select: "selected", "unselected", "somewhat selected or partial"
-//helpful in the for useState in the filters for constants submitted/approved
-type Tri = "any" | "true" | "false";
-
-
 export const PayStubPage_E = () => {
 
     //setting up local state for the Pay Stub Object we'll get from the DB 

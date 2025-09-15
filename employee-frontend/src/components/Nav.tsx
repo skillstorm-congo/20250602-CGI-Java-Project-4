@@ -9,6 +9,8 @@ export const Nav = () => {
 
             {<Link to={'/time-off-e'}>TimeOffPage_E</Link>}
             {<Link to={'/pay-stub-e'}>PayStubPage_E</Link>}
+            {<Link to={'/time-off-m'}>TimeOffPage_M</Link>}
+            {<Link to={'/pay-stub-m'}>PayStubPage_M</Link>}
         </nav>
     )
 

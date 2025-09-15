@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useEffect } from "react";
-import { getAllTimeOff, findByDateTimeOff, findByEmployeeIdTimeOff} from "../api/api";
+import { getAllTimeOff, findByDateTimeOff, findByEmployeeIdTimeOff, findByManagerIdTimeOff} from "../api/api";
 import type { timeOffType } from "../types/types";
 
 //Tri-State-Select: "selected", "unselected", "somewhat selected or partial"
 //helpful in the for useState in the filters for constants submitted/approved
 type Tri = "any" | "true" | "false";
 
-export const TimeOffPage_E = () => {
+export const TimeOffPage_M = () => {
 
     //setting up local state for the Time Off Object we'll get from the DB 
     const [timeOff, setTimeOff] = useState<timeOffType[]>(
@@ -49,6 +49,7 @@ export const TimeOffPage_E = () => {
     //CONSTANT - FILTER STATES for table: employeeId, managerId, date, submitted, approved
     //NOTE: will adjust for employee vs manager view, notice it's using "set" in the filters but not adding it to a record
     const [employeeId, setEmployeeId] = useState<string>("");
+    const [managerId, setManagerId] = useState<string>("");
     const [date, setDate] = useState<string>(""); // yyyy-mm-dd
     const [submitted, setSubmitted] = useState<Tri>("any");
     const [approved, setApproved] = useState<Tri>("any");
@@ -65,6 +66,8 @@ export const TimeOffPage_E = () => {
                 {response = await findByDateTimeOff(date);} 
                 else if (employeeId) 
                 {response = await findByEmployeeIdTimeOff(Number(employeeId));} 
+                else if (managerId) 
+                {response = await findByManagerIdTimeOff(Number(managerId));} 
                 else 
                 {response = await getAllTimeOff();}
 
@@ -98,6 +101,7 @@ export const TimeOffPage_E = () => {
     //FUNCTION 2 of 2: clearTableFilters() - clear filters and set to "empty" state
     function clearTableFilters() {
         setEmployeeId("");
+        setManagerId("0");
         setDate("");
         setSubmitted("any");
         setApproved("any");
@@ -123,10 +127,10 @@ export const TimeOffPage_E = () => {
     //html body
     return (
         <main>
-            <h1>Time Off Page Employee</h1>
+            <h1>Time Off Page Manager</h1>
             <p>A Time Off Request is created by an employee. These requests' state are: not submitted or submitted. If they have been submitted then their state are: not approved or approved.</p>
             <p>Only a manager can approve a time off and once a time off record has been submitted, an employee can no longer 'update' the request.</p>
-
+            
             {/*Begining of Table*/}
             <h2>Time Off Records</h2>
 
@@ -153,6 +157,19 @@ export const TimeOffPage_E = () => {
                     })
                         
                 }
+                </select>
+                </label>
+
+                <label>
+                <div>Manager ID</div>
+                <select
+                    value={managerId}
+                    onChange={(e) => setManagerId(e.target.value)}
+                >
+                <option>0</option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
                 </select>
                 </label>
 
