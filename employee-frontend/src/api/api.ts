@@ -74,7 +74,7 @@ export const getAllTimeOff = async() =>
     return await axios.get(`${baseUrl}time-off`);
 }
 
-//2) get all time off records by time off id
+//2) get a time off record by time off id
 export const findByIdTimeOff = async (id: number) => {
     return await axios.get(`${baseUrl}time-off/${id}`);
 }
@@ -92,6 +92,11 @@ export const findByManagerIdTimeOff= async (managerId: number) => {
 //5) get all time off records by a date /by-date?date=YYYY-MM-DD
 export const findByDateTimeOff = async (date: string | Date) => {
     return await axios.get(`${baseUrl}time-off/date`, {params: {date: toISODate(date)},});
+}
+
+//6) update a time off record by time off id
+export const updateTimeOff = async (id: number) => {
+    return await axios.put(`${baseUrl}time-off/${id}`);
 }
 
 // ------------------------------------------------------------------
