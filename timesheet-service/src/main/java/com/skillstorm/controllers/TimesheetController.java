@@ -85,8 +85,8 @@ public class TimesheetController {
 	
 	//PUT unapprove() 9 of 11
 	@PutMapping("/{id}/unapprove")
-	public Timesheet unapprove(@PathVariable int id) {
-		return svc.unapprove(id);
+	public Timesheet unapprove(@PathVariable int id, @PathVariable("managerId") int managerId) {
+		return svc.unapprove(id, managerId);
 	}
 	
 	//PUT updateHours() 10 of 11

@@ -11,6 +11,4 @@ public interface EmployeeServiceClient {
 	//find all employee records by manager id
 	@GetMapping("/employee/manager-id")
 	ResponseEntity<Iterable<Employee>> findByManagerId(@RequestParam(required=true) int managerId);
-	
-
 }

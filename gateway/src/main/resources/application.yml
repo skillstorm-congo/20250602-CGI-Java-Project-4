@@ -32,10 +32,6 @@ spring:
             uri: lb://employee-service
             predicates:
             - Path=/employee-service/**
-          - id: user-service-route
-            uri: lb://user-service
-            predicates:
-            - Path=/user-service/**
 
 # a typical/standard gateway port
 server:

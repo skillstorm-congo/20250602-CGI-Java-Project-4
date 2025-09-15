@@ -54,6 +54,8 @@ public class User implements UserDetails{
 
   @Column(name = "active_status", nullable = false)
   private boolean activeStatus;
+  
+  public User() {}
 
   public User(String username, String password, String role) {
 	  super();
