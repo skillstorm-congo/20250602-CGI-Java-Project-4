@@ -131,7 +131,7 @@ type UpdatableFields = Pick<
   | "timeOffHoursDay1" | "timeOffHoursDay2" | "timeOffHoursDay3" | "timeOffHoursDay4" | "timeOffHoursDay5"
 >;
 
-export type employeeType = {
+export type EmployeeType = {
     id: number,
     firstName: String,
     lastName: String,
@@ -140,12 +140,13 @@ export type employeeType = {
     managerId: number | null
 }
 
-export type userType = {
+// ------------------------------------------------------------------
+//USER-SERVICE/LOGIN related types
+
+//match my /user/employeeUser from user-service
+export type UserType = {
     id: number,
     employeeId: number,
     username: String,
-    password: String,
-    role: String,
-    activeStatus: Boolean
+    role: "USER" | "MANAGER" | "ADMIN" | string;
 }
-// ------------------------------------------------------------------

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,7 +35,7 @@ public class TimesheetController {
 
 	//GET findAll() 1 of 11
 	@GetMapping
-    public List<Timesheet> findAll() { return svc.getAll(); }
+    public ResponseEntity<List<Timesheet>> findAll() { return svc.getAll(); }
 
 	//GET findById() 2 of 11
 	@GetMapping("/{id}")

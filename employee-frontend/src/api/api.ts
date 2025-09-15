@@ -1,7 +1,12 @@
 import axios from "axios"
+import type { UserType } from "../types/types";
 
 //all local host 9000 from the gateway
 const baseUrl = 'http://localhost:9000/';
+const userBase = "http://localhost:17000";
+
+//Resource: Axios - https://axios-http.com/docs/req_config
+axios.defaults.withCredentials = true;
 
 // ------------------------------------------------------------------
 //TIMESHEET FUNCTIONS
@@ -122,3 +127,6 @@ export const findByManagerIdPayStub= async (managerId: number) => {
 export const findByDatePayStub= async (date: string | Date) => {
     return await axios.get(`${baseUrl}pay-stub/date`, {params: {date: toISODate(date)},});
 }
+
+// ------------------------------------------------------------------
+//USER FUNCTIONS

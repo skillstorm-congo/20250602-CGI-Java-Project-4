@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.skillstorm.clients.EmployeeServiceClient;
 import com.skillstorm.clients.UserServiceClient;
-import com.skillstorm.dtos.EmployeeUserDTO;
+
 import com.skillstorm.models.Employee;
 import com.skillstorm.models.Timesheet;
 import com.skillstorm.repositories.TimesheetRepository;
@@ -36,10 +37,10 @@ public class TimesheetService {
 		this.userServiceClient = userServiceClient;
 		}
 
-	public List<Timesheet> getAll() {
-	    List<Timesheet> out = new ArrayList<>();
+	public ResponseEntity<List<Timesheet>> getAll() {
+		List<Timesheet> out = new ArrayList<>();
 	    repo.findAll().forEach(out::add);
-	    return out;
+	    return ResponseEntity.ok(out); //go back to add more response entities
 	    }
 
 	public Timesheet get(int id) {
