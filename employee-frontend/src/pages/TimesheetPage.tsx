@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { TimesheetType } from "../types/types";
 import {findAllTimesheets, findByEmployeeIdTimesheet, findByManagerIdTimesheet, findByDateTimesheet} from "../api/api";
+import { Link } from "react-router-dom";
 
 /*-------------------------------------------------------------------------------------
 
@@ -116,7 +117,12 @@ useEffect(() => {loadTimesheetTable();}, []); //dependency array is empty bc it'
     return (
         <section style={{ padding: "1rem" }}>
 
-        <h1>Timesheets</h1>
+        <h1 style={{ display: "flex", alignItems: "center", gap: ".75rem" }}>
+            Timesheets
+            <Link to="/timesheet/new"><button>Create New Timesheet</button></Link>
+            <Link to="/timesheet/update"><button>Update Timesheet</button></Link>
+        </h1>
+        
 
         {/* SECTION: Filters above table */}
         <div
