@@ -20,48 +20,18 @@ public class SecurityConfiguration {
         // authorizeHttpRequests tells spring security how to handle incoming requests
         .authorizeHttpRequests((request) -> 
             request
-                .requestMatchers("/user/hello-world").permitAll()              // allow ALL requests to /users/hello-world, even without authentication
-                .requestMatchers("/user/private").authenticated()              // users MUST be authenticated to access this endpoint
+                .requestMatchers("/user/private").authenticated()              
                 .requestMatchers("/user/login").authenticated()              
-                .requestMatchers("/user/register").permitAll()                 // any new user can register
-                .requestMatchers("/user/register/admin").authenticated()       // only an authenticated user can become an admin
-                .requestMatchers("/user/employeeUser").authenticated()
-                //.requestMatchers(HttpMethod.POST, "/artists").hasAuthority("ROLE_ADMIN")  // does the same as above, but needs the formatted role as spring expects it to be
+                .requestMatchers("/user/register", "/user/login-status").permitAll()  
+                .requestMatchers("/user/register/admin").authenticated()       
         )
         
-        // tells Spring security to use Basic Authentication instead of formLogin
-        .httpBasic(basic -> {})      // sets default configuration 
-
-        // telling spring security to create a session when a request comes in that needs a session (like getting an XSRF-TOKEN)
+        .httpBasic(basic -> {})
         .sessionManagement(session -> 
-            session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-        )
-
-        /**
-         * Cross Site Request Forgery (CSRF)
-         *  when someone tries to get access to a server with your credentials when you ar already authenticated.
-         *  Spring Security auto-blocks any modifying requests (POST, PUT, DELETE) until this is handled
-         * 
-         * 
-         *  Spring uses Synchronizer Token Pattern to verify CSRF tokens
-         *      - when you do a GET request, spring will send you an XSRF-TOKEN
-         *      - they will be looking for an X-XSRF-TOKEN on subseequent requests
-         * 
-         *  HttpOnly 
-         *      a type of cookie that can only be accessed in HTTP requests
-         *      can NEVER be accessed in your browser or in your code
-         * 
-         *      in your frontend code, you NEED to access this token, and then transform it and send it in future requests
-         */
+            session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
         .csrf((csrf) -> 
-            // tells spring security how to send XSRF-TOKEN. it will automatically handle X-XSRF-TOKEN when you send that.
-            csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).ignoringRequestMatchers("/users/register")
+            csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).ignoringRequestMatchers("/user/register")
         );
-        // .csrf((csrf) -> 
-        //     csrf.disable()
-        // );
-
-
     return http.build();
 	  }
 	

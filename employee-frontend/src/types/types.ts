@@ -36,7 +36,9 @@ export type payStubType = {
 // ------------------------------------------------------------------
 //TIMESHEET related types
 
-//nullable types into columns -> T | null
+//https://www.typescriptlang.org/docs/handbook/advanced-types.html
+//Mapped types - take an existing type and make each of its properties optional
+//general version I called Nullable<type> = thatType "T" OR null 
 export type Nullable<T> = T | null
 
 //using primitive types (string, number, boolean)
@@ -112,7 +114,8 @@ export type CreateTimesheetPayload = {
     timeOffHoursDay5?: Nullable<number>;
 }
 
-//for my PUT updateHours() where employee pastes the JSON that needs
+//for my PUT updateHours() where employee pastes the JSON of key-value pairs into what's updateable
+// chunks of logging hours data sent to server when it can't be accessed normally using helper type
 // 1 - the timesheet id to update
 // 2 - the UpdateableFields or the JSON paste where nullable areas are there or can be empty from the ?:
 export type UpdateHoursPayload = {id: number} & Partial<UpdatableFields>;
