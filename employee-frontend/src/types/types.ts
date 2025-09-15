@@ -5,15 +5,15 @@
 export type timeOffType = {
     id: number,
     employeeId: number,
-    fiscalYearFiscalWeekStart: String
-    fiscalYearFiscalWeekEnd: String,
-    dateStart: Date,
-    dateEnd: Date,
-    comment: String,
-    approved: Boolean | null,
-    approvedDate: Date | null,
-    submitted: Boolean | null,
-    submittedDate: Date | null 
+    fiscalYearFiscalWeekStart: string
+    fiscalYearFiscalWeekEnd: string,
+    dateStart: string,
+    dateEnd: string,
+    comment: string,
+    approved: boolean | null,
+    approvedDate: string | null,
+    submitted: boolean | null,
+    submittedDate: string | null 
 }
 
 export type payStubType = {
@@ -22,11 +22,11 @@ export type payStubType = {
     employeeId: number,
     timesheetId1: number,
     timesheetId2: number,
-    fiscalYearFiscalWeekStart: String,
-    fiscalYearFiscalWeekEnd: String,
-    dateStart: Date,
-    dateEnd: Date,
-    payStubDate: Date | null,
+    fiscalYearFiscalWeekStart: string,
+    fiscalYearFiscalWeekEnd: string,
+    dateStart: string,
+    dateEnd: string,
+    payStubDate: string | null,
     totalRegularHours: number,
     totalOvertimeHours: number,
     totalTimeOffHours: number,

@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { useEffect } from "react";
-import { getAllTimeOff } from "../api/api";
+import { getAllTimeOff, findByDateTimeOff, findByEmployeeIdTimeOff} from "../api/api";
 import type { timeOffType } from "../types/types";
+
+//Tri-State-Select: "selected", "unselected", "somewhat selected or partial"
+//helpful in the for useState in the filters for constants submitted/approved
+type Tri = "any" | "true" | "false";
 
 export const TimeOffPage_E = () => {
 
@@ -13,8 +17,8 @@ export const TimeOffPage_E = () => {
                 employeeId: 66,
                 fiscalYearFiscalWeekStart: "202544",
                 fiscalYearFiscalWeekEnd: "202544",
-                dateStart: new Date("2025-10-30"),
-                dateEnd: new Date("2025-10-31"),
+                dateStart: "2025-10-30",
+                dateEnd: "2025-10-31",
                 comment: "Vacation",
                 approved: true,
                 approvedDate: null,
@@ -26,16 +30,78 @@ export const TimeOffPage_E = () => {
                 employeeId: 6666,
                 fiscalYearFiscalWeekStart: "202544",
                 fiscalYearFiscalWeekEnd: "202544",
-                dateStart: new Date("2025-10-30"),
-                dateEnd: new Date("2025-10-31"),
+                dateStart: "2025-10-30",
+                dateEnd: "2025-10-31",
                 comment: "BBQ",
                 approved: false,
                 approvedDate: null,
                 submitted: true,
                 submittedDate: null   
             }
-    ]
+        ]
     );
+
+    //CONSTANT - ROW-RECORD STATES for data being transfered for using TimesheetType 
+    //const [rows, setRows] = useState<TimesheetType[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    //CONSTANT - FILTER STATES for table: employeeId, managerId, date, submitted, approved
+    //NOTE: will adjust for employee vs manager view, notice it's using "set" in the filters but not adding it to a record
+    const [employeeId, setEmployeeId] = useState<string>("");
+    const [date, setDate] = useState<string>(""); // yyyy-mm-dd
+    const [submitted, setSubmitted] = useState<Tri>("any");
+    const [approved, setApproved] = useState<Tri>("any");
+
+    //FUNCTION 1 of 2: loadTimesheetTable() - will populate findAll() first then call endpoints from controller to filter
+    async function loadTimeOffTable() {
+        setLoading(true);
+        setError(null);
+
+        //the methods() come from the api.ts for filter constants date, managerId, employeeId
+        try {
+                let response;
+                if (date) 
+                {response = await findByDateTimeOff(date);} 
+                else if (employeeId) 
+                {response = await findByEmployeeIdTimeOff(Number(employeeId));} 
+                else 
+                {response = await getAllTimeOff();}
+
+                //assign the timesheetData with try{}'s response from the data that Axios pulled from endpoints
+                //this is what will will populate the table with the response data
+                let timeOffData: timeOffType[] = Array.isArray(response.data) ? response.data : []; 
+            
+                //SUBMITTED-filter Boolean Response (skip if it stays on "any") - Line 156
+                if (submitted !== "any") 
+                {
+                    const wantTrue = (submitted === "true"); //local constant for drop down menu to be a boolean/tri-type, if not "submitted" it'll be FALSE
+                    timeOffData = timeOffData.filter(t => (t.submitted === true) === wantTrue); //set time off field to a true response or checkmark when true
+                }
+                //APPROVED-filter Boolean Response (same logic as above) - Line 168
+                if (approved !== "any") 
+                {
+                    const wantTrue = (approved === "true");
+                    timeOffData = timeOffData.filter(t => (t.approved === true) === wantTrue);
+                }
+        
+                //the response from the filters updating rows of records/data with useState setRows
+                //need to catch errors incase time off can't load the data from db, for now any errors
+                setTimeOff(timeOffData);
+            }
+        catch (e: any) 
+        {setError("Failed to load time off");} 
+        finally {setLoading(false);}
+
+    }//end of loadTimeOfTable
+
+    //FUNCTION 2 of 2: clearTableFilters() - clear filters and set to "empty" state
+    function clearTableFilters() {
+        setEmployeeId("");
+        setDate("");
+        setSubmitted("any");
+        setApproved("any");
+    }
 
     //using our API method to retrieve all time off records
     function getTimeOff() 
@@ -49,31 +115,135 @@ export const TimeOffPage_E = () => {
 
     // running the API call when this component loads
     useEffect(() => {
-        getTimeOff();
+        loadTimeOffTable(); //new table with filters
+        //getTimeOff();  //original table 
+        //setTimeOff(timeOff); //see default values
     }, [])
 
-
+    //html body
     return (
         <main>
             <h1>Time Off Page Employee</h1>
             <p>A Time Off Request is created by an employee. These requests' state are: not submitted or submitted. If they have been submitted then their state are: not approved or approved.</p>
             
-            {/*Put table here of all time off records */}
+            {/*Begining of Table*/}
             <h2>Time Off Records</h2>
-            <table style= {{width:'500px'}} >
+
+            {/* SECTION: Filters above table */}
+            <div
+                style={{
+                display: "grid",
+                gap: ".75rem",
+                gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+                alignItems: "end",
+                marginBottom: "1rem",
+                }}
+            >
+                <label>
+                <div>Employee ID</div>
+                <select
+                    value={employeeId}
+                    onChange={(e) => setEmployeeId(e.target.value)}
+                >
+                { 
+                    employeeDropDown(timeOff).map(id => 
+                    {
+                        return(<option>{id}</option>)
+                    })
+                        
+                }
+                </select>
+                </label>
+
+                <label>
+                <div>Date</div>
+                <input
+                    type="date"
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                />
+                </label>
+
+                <label>
+                <div>Submitted</div> {/* Refer to lines 75-78*/}
+                <select
+                    value={submitted}
+                    onChange={(e) => setSubmitted(e.target.value as Tri)}
+                >
+                    {/* Refer to lines 34, 75-78*/}
+                    <option value="any">Any</option> 
+                    <option value="true">Submitted</option>
+                    <option value="false">Not submitted</option>
+                </select>
+                </label>
+
+                <label>
+                <div>Approved</div> {/* Refer to lines 80-83*/}
+                <select
+                    value={approved}
+                    onChange={(e) => setApproved(e.target.value as Tri)}
+                >
+                    {/* Refer to lines 34, 80-83*/}
+                    <option value="any">Any</option> 
+                    <option value="true">Approved</option>
+                    <option value="false">Not approved</option>
+                </select>
+                </label>
+
+                {/* BUTTONS */}
+                <div style={{ display: "flex", gap: ".5rem" }}>
+                    {/* Apply Button that calls function loadTimesheetTable()*/}
+                    <button onClick={loadTimeOffTable} disabled={loading}>
+                        {loading ? "Loading..." : "Apply filters"}
+                    </button>
+
+                    {/* Clear Button that calls function clearTableFilters()*/}
+                    <button onClick={() => {clearTableFilters(); getTimeOff();}}
+                        disabled={loading}
+                    >
+                        Clear
+                    </button>
+
+                    {/* See All Records Button that calls function loadTimesheetTable()*/}
+                    <button onClick={() => {getTimeOff();}} 
+                        disabled={loading}
+                    >
+                        See All Records
+                    </button>
+
+                </div>
+            </div>
+
+            {/* SECTION: Errors */}
+            {error && (
+                <div
+                style={{
+                    background: "#ffe6e6",
+                    border: "1px solid #ffb3b3",
+                    padding: ".75rem",
+                    marginBottom: "1rem",
+                }}
+                >
+                {error}
+                </div>
+            )}
+
+            {/* SECTION: TABLE*/}
+            <div style={{ overflowX: "auto" }}>
+                <table style={{
+                                width: "100%",
+                                borderCollapse: "collapse",
+                                minWidth: 1000,}} >
                     <thead>
                         <tr>
-                            <th> ID </th>
-                            <th>Employee Id</th>
-                            <th> Fiscal Year Fiscal Week Start </th>
-                            <th> Fiscal Year Fiscal Week End </th>
-                            <th> Date Start </th>
-                            <th> Date End </th>
-                            <th> Comment </th>
-                            <th> Approved</th>
-                            <th> Approved Date</th>
-                            <th> Submitted</th>
-                            <th> Submitted Date</th>
+                            <Th>Employee Id</Th>
+                            <Th> Fiscal Year Fiscal Week Start </Th>
+                            <Th> Fiscal Year Fiscal Week End </Th>
+                            <Th> Date Start </Th>
+                            <Th> Date End </Th>
+                            <Th> Comment </Th>
+                            <Th> Approved</Th>
+                            <Th> Submitted</Th>
                         </tr>
                     </thead>
 
@@ -83,31 +253,84 @@ export const TimeOffPage_E = () => {
                             {
                                 return(
                                         <tr key={timeOff.id}>
-                                            <td>{timeOff.id}</td>
-                                            <td>{timeOff.employeeId}</td>
-                                            <td>{timeOff.fiscalYearFiscalWeekStart}</td>
-                                            <td>{timeOff.fiscalYearFiscalWeekEnd}</td>
-                                            <td>{timeOff.dateStart.toLocaleDateString()}</td>
-                                            <td>{timeOff.dateEnd.toLocaleDateString()}</td>
-                                            <td>{timeOff.comment}</td>
-                                            <td>{timeOff.approved ? timeOff.approved.toString() : (timeOff.approved.toString() ?? null)}</td>
-                                            <td>{timeOff.approvedDate ? timeOff.approvedDate.toLocaleDateString(): null}</td>
-                                            <td>{timeOff.submitted ? timeOff.submitted.toString() : (timeOff.submitted.toString() ?? null)}</td>
-                                            <td>{timeOff.submittedDate ? timeOff.submittedDate.toLocaleDateString(): null}</td>
+                                            <Td>{timeOff.employeeId}</Td>
+                                            <Td>{timeOff.fiscalYearFiscalWeekStart}</Td>
+                                            <Td>{timeOff.fiscalYearFiscalWeekEnd}</Td>
+                                            <Td>{timeOff.dateStart}</Td>
+                                            <Td>{timeOff.dateEnd}</Td>
+                                            <Td>{timeOff.comment}</Td>
+                                            <Td>{checkMark(timeOff.approved)}</Td>
+                                            <Td>{checkMark(timeOff.submitted)}</Td>
                                         </tr>
                                     )
 
-                            }
-                        )
+                            })
                         
                         }
 
                     </tbody>
                 </table>
+        </div>
 
-        
-        
         </main>
     )
 
+} //end of const TimeOffPage_E
+
+
+//HELPER CONSTANT - table head
+const Th = (p: any) => (
+  <th
+    {...p}
+    style={{
+      textAlign: "left",
+      padding: ".2rem",
+      borderBottom: "2px solid #ccc",
+      background: "#babbbdff",
+      ...p.style,
+    }}
+  />
+);
+
+//HELPER CONSTANT - data/value
+const Td = (p: any) => (
+  <td
+    {...p}
+    style={{
+      padding: ".5rem",
+      borderBottom: "1px solid #eee",
+      ...p.style,
+    }}
+  />
+)
+
+//HELPER FUNCTION - flag()
+function checkMark(v: boolean | null | undefined) 
+{
+  //Unicode resource -- https://unicode.org/charts//PDF/Unicode-10.0/U100-2B00.pdf
+  if (v === true)
+  {return "\u2705";}
+  else if (v === false)
+  {return "\u274C";}
+
+ return  "";
+} 
+
+//HELPER FUNCTION - Employee Id Drop Down 
+function employeeDropDown(timeOffData :timeOffType[])
+{
+    //set up an empty array
+    const allIds:number[] = [];
+
+    //add all employee id to an array
+    timeOffData.forEach(timeOff => 
+    {
+        allIds.push(timeOff.employeeId);
+        
+    } )
+
+    //get all unique ids in the array
+    const uniqueIds = [...new Set(allIds)];
+
+    return uniqueIds;
 }

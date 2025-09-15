@@ -68,17 +68,57 @@ const toISODate = (d: string | Date) =>
 // ------------------------------------------------------------------
 //TIME OFF FUNCTIONS//
 
-//get all time off records
+//1) get all time off records
 export const getAllTimeOff = async() => 
 {
     return await axios.get(`${baseUrl}time-off`);
 }
 
+//2) get all time off records by time off id
+export const findByIdTimeOff = async (id: number) => {
+    return await axios.get(`${baseUrl}time-off/${id}`);
+}
+
+//3) get all time off records related to an employee by their Id
+export const findByEmployeeIdTimeOff = async (employeeId: number) => {
+    return await axios.get(`${baseUrl}time-off/employee-id`, {params: {employeeId},});
+}
+
+//4) get all time off records related to employees by the manager Id
+export const findByManagerIdTimeOff= async (managerId: number) => {
+    return await axios.get(`${baseUrl}time-off/manager-id`, {params: {managerId},});
+}
+
+//5) get all time off records by a date /by-date?date=YYYY-MM-DD
+export const findByDateTimeOff = async (date: string | Date) => {
+    return await axios.get(`${baseUrl}time-off/date`, {params: {date: toISODate(date)},});
+}
+
 // ------------------------------------------------------------------
 //PAY STUB FUNCTIONS//
 
-//get all pay stub records
+//1) get all pay stub records
 export const getAllPayStub= async() => 
 {
     return await axios.get(`${baseUrl}pay-stub`);
+}
+
+//2) get all pay stub records by pay stub id
+export const findByIdPayStub = async (id: number) => {
+    return await axios.get(`${baseUrl}pay-stub/${id}`);
+}
+
+//3) get all pay stub records related to an employee by their Id
+export const findByEmployeeIdPayStub = async (employeeId: number) => {
+    return await axios.get(`${baseUrl}pay-stub/employee-id`, {params: {employeeId},});
+}
+
+//4) get all pay stub records related to employees by the manager Id
+export const findByManagerIdPayStub= async (managerId: number) => {
+    return await axios.get(`${baseUrl}pay-stub/manager-id`, {params: {managerId},});
+}
+
+//5) get all pay stub records by a date /by-date?date=YYYY-MM-DD
+export const findByDatePayStub= async (date: string | Date) => {
+    return await axios.get(`${baseUrl}pay-stub/date`, {params: {date: toISODate(date)},});
 }
