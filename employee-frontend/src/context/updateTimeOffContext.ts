@@ -6,6 +6,9 @@ import { createContext } from "react";
 // here, we're typing the function AND giving it a default value
 // BE AWARE -- by typing it this way, 
 // we'll have to come back to this file if we add things to the context in Frame.tsx
-export const SubmissionContext = createContext('default value')
+//export const SubmissionContext = createContext('default value')
 
 //createContext<[string, (favorite: string) => void]>(['', () => {}]);
+
+//context for updating a time off record from time off view page
+export const updateTimeOffContext = createContext('default value')

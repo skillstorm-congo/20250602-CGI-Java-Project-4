@@ -2,12 +2,17 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { getAllTimeOff, findByDateTimeOff, findByEmployeeIdTimeOff} from "../api/api";
 import type { timeOffType } from "../types/types";
+import { useNavigate} from "react-router-dom";
+
 
 //Tri-State-Select: "selected", "unselected", "somewhat selected or partial"
 //helpful in the for useState in the filters for constants submitted/approved
 type Tri = "any" | "true" | "false";
 
 export const TimeOffPage_E = () => {
+
+    //setting up navigation to view a time off record
+    const navigate = useNavigate();
 
     //setting up local state for the Time Off Object we'll get from the DB 
     const [timeOff, setTimeOff] = useState<timeOffType[]>(
@@ -140,6 +145,17 @@ export const TimeOffPage_E = () => {
                 marginBottom: "1rem",
                 }}
             >
+                
+                {/* BUTTON */}
+                <div style={{ display: "flex", gap: ".5rem" }}>
+                    {/*Create a New Time Off Record */}
+                    <button onClick={() => navigate(`/time-off/create`)}
+                        disabled={loading}>
+                        Create a New Time Off Request
+                    </button>
+                    <br></br><br></br>
+                </div>
+
                 <label>
                 <div>Employee ID</div>
                 <select
@@ -211,9 +227,9 @@ export const TimeOffPage_E = () => {
                     >
                         See All Records
                     </button>
-
                 </div>
             </div>
+            
 
             {/* SECTION: Errors */}
             {error && (
@@ -237,6 +253,7 @@ export const TimeOffPage_E = () => {
                                 minWidth: 1000,}} >
                     <thead>
                         <tr>
+                            <Th>Id</Th>
                             <Th>Employee Id</Th>
                             <Th> Fiscal Year Fiscal Week Start </Th>
                             <Th> Fiscal Year Fiscal Week End </Th>
@@ -245,6 +262,7 @@ export const TimeOffPage_E = () => {
                             <Th> Comment </Th>
                             <Th> Approved</Th>
                             <Th> Submitted</Th>
+                            <Th> View Record</Th>
                         </tr>
                     </thead>
 
@@ -254,14 +272,26 @@ export const TimeOffPage_E = () => {
                             {
                                 return(
                                         <tr key={timeOff.id}>
+                                            <Td>{timeOff.id}</Td>
                                             <Td>{timeOff.employeeId}</Td>
                                             <Td>{timeOff.fiscalYearFiscalWeekStart}</Td>
                                             <Td>{timeOff.fiscalYearFiscalWeekEnd}</Td>
                                             <Td>{timeOff.dateStart}</Td>
                                             <Td>{timeOff.dateEnd}</Td>
                                             <Td>{timeOff.comment}</Td>
-                                            <Td>{checkMark(timeOff.approved)}</Td>
+                                            <Td>{checkMark(timeOff.approved)}</Td> 
                                             <Td>{checkMark(timeOff.submitted)}</Td>
+
+                                            <td data-label="Action">
+                                            {/*<a href={`/quizzes?quiz=${quiz.id}`} style={{ textDecoration: "none" }}>
+                                            {"\u279C"}
+                                            </a> */}
+                                            {/*Route:/quizzes?quiz=ID (matches our quiz api & route)*/}
+                                            <button onClick={() => navigate(`/time-off/${timeOff.id}`)}>
+                                            {"\u279C"} {/*needs to be in a literal string with the unicode escape, won't work like in sort arrows*/}
+                                            </button>
+                                        </td>
+                                            
                                         </tr>
                                     )
 
