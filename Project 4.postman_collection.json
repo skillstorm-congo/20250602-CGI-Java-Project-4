@@ -1334,6 +1334,145 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Private Data",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:17000/user/private",
+							"host": [
+								"localhost"
+							],
+							"port": "17000",
+							"path": [
+								"user",
+								"private"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "\t\n3aa7cf49-705e-4e0f-8d53-1c57cacc4a09",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "user10",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:17000/user/login",
+							"host": [
+								"localhost"
+							],
+							"port": "17000",
+							"path": [
+								"user",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "user10",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "password10",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost:17000/user/register",
+							"host": [
+								"localhost"
+							],
+							"port": "17000",
+							"path": [
+								"user",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Admin",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "user10",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "password10",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost:17000/user/register/admin",
+							"host": [
+								"localhost"
+							],
+							"port": "17000",
+							"path": [
+								"user",
+								"register",
+								"admin"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
