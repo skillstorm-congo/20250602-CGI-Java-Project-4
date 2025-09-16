@@ -104,7 +104,7 @@ export const updateTimeOffRecord = async (id: number) => {
     return await axios.put(`${baseUrl}time-off/${id}`);
 }
 
-//7) create a time off record by time off id
+//7) create a time off record 
 export const createTimeOff = async (timeOff:object) => {
     return await axios.post(`${baseUrl}time-off`, timeOff)
 }
@@ -148,5 +148,14 @@ export const deletePayStub = async (id:number) => {
     return await axios.delete(`${baseUrl}pay-stub/${id}`)
 }
 
+//7) create a pay stub record 
+export const createPayStub = async (payStub:object) => {
+    return await axios.post(`${baseUrl}pay-stub`, payStub)
+}
+
+//8) update a pay stub record by pay stub id
+export const updatePayStubRecord = async (id: number) => {
+    return await axios.put(`${baseUrl}pay-stub/${id}`);
+}
 // ------------------------------------------------------------------
 //USER FUNCTIONS

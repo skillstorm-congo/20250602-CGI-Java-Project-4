@@ -3,6 +3,8 @@ import { useEffect } from "react";
 import { findByIdPayStub, deletePayStub} from "../api/api";
 import type { payStubType} from "../types/types";
 import { useNavigate, useParams} from "react-router-dom";
+import { useContext } from "react";
+import { updatePayStubContext } from "../context/updatePayStubContext";
 
 
 
@@ -18,6 +20,9 @@ export const PayStubViewPage_M = () => {
     //used to route to view a time off record
     const navigate = useNavigate();
 
+    // we don't need the first element in the array (updateTimeOffContext), so we skip it!
+    const [ , setUpdatePayStub] = useContext(updatePayStubContext);
+    
     //setting up local state for the Time Off Object we'll get from the DB 
     const [payStub, setPayStub] = useState<payStubType>(
         {  
@@ -44,6 +49,7 @@ export const PayStubViewPage_M = () => {
         findByIdPayStub(payStub.id).then(response => 
             {
                 setPayStub(response.data);
+                setUpdatePayStub(response.data);
             }
             ).catch(err => {console.log(err);} )
     }

@@ -1,21 +1,29 @@
 import { useState } from "react";
 import { useEffect } from "react";
-import type { payStubType} from "../types/types";
-import { useNavigate, } from "react-router-dom";
+import { updatePayStubRecord, getAllPayStub} from "../api/api";
+import type { payStubType } from "../types/types";
+import { useNavigate} from "react-router-dom";
+import { updatePayStubContext } from "../context/updatePayStubContext";
+import { useContext } from "react";
 import { useForm, useFormState, type SubmitHandler } from "react-hook-form";
-import { createPayStub, getAllPayStub } from "../api/api";
 
 {/* To Do: 
-- fix onSubmit funciton , call on createPayStub - pending CORS issue review with Jon 9.16.25
+- fix onSubmit funciton , call on updatePayStubRecord - pending CORS issue review with Jon 9.16.25
 */}
 
-export const PayStubCreatePage_M = () => {
+
+export const PayStubUpdatePage = () => {
 
     //used to route to view a time off record
     const navigate = useNavigate();
 
+    // in this component, we're merely taking in a value from the context's state
+    // useContext(<context name>) pulls in the context
+    // we desconstruct the array to pull out what we want
+    const [ updatePayStub ] = useContext(updatePayStubContext);
+
     //variables for React Hook From
-    const { register, handleSubmit, formState: { errors } , reset} = useForm<Inputs>({ mode: 'all'});
+    const { register, handleSubmit, formState: { errors }, reset } = useForm<Inputs>({ mode: 'all'});
 
     // setting up some state to use with our error handling
     const [ , setError ] = useState<string>('');
@@ -32,11 +40,10 @@ export const PayStubCreatePage_M = () => {
     const handleInitialSubmit = () => {
         setShowConfirm(true);
     }
-
-    //setting up local state for the Pay Stub Object we're going to send to the DB 
-    const [payStubExample, setPayStubExample] = useState<payStubType>(
+    //setting up local state for the Pay Stub Object we'll get from the DB 
+    const [payStub, setPayStub] = useState<payStubType>(
         {  
-            id: 6,
+            id:  6,
             employeeId: 66,
             timesheetId1: 10,
             timesheetId2: 20,
@@ -48,7 +55,7 @@ export const PayStubCreatePage_M = () => {
             totalRegularHours: 45,
             totalOvertimeHours: 2,
             totalTimeOffHours: 0,
-            totalPaid: 5555.69
+            totalPaid: 5555.69  
         }
 
     );
@@ -89,7 +96,7 @@ export const PayStubCreatePage_M = () => {
             
         ]
     );
-
+    
     //using our API method to retrieve all time off records
     function getPayStubs() 
     {
@@ -102,12 +109,15 @@ export const PayStubCreatePage_M = () => {
 
     // running the API call when this component loads
     useEffect(() => {
-        getPayStubs();  
-        setPayStubExample(payStubExample); //see default value
-    }, [])
+        getPayStubs() 
+
+        //if updateTimeOff exists, set it on the page, else show default
+        if (updatePayStub)
+            setPayStub(updatePayStub);
+    }, [updatePayStub])
 
     //setting up our React Hook Form
-    type Inputs = 
+    type Inputs =
     {
         employeeId: number,
         timesheetId1: number,
@@ -122,36 +132,28 @@ export const PayStubCreatePage_M = () => {
     {
         console.log("We are in onSubmit - handles form submission")
 
-        //create a time off object to send to DB to create
-        //generate an time off record id
-        let newId = generateId(payStubs);
-
-        //create a new pay stub object
-        const payStub = 
-        {
-            id: newId,
-            employeeId: formData.employeeId,
-            timesheetId1: formData.timesheetId1,
-            timesheetId2: formData.timesheetId2,
-            dateStart: formData.dateStart,
-            dateEnd: formData.dateEnd,
-            payStubDate: formData.payStubDate,
-        }
-
+        //reset the pay stub object with new update
+        payStub.employeeId = formData.employeeId
+        payStub.timesheetId1 = formData.timesheetId1
+        payStub.timesheetId2 = formData.timesheetId2
+        payStub.dateStart = formData.dateStart
+        payStub.dateEnd = formData.dateEnd
+        payStub.payStubDate = formData.payStubDate
+        
         //check out in the console if the object is returning what is expected
         console.log("New Pay Stub Object: " + JSON.stringify(payStub, null, 2));
 
-        //create a new time off record
-        createPayStub(payStub)
+        //update the new time off record
+       updatePayStubRecord(payStub.id)
             .then(response => {
                     console.log(response)
 
                     //navigate to Time Off Page
-                    navigate('/pay-stub-m')
+                    navigate('/time-off-e')
                 })
                 .catch(err => {console.log(err);
                     if (err.status == 404)
-                        setError('Pay Stub Not Created')
+                        setError('Time Off Not Updated')
                     })
 
     }
@@ -159,11 +161,11 @@ export const PayStubCreatePage_M = () => {
     //html body
     return (
         <main>
-            <h1>Pay Stub Create Page</h1>
+            <h1>Pay Stub Update Page</h1>
             <p>A Pay Stub is created by a manager. The state is pay stub date. If pay stub date is null, pay stub has NOT been PAID OUT.</p>
 
             {/*Begining of Table*/}
-            <h2>Example of a Pay Stub Record</h2>
+            <h2>Pay Stub Record</h2>
 
             {/* SECTION: TABLE*/}
             <div style={{ overflowX: "auto" }}>
@@ -185,38 +187,37 @@ export const PayStubCreatePage_M = () => {
                             <Th> Total Overtime Hours</Th>
                             <Th> Total Time Off Hours</Th>
                             <Th> Total Paid</Th>
-                           
+                            
                         </tr>
                     </thead>
 
                     <tbody> 
                         {
-                            <tr key={payStubExample.id}>
-                                <Td>{payStubExample.employeeId}</Td>
-                                <Td>{payStubExample.timesheetId1}</Td>
-                                <Td>{payStubExample.timesheetId2}</Td>
-                                <Td>{payStubExample.fiscalYearFiscalWeekStart}</Td>
-                                <Td>{payStubExample.fiscalYearFiscalWeekEnd}</Td>
-                                <Td>{payStubExample.dateStart}</Td>
-                                <Td>{payStubExample.dateEnd}</Td>
-                                <Td>{payStubExample.payStubDate}</Td>
-                                <Td>{payStubExample.totalRegularHours}</Td>
-                                <Td>{payStubExample.totalOvertimeHours}</Td>
-                                <Td>{payStubExample.totalTimeOffHours}</Td>
-                                <Td>{payStubExample.totalPaid}</Td>
+                            <tr key={payStub.id}>
+                                <Td>{payStub.employeeId}</Td>
+                                <Td>{payStub.timesheetId1}</Td>
+                                <Td>{payStub.timesheetId2}</Td>
+                                <Td>{payStub.fiscalYearFiscalWeekStart}</Td>
+                                <Td>{payStub.fiscalYearFiscalWeekEnd}</Td>
+                                <Td>{payStub.dateStart}</Td>
+                                <Td>{payStub.dateEnd}</Td>
+                                <Td>{payStub.payStubDate}</Td>
+                                <Td>{payStub.totalRegularHours}</Td>
+                                <Td>{payStub.totalOvertimeHours}</Td>
+                                <Td>{payStub.totalTimeOffHours}</Td>
+                                <Td>{payStub.totalPaid}</Td>
                             </tr>
                         }
-
                     </tbody>
-                </table>
-        
-        </div> {/*End of Table*/}
+            </table>
+            </div>
+            {/*End of Table*/}
 
-           {/*Begining of Form*/}
+            {/*Begining of Form*/}
             <div> 
-            <h2>Create a Pay Stub Form</h2>
-            <form onSubmit={handleSubmit(handleInitialSubmit)}> {/* {handleSubmit(onSubmit)}> */}
-
+            <h2>Update a Pay Stub Form</h2>
+            <form onSubmit={handleSubmit(handleInitialSubmit)}>
+                
                 {/* employeeid will be deleted once user log in is configured */}
                 <label htmlFor = "employee id"> Employee Id: </label>
                 <select id = "employee id" {...register(`employeeId`)}>
@@ -255,36 +256,34 @@ export const PayStubCreatePage_M = () => {
 
                 {/* Clear Button that resets the form*/}
                 <div style={{ marginTop: '50px', marginBottom: '50px' }}>
-                <button style={{ backgroundColor: 'yellow', color: 'black', padding: '10px 20px', border: 'none', borderRadius: '5px' , margin: '10px'}}
-                    type = "button"
-                    onClick={() => {reset({employeeId: 0, timesheetId1: 0, timesheetId2: 0, dateEnd: "", dateStart: "", payStubDate: ""});}} >
-                    Clear
-                </button>
-                    
-                {/* Submit button to Update Time Off Record */}
+                    <button style={{ backgroundColor: 'yellow', color: 'black', padding: '10px 20px', border: 'none', borderRadius: '5px' , margin: '10px'}}
+                        type = "button"
+                        onClick={() => {reset({employeeId: 0, timesheetId1: 0, timesheetId2: 0, dateEnd: "", dateStart: "", payStubDate: ""});}} >
+                        Clear
+                    </button>
+                        
+                    {/* Submit button to Update Time Off Record */}
                     <input style={{ backgroundColor: 'green', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '5px', margin: '10px' }} type="submit" />
                 </div>  
 
                 {showConfirm && (
                     <div>
-                    <p>Are you sure you want to submit?</p>
-                    <button style={{ backgroundColor: 'orange', color: 'black', padding: '10px 20px', border: 'none', borderRadius: '5px' , margin: '10px'}}
-                            onClick={handleSubmit(onSubmit)}>Yes, Submit</button>
+                        <p>Are you sure you want to submit?</p>
+                        <button style={{ backgroundColor: 'orange', color: 'black', padding: '10px 20px', border: 'none', borderRadius: '5px' , margin: '10px'}}
+                                onClick={handleSubmit(onSubmit)}>Yes, Submit</button>
 
-                    <button style={{ backgroundColor: 'orange', color: 'black', padding: '10px 20px', border: 'none', borderRadius: '5px' , margin: '10px'}}
-                            onClick={handleCancelConfirm}>Cancel</button>
+                        <button style={{ backgroundColor: 'orange', color: 'black', padding: '10px 20px', border: 'none', borderRadius: '5px' , margin: '10px'}}
+                                onClick={handleCancelConfirm}>Cancel</button>
                     </div>
                 )}
-
-                        
             </form>
 
-            {/* using useNavigate here to take us to the home page */}
+             {/* using useNavigate here to take us to the pay stub manager page */}
             <br></br>
             <button style={{ backgroundColor: 'red', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '5px' }} onClick={() => navigate(`/pay-stub-m`)}>Cancel</button>
 
             </div>
-
+        
         </main>
     )
 
@@ -317,18 +316,6 @@ const Td = (p: any) => (
   />
 )
 
-//HELPER FUNCTION - flag()
-function checkMark(v: boolean | null | undefined) 
-{
-  //Unicode resource -- https://unicode.org/charts//PDF/Unicode-10.0/U100-2B00.pdf
-  if (v === true)
-  {return "\u2705";}
-  else if (v === false)
-  {return "\u274C";}
-
- return  "";
-} 
-
 //HELPER FUNCTION - Employee Id Drop Down 
 function employeeDropDown(data:payStubType[])
 {
@@ -350,43 +337,5 @@ function employeeDropDown(data:payStubType[])
 
     return uniqueIds;
 }
-
-//HELPER FUNCTION - Time Off Ids NOT AVAILABLE
-function usedIds(data:payStubType[])
-{
-    //set up an empty array
-    const allIds:number[] = [];
-
-    //add all employee id to an array
-    data.forEach(element => 
-    {
-        allIds.push(element.id);
-    } )
-
-    //get all unique ids in the array
-    const uniqueIds = [...new Set(allIds)];
-
-    return uniqueIds;
-}
-
-//HELPER FUNCTION - Generate a random postive integer for Time Off Id
-function generateId(data:payStubType[])
-{
-    let valid = true;
-    let randomNum = 0;
-
-    do {
-        //generate a random positive integer, returns a random integer from 1 to 500:
-        randomNum = Math.floor(Math.random() * 500) + 1;
-
-        //get time off record ids that are NOT AVAILABLE, if new random number is in the list, generate new number
-        usedIds(data).includes(randomNum) ? valid=true : valid = false;
-        
-    }while(valid)
-
-    return randomNum;
-}
-
-
 
 

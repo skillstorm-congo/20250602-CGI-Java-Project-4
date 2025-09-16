@@ -15,6 +15,7 @@ import { TimeOffViewPage_M } from './pages/TimeOffViewPage_M'
 import { TimeOffUpdatePage_M } from './pages/TimeOffUpdatePage_M'
 import { PayStubViewPage_M } from './pages/PayStubViewPage_M'
 import { PayStubCreatePage_M } from './pages/PayStubCreatePage_M'
+import { PayStubUpdatePage } from './pages/PayStubUpdatePage'
 
 function App() {
 
@@ -53,8 +54,11 @@ function App() {
           {/* Pay Stub View Page takes in a url paramater (id) to generate content on page*/}
           <Route path='pay-stub-m/:id' element={<PayStubViewPage_M />} />
 
-          {/* Pay stub Create Page*/}
+          {/* Pay Stub Create Page*/}
           <Route path='pay-stub-m/create' element={<PayStubCreatePage_M />} />
+
+          {/* Pay Stub Update Page*/}
+          <Route path='pay-stub-m/:id/update' element={<PayStubUpdatePage />} />
 
         </Route>
       </Routes>
