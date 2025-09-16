@@ -100,17 +100,18 @@ export const findByDateTimeOff = async (date: string | Date) => {
 }
 
 //6) update a time off record by time off id
-export const updateTimeOff = async (id: number) => {
+export const updateTimeOffRecord = async (id: number) => {
     return await axios.put(`${baseUrl}time-off/${id}`);
 }
 
 //7) create a time off record by time off id
 export const createTimeOff = async (timeOff:object) => {
-    return await axios.post(`${baseUrl}time-off`, timeOff, {
-        headers: {
-            "Content-Type":"application/json"
-        }
-    });
+    return await axios.post(`${baseUrl}time-off`, timeOff)
+}
+
+//8) delete a time off record by time off id
+export const deleteTimeOff = async (id:number) => {
+    return await axios.delete(`${baseUrl}time-off/${id}`)
 }
 
 // ------------------------------------------------------------------
@@ -140,6 +141,11 @@ export const findByManagerIdPayStub= async (managerId: number) => {
 //5) get all pay stub records by a date /by-date?date=YYYY-MM-DD
 export const findByDatePayStub= async (date: string | Date) => {
     return await axios.get(`${baseUrl}pay-stub/date`, {params: {date: toISODate(date)},});
+}
+
+//6) delete a pay stub record by time off id
+export const deletePayStub = async (id:number) => {
+    return await axios.delete(`${baseUrl}pay-stub/${id}`)
 }
 
 // ------------------------------------------------------------------

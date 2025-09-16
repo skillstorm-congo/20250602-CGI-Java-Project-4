@@ -1,21 +1,15 @@
 import { useState } from "react";
 import { useEffect } from "react";
-import type { timeOffType } from "../types/types";
+import type { payStubType, timeOffType } from "../types/types";
 import { useNavigate, } from "react-router-dom";
 import { useForm, useFormState, type SubmitHandler } from "react-hook-form";
 import { getAllTimeOff, createTimeOff } from "../api/api";
 
 {/* To Do: 
-- fix the employee drop down function -gtg
-- fix onSubmit funciton , call on updateTimeOff - pending CORS issue review with Jon 9.16.25
-- navigate to time off page - gtg
-- 'are you sure you want to submit/update request?' - gtg
-- 'clear' button - gtg
-- check if all boxes are filled - gtg
-- quit button - gtg
+- fix onSubmit funciton , call on createPayStub - pending CORS issue review with Jon 9.16.25
 */}
 
-export const TimeOffCreatePage = () => {
+export const PayStubCreatePage_M = () => {
 
     //used to route to view a time off record
     const navigate = useNavigate();
@@ -39,20 +33,22 @@ export const TimeOffCreatePage = () => {
         setShowConfirm(true);
     }
 
-    //setting up local state for the Time Off Object we're going to send to the DB 
-    const [timeOffExample, setTimeOffExample] = useState<timeOffType>(
+    //setting up local state for the Pay Stub Object we're going to send to the DB 
+    const [payStubExample, setPayStubExample] = useState<payStubType>(
         {  
-            id:  6,
+            id: 6,
             employeeId: 66,
-            fiscalYearFiscalWeekStart: "202544",
-            fiscalYearFiscalWeekEnd: "202544",
-            dateStart: "2025-10-30",
-            dateEnd: "2025-10-31",
-            comment: "Vacation",
-            approved: null,
-            approvedDate: null,
-            submitted: false,
-            submittedDate: null    
+            timesheetId1: 10,
+            timesheetId2: 20,
+            fiscalYearFiscalWeekStart: "202531",
+            fiscalYearFiscalWeekEnd: "202532",
+            dateStart: "2025-07-28",
+            dateEnd: "2025-08-08",
+            payStubDate: "2025-08-08", //null,
+            totalRegularHours: 45,
+            totalOvertimeHours: 2,
+            totalTimeOffHours: 0,
+            totalPaid: 5555.69
         }
 
     );
@@ -102,7 +98,7 @@ export const TimeOffCreatePage = () => {
     // running the API call when this component loads
     useEffect(() => {
         getTimeOffs();  
-        setTimeOffExample(timeOffExample); //see default value
+        setPayStubExample(payStubExample); //see default value
     }, [])
 
     //setting up our React Hook Form
@@ -159,12 +155,11 @@ export const TimeOffCreatePage = () => {
     //html body
     return (
         <main>
-            <h1>Time Off Create Page</h1>
-            <p>A Time Off Request is created by an employee. These requests' state are: not submitted or submitted. If they have been submitted then their state are: not approved or approved.</p>
-            <p>Only a manager can approve a time off and once a time off record has been submitted, an employee can no longer 'update' the request.</p>
+            <h1>Pay Stub Create Page</h1>
+            <p>A Pay Stub is created by a manager. The state is pay stub date. If pay stub date is null, pay stub has NOT been PAID OUT.</p>
 
             {/*Begining of Table*/}
-            <h2>Example of a Time Off Record</h2>
+            <h2>Example of a Pay Stub Record</h2>
 
             {/* SECTION: TABLE*/}
             <div style={{ overflowX: "auto" }}>
@@ -174,15 +169,18 @@ export const TimeOffCreatePage = () => {
                                 minWidth: 1000,}} >
                     <thead>
                         <tr>
-                            <Th>Id</Th>
-                            <Th>Employee Id</Th>
+                            <Th> Employee Id</Th>
+                            <Th> Time Sheet Id 1</Th>
+                            <Th> Time Sheet Id 2</Th>
                             <Th> Fiscal Year Fiscal Week Start </Th>
                             <Th> Fiscal Year Fiscal Week End </Th>
                             <Th> Date Start </Th>
                             <Th> Date End </Th>
-                            <Th> Comment </Th>
-                            <Th> Approved</Th>
-                            <Th> Submitted</Th>
+                            <Th> Pay Stub Date</Th>
+                            <Th> Total Regular Hours</Th>
+                            <Th> Total Overtime Hours</Th>
+                            <Th> Total Time Off Hours</Th>
+                            <Th> Total Paid</Th>
                            
                         </tr>
                     </thead>
@@ -190,16 +188,19 @@ export const TimeOffCreatePage = () => {
                     <tbody> 
                         {
                             
-                            <tr key={timeOffExample.id}>
-                                <Td>{timeOffExample.id}</Td>
-                                <Td>{timeOffExample.employeeId}</Td>
-                                <Td>{timeOffExample.fiscalYearFiscalWeekStart}</Td>
-                                <Td>{timeOffExample.fiscalYearFiscalWeekEnd}</Td>
-                                <Td>{timeOffExample.dateStart}</Td>
-                                <Td>{timeOffExample.dateEnd}</Td>
-                                <Td>{timeOffExample.comment}</Td>
-                                <Td>{checkMark(timeOffExample.approved)}</Td> 
-                                <Td>{checkMark(timeOffExample.submitted)}</Td>
+                            <tr key={payStubExample.id}>
+                                <Td>{payStubExample.employeeId}</Td>
+                                <Td>{payStubExample.timesheetId1}</Td>
+                                <Td>{payStubExample.timesheetId2}</Td>
+                                <Td>{payStubExample.fiscalYearFiscalWeekStart}</Td>
+                                <Td>{payStubExample.fiscalYearFiscalWeekEnd}</Td>
+                                <Td>{payStubExample.dateStart}</Td>
+                                <Td>{payStubExample.dateEnd}</Td>
+                                <Td>{payStubExample.payStubDate}</Td>
+                                <Td>{payStubExample.totalRegularHours}</Td>
+                                <Td>{payStubExample.totalOvertimeHours}</Td>
+                                <Td>{payStubExample.totalTimeOffHours}</Td>
+                                <Td>{payStubExample.totalPaid}</Td>
                             </tr>
                         }
 
@@ -210,9 +211,20 @@ export const TimeOffCreatePage = () => {
 
            {/*Begining of Form*/}
             <div> 
-            <h2>Create a Time Off Request Form</h2>
+            <h2>Create a Pay Stub Form</h2>
             <form onSubmit={handleSubmit(handleInitialSubmit)}> {/* {handleSubmit(onSubmit)}> */}
-                {/* employeeid, dateStart, dateEnd, comment, submitted, submittedDate */}
+                {/* 	
+                public PayStub(int id, int employeeId, int timesheetId1, Integer timesheetId2, LocalDate dateStart, LocalDate dateEnd, LocalDate payStubDate) {
+                super();
+                this.id = id;
+                this.employeeId = employeeId;
+                this.timesheetId1 = timesheetId1;
+                this.timesheetId2 = timesheetId2;
+                this.dateStart = dateStart;
+                this.dateEnd = dateEnd;
+                this.payStubDate = payStubDate;
+            }
+*/}
 
                 {/* employeeid will be deleted once user log in is configured */}
                 <label htmlFor = "employee id"> Employee Id: </label>

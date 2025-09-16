@@ -10,7 +10,7 @@ import { useContext } from "react";
 - call on deleteTimeOffRecord - pending CORS issue review with Jon 9.16.25
 */}
 
-export const TimeOffViewPage = () => {
+export const TimeOffViewPage_M = () => {
 
     //used to route to view a time off record
     const navigate = useNavigate();
@@ -69,7 +69,7 @@ export const TimeOffViewPage = () => {
     //html body
     return (
         <main>
-            <h1>Time Off View Page</h1>
+            <h1>Time Off View Page Manager</h1>
             <p>A Time Off Request is created by an employee. These requests' state are: not submitted or submitted. If they have been submitted then their state are: not approved or approved.</p>
             <p>Only a manager can approve a time off and once a time off record has been submitted, an employee can no longer 'update' the request.</p>
 
@@ -101,44 +101,42 @@ export const TimeOffViewPage = () => {
                     <tbody> 
                         {
                             
-                                        <tr key={timeOff.id}>
-                                            <Td>{timeOff.id}</Td>
-                                            <Td>{timeOff.employeeId}</Td>
-                                            <Td>{timeOff.fiscalYearFiscalWeekStart}</Td>
-                                            <Td>{timeOff.fiscalYearFiscalWeekEnd}</Td>
-                                            <Td>{timeOff.dateStart}</Td>
-                                            <Td>{timeOff.dateEnd}</Td>
-                                            <Td>{timeOff.comment}</Td>
-                                            <Td>{checkMark(timeOff.approved)}</Td> 
-                                            <Td>{checkMark(timeOff.submitted)}</Td>
+                            <tr key={timeOff.id}>
+                                <Td>{timeOff.id}</Td>
+                                <Td>{timeOff.employeeId}</Td>
+                                <Td>{timeOff.fiscalYearFiscalWeekStart}</Td>
+                                <Td>{timeOff.fiscalYearFiscalWeekEnd}</Td>
+                                <Td>{timeOff.dateStart}</Td>
+                                <Td>{timeOff.dateEnd}</Td>
+                                <Td>{timeOff.comment}</Td>
+                                <Td>{checkMark(timeOff.approved)}</Td> 
+                                <Td>{checkMark(timeOff.submitted)}</Td>
 
-                                            {/* if submitted is false or null, then the record can still be updated */}
-                                            <td data-label="Action">
-                                                { 
-                                                    timeOff.submitted ? 
-                                                        <button>{"\u{1F6D1}"}</button>
-                                                        : 
-                                                        <button onClick={() => navigate(`update`)}>{"\u279C"}</button>
-                                                }
-                                            
-                                            </td>
+                                {/* if approved is false or null and submitted is true, then the record can still be updated to approved */}
+                                <td data-label="Action">
+                                    { 
+                                        timeOff.submitted ? 
+                                            (timeOff.approved ? 
+                                            <button>{"\u{1F6D1}"}</button> : <button onClick={() => navigate(`update`)}>{"\u279C"}</button>)
+                                            : 
+                                            <button>{"\u{1F6D1}"}</button>
+                                    }
+                                
+                                </td>
 
-                                            {/* if submitted is false or null, then the record can still be deleted */}
-                                            <td data-label="Action">
-                                                { 
-                                                    timeOff.submitted ? 
-                                                        <button>{"\u{1F6D1}"}</button>
-                                                        : 
-                                                        <button onClick={() => deleteTimeOffRecord() }>{"\u279C"}</button>
-                                                }
-                                            
-                                            </td>
-                                            
-                                        </tr>
-                                    
-
-                            
-                        
+                                {/* if approved is false or null, then the record can still be deleted */}
+                                <td data-label="Action">
+                                    { 
+                                        timeOff.submitted ? 
+                                            (timeOff.approved ? 
+                                            <button>{"\u{1F6D1}"}</button> : <button onClick={() => deleteTimeOffRecord() }>{"\u279C"}</button>)
+                                            : 
+                                            <button>{"\u{1F6D1}"}</button>
+                                    }
+                                
+                                </td>
+                                
+                            </tr>
                         }
 
                     </tbody>
@@ -148,7 +146,7 @@ export const TimeOffViewPage = () => {
         </main>
     )
 
-} //end of const TimeOffPage_E
+} //end of const TimeOffViewPage_M
 
 
 //HELPER CONSTANT - table head

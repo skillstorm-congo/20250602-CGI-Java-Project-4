@@ -10,6 +10,11 @@ import { PayStubPage_M } from './pages/PayStubPage_M'
 import { TimeOffViewPage} from './pages/TimeOffViewPage'
 import { TimeOffUpdatePage} from './pages/TimeOffUpdatePage'
 import { TimeOffCreatePage} from './pages/TimeOffCreatePage'
+import { PayStubViewPage } from './pages/PayStubViewPage'
+import { TimeOffViewPage_M } from './pages/TimeOffViewPage_M'
+import { TimeOffUpdatePage_M } from './pages/TimeOffUpdatePage_M'
+import { PayStubViewPage_M } from './pages/PayStubViewPage_M'
+import { PayStubCreatePage_M } from './pages/PayStubCreatePage_M'
 
 function App() {
 
@@ -24,14 +29,32 @@ function App() {
           <Route path="time-off-m" element={<TimeOffPage_M />} />
           <Route path="pay-stub-m" element={<PayStubPage_M />} />
 
-           {/* Time Off View Page takes in a url paramater (id) to generate content on page*/}
-           <Route path='time-off/:id' element={<TimeOffViewPage />} />
+        
+          {/* Employee Pages */}
+          {/* Time Off View Page takes in a url paramater (id) to generate content on page*/}
+          <Route path='time-off/:id' element={<TimeOffViewPage />} />
 
-           {/* Time Off Update Page takes in an updateTimeOffContext to generate content on page from TimeOffViewPage*/}
-           <Route path='time-off/:id/update' element={<TimeOffUpdatePage />} />
+          {/* Time Off Update Page takes in an updateTimeOffContext to generate content on page from TimeOffViewPage*/}
+          <Route path='time-off/:id/update' element={<TimeOffUpdatePage />} />
 
-           {/* Time Off Create Page*/}
-           <Route path='time-off/create' element={<TimeOffCreatePage />} />
+          {/* Time Off Create Page*/}
+          <Route path='time-off/create' element={<TimeOffCreatePage />} />
+
+          {/* Pay Stub View Page takes in a url paramater (id) to generate content on page*/}
+          <Route path='pay-stub/:id' element={<PayStubViewPage />} />
+
+          {/* Mangager Pages */}
+          {/* Time Off View Page takes in a url paramater (id) to generate content on page*/}
+          <Route path='time-off-m/:id' element={<TimeOffViewPage_M />} />
+
+          {/* Time Off Update Page takes in an updateTimeOffContext to generate content on page from TimeOffViewPage*/}
+          <Route path='time-off-m/:id/update' element={<TimeOffUpdatePage_M />} />
+
+          {/* Pay Stub View Page takes in a url paramater (id) to generate content on page*/}
+          <Route path='pay-stub-m/:id' element={<PayStubViewPage_M />} />
+
+          {/* Pay stub Create Page*/}
+          <Route path='pay-stub-m/create' element={<PayStubCreatePage_M />} />
 
         </Route>
       </Routes>

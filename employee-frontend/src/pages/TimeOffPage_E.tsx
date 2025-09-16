@@ -135,6 +135,16 @@ export const TimeOffPage_E = () => {
             {/*Begining of Table*/}
             <h2>Time Off Records</h2>
 
+            {/* BUTTON */}
+            <div style={{ display: "flex", gap: ".5rem" }}>
+                {/*Create a New Time Off Record */}
+                <button onClick={() => navigate(`/time-off/create`)}
+                    disabled={loading}>
+                    Create a New Time Off Request
+                </button>
+            </div>
+            <br></br><br></br>
+
             {/* SECTION: Filters above table */}
             <div
                 style={{
@@ -146,16 +156,6 @@ export const TimeOffPage_E = () => {
                 }}
             >
                 
-                {/* BUTTON */}
-                <div style={{ display: "flex", gap: ".5rem" }}>
-                    {/*Create a New Time Off Record */}
-                    <button onClick={() => navigate(`/time-off/create`)}
-                        disabled={loading}>
-                        Create a New Time Off Request
-                    </button>
-                    <br></br><br></br>
-                </div>
-
                 <label>
                 <div>Employee ID</div>
                 <select
@@ -165,7 +165,7 @@ export const TimeOffPage_E = () => {
                 { 
                     employeeDropDown(timeOff).map(id => 
                     {
-                        return(<option>{id}</option>)
+                        return(<option key = {id}>{id}</option>)
                     })
                         
                 }
@@ -283,14 +283,10 @@ export const TimeOffPage_E = () => {
                                             <Td>{checkMark(timeOff.submitted)}</Td>
 
                                             <td data-label="Action">
-                                            {/*<a href={`/quizzes?quiz=${quiz.id}`} style={{ textDecoration: "none" }}>
-                                            {"\u279C"}
-                                            </a> */}
-                                            {/*Route:/quizzes?quiz=ID (matches our quiz api & route)*/}
                                             <button onClick={() => navigate(`/time-off/${timeOff.id}`)}>
-                                            {"\u279C"} {/*needs to be in a literal string with the unicode escape, won't work like in sort arrows*/}
+                                            {"\u279C"} 
                                             </button>
-                                        </td>
+                                            </td>
                                             
                                         </tr>
                                     )

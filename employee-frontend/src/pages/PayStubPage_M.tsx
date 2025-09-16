@@ -2,8 +2,12 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { getAllPayStub, findByDatePayStub, findByEmployeeIdPayStub, findByManagerIdPayStub } from "../api/api";
 import type { payStubType} from "../types/types";
+import { useNavigate} from "react-router-dom";
 
 export const PayStubPage_M = () => {
+
+    //setting up navigation to view a time off record
+    const navigate = useNavigate();
 
     //setting up local state for the Pay Stub Object we'll get from the DB 
     const [payStub, setPayStub] = useState<payStubType[]>(
@@ -126,6 +130,15 @@ export const PayStubPage_M = () => {
             {/*Begining of Table */}
             <h2>Pay Stub Records</h2>
 
+            {/* BUTTON */}
+            <div style={{ display: "flex", gap: ".5rem" }}>
+                {/*Create a New Pay Stub Record */}
+                <button onClick={() => navigate(`/pay-stub-m/create`)}>
+                    Create a New Pay Stub
+                </button>
+            </div>
+            <br></br>
+
             {/* SECTION: Filters above table */}
             <div
                 style={{
@@ -145,7 +158,7 @@ export const PayStubPage_M = () => {
                 { 
                     employeeDropDown(payStub).map(id => 
                     {
-                        return(<option>{id}</option>)
+                        return(<option key = {id}>{id}</option>)
                     })
                         
                 }
@@ -246,6 +259,7 @@ export const PayStubPage_M = () => {
                             <Th> Total Overtime Hours</Th>
                             <Th> Total Time Off Hours</Th>
                             <Th> Total Paid</Th> */}
+                            <Th> View Record</Th>
                         </tr>
                     </thead>
 
@@ -267,6 +281,12 @@ export const PayStubPage_M = () => {
                                             <Td>{payStub.totalOvertimeHours}</Td>
                                             <Td>{payStub.totalTimeOffHours}</Td>
                                             <Td>{payStub.totalPaid}</Td> */}
+
+                                            <td data-label="Action">
+                                            <button onClick={() => navigate(`/pay-stub-m/${payStub.id}`)}>
+                                            {"\u279C"} 
+                                            </button>
+                                            </td>
                                         </tr>
                                     )
 

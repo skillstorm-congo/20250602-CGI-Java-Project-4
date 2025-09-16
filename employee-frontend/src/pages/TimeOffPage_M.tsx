@@ -2,12 +2,16 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { getAllTimeOff, findByDateTimeOff, findByEmployeeIdTimeOff, findByManagerIdTimeOff} from "../api/api";
 import type { timeOffType } from "../types/types";
+import { useNavigate} from "react-router-dom";
 
 //Tri-State-Select: "selected", "unselected", "somewhat selected or partial"
 //helpful in the for useState in the filters for constants submitted/approved
 type Tri = "any" | "true" | "false";
 
 export const TimeOffPage_M = () => {
+
+    //setting up navigation to view a time off record
+    const navigate = useNavigate();
 
     //setting up local state for the Time Off Object we'll get from the DB 
     const [timeOff, setTimeOff] = useState<timeOffType[]>(
@@ -153,7 +157,7 @@ export const TimeOffPage_M = () => {
                 { 
                     employeeDropDown(timeOff).map(id => 
                     {
-                        return(<option>{id}</option>)
+                        return(<option key = {id}>{id}</option>)
                     })
                         
                 }
@@ -262,6 +266,7 @@ export const TimeOffPage_M = () => {
                             <Th> Comment </Th>
                             <Th> Approved</Th>
                             <Th> Submitted</Th>
+                            <Th> View Record</Th>
                         </tr>
                     </thead>
 
@@ -279,6 +284,12 @@ export const TimeOffPage_M = () => {
                                             <Td>{timeOff.comment}</Td>
                                             <Td>{checkMark(timeOff.approved)}</Td>
                                             <Td>{checkMark(timeOff.submitted)}</Td>
+
+                                            <td data-label="Action">
+                                            <button onClick={() => navigate(`/time-off-m/${timeOff.id}`)}>
+                                            {"\u279C"} 
+                                            </button>
+                                            </td>
                                         </tr>
                                     )
 

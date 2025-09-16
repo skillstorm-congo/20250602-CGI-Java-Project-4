@@ -15,7 +15,7 @@ import { useForm, useFormState, type SubmitHandler } from "react-hook-form";
 */}
 
 
-export const TimeOffUpdatePage = () => {
+export const TimeOffUpdatePage_M = () => {
 
     //used to route to view a time off record
     const navigate = useNavigate();
@@ -71,11 +71,8 @@ export const TimeOffUpdatePage = () => {
     //setting up our React Hook Form
     type Inputs =
     {
-        dateStart: string,
-        dateEnd: string,
-        comment: string,
-        submitted: boolean | null,
-        submittedDate: string | null 
+        approved: boolean | null,
+        approvedDate: string | null 
     }
 
     //handles the form submission
@@ -84,12 +81,8 @@ export const TimeOffUpdatePage = () => {
         console.log("We are in onSubmit - handles form submission")
 
         //reset the time off object with new update
-        timeOff.dateStart = formData.dateStart
-        timeOff.dateEnd = formData.dateEnd
-        timeOff.comment = formData.comment
-        timeOff.submitted = formData.submitted
-        timeOff.submittedDate = formData.submittedDate
-        
+        timeOff.approved = formData.approved
+        timeOff.approvedDate= formData.approvedDate
         
         //check out in the console if the object is returning what is expected
         console.log("New Time Off Object: " + JSON.stringify(timeOff, null, 2));
@@ -100,7 +93,7 @@ export const TimeOffUpdatePage = () => {
                     console.log(response)
 
                     //navigate to Time Off Page
-                    navigate('/time-off-e')
+                    navigate('/time-off-m')
                 })
                 .catch(err => {console.log(err);
                     if (err.status == 404)
@@ -164,35 +157,22 @@ export const TimeOffUpdatePage = () => {
             <div> 
             <h2>Update a Time Off Request Form</h2>
             <form onSubmit={handleSubmit(handleInitialSubmit)}>
-                {/* dateStart, dateEnd, comment, submitted, submittedDate */}
-                <label htmlFor = "date start"> Date Start: </label>
-                <input type = "date" id = "date start" {...register(`dateStart`, {required: true})}></input> 
-                {errors.dateStart && <p style={{color: 'red'}}>Please Enter a Date Start</p>}
+                
+                <label htmlFor = "approved"> Check Box to Approve: </label>
+                <input type = "checkbox" id = "approved" {...register(`approved`, {required: true})}></input> 
+                {errors.approved && <p style={{color: 'red'}}>Please Check the box</p>}
                 <br></br><br></br>
 
-                <label htmlFor = "date end"> Date End: </label> 
-                <input type = "date" id = "date end" {...register(`dateEnd`, {required: true})}></input> 
-                {errors.dateEnd && <p style={{color: 'red'}}>Please Enter a Date End</p>}
-                <br></br><br></br>
-
-                <label htmlFor = "comment"> Comment: </label> 
-                <input type = "text" id = "comment" size = {100} {...register(`comment`, {required: true, maxLength:200})}></input>
-                {errors.comment && <p style={{color: 'red'}}>Please Enter a Comment, " " is valid</p>}
-                <br></br><br></br>
-
-                <label htmlFor = "submitted"> Check Box to Submit: </label>
-                <input type = "checkbox" id = "submitted" {...register(`submitted`)}></input> 
-                <br></br><br></br>
-
-                <label htmlFor = "submitted date"> Submitted Date: </label>
-                <input type = "date" id = "submitted date" {...register(`submittedDate`)}></input> 
+                <label htmlFor = "approved date"> Approved Date: </label>
+                <input type = "date" id = "approved date" {...register(`approvedDate`, {required: true})}></input> 
+                {errors.approvedDate && <p style={{color: 'red'}}>Please Enter an Approved Date</p>}
                 <br></br><br></br>
 
                 {/* Clear Button that resets the form*/}
                 <div style={{ marginTop: '50px', marginBottom: '50px' }}>
                     <button style={{ backgroundColor: 'yellow', color: 'black', padding: '10px 20px', border: 'none', borderRadius: '5px' , margin: '10px'}}
                         type = "button"
-                        onClick={() => {reset({comment: "", dateEnd: "", dateStart: "", submittedDate: "", submitted:false});}} >
+                        onClick={() => {reset({approvedDate: "", approved:false});}} >
                         Clear
                     </button>
                         

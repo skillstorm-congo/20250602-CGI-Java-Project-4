@@ -2,8 +2,12 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { getAllPayStub, findByDatePayStub, findByEmployeeIdPayStub } from "../api/api";
 import type { payStubType} from "../types/types";
+import { useNavigate} from "react-router-dom";
 
 export const PayStubPage_E = () => {
+
+    //setting up navigation to view a time off record
+    const navigate = useNavigate();
 
     //setting up local state for the Pay Stub Object we'll get from the DB 
     const [payStub, setPayStub] = useState<payStubType[]>(
@@ -142,7 +146,7 @@ export const PayStubPage_E = () => {
                 { 
                     employeeDropDown(payStub).map(id => 
                     {
-                        return(<option>{id}</option>)
+                        return(<option key = {id}>{id}</option>)
                     })
                         
                 }
@@ -230,6 +234,7 @@ export const PayStubPage_E = () => {
                             <Th> Total Overtime Hours</Th>
                             <Th> Total Time Off Hours</Th>
                             <Th> Total Paid</Th> */}
+                            <Th> View Record</Th>
                         </tr>
                     </thead>
 
@@ -251,6 +256,13 @@ export const PayStubPage_E = () => {
                                             <Td>{payStub.totalOvertimeHours}</Td>
                                             <Td>{payStub.totalTimeOffHours}</Td>
                                             <Td>{payStub.totalPaid}</Td> */}
+
+                                            <td data-label="Action">
+                                            <button onClick={() => navigate(`/pay-stub/${payStub.id}`)}>
+                                            {"\u279C"} 
+                                            </button>
+                                            </td>
+
                                         </tr>
                                     )
 
