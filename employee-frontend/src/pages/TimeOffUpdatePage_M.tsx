@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { updateTimeOffRecord } from "../api/api";
 import type { timeOffType } from "../types/types";
 import { useNavigate} from "react-router-dom";
-import { updateTimeOffContext } from "../context/UpdateTimeOffContext";
+import { UpdateTimeOffContext} from "../context/UpdateTimeOffContext";
 import { useContext } from "react";
 import { useForm, useFormState, type SubmitHandler } from "react-hook-form";
 
@@ -23,7 +23,7 @@ export const TimeOffUpdatePage_M = () => {
     // in this component, we're merely taking in a value from the context's state
     // useContext(<context name>) pulls in the context
     // we desconstruct the array to pull out what we want
-    const [ updateTimeOff ] = useContext(updateTimeOffContext);
+    const updateTimeOff = useContext(UpdateTimeOffContext)?.updateTimeOff;
 
     //variables for React Hook From
     const { register, handleSubmit, formState: { errors }, reset } = useForm<Inputs>({ mode: 'all'});
