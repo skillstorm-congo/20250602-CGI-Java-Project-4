@@ -5,22 +5,15 @@ import type { payStubType } from "../types/types";
 import { useNavigate} from "react-router-dom";
 import { UpdatePayStubContext } from "../context/UpdatePayStubContext";
 import { useContext } from "react";
-import { useForm, useFormState, type SubmitHandler } from "react-hook-form";
+import { useForm, type SubmitHandler } from "react-hook-form";
 
-{/* To Do: 
-- fix onSubmit funciton , call on updatePayStubRecord - pending CORS issue review with Jon 9.16.25
-*/}
-
+// To Do:
+// - fix date start < date end line 239 validate: .....
 
 export const PayStubUpdatePage = () => {
 
     //used to route to view a time off record
     const navigate = useNavigate();
-
-    // in this component, we're merely taking in a value from the context's state
-    // useContext(<context name>) pulls in the context
-    // we desconstruct the array to pull out what we want
-    const updatePayStub = useContext(UpdatePayStubContext)?.updatePayStub;
 
     //variables for React Hook From
     const { register, handleSubmit, formState: { errors }, reset } = useForm<Inputs>({ mode: 'all'});
@@ -107,13 +100,14 @@ export const PayStubUpdatePage = () => {
             ).catch(err => {console.log(err);} )
     }
 
+    // in this component, we're merely taking in a value from the context's state
+    // if updatePayStub is undefined, set it to default value of payStub
+    const updatePayStub = useContext(UpdatePayStubContext)?.updatePayStub ?? payStub;
+
     // running the API call when this component loads
     useEffect(() => {
         getPayStubs() 
-
-        //if updatePayStub exists, set it on the page, else show default
-        if (updatePayStub)
-            setPayStub(updatePayStub);
+        setPayStub(updatePayStub);
     }, [updatePayStub])
 
     //setting up our React Hook Form
@@ -133,27 +127,27 @@ export const PayStubUpdatePage = () => {
         console.log("We are in onSubmit - handles form submission")
 
         //reset the pay stub object with new update
-        payStub.employeeId = formData.employeeId
-        payStub.timesheetId1 = formData.timesheetId1
-        payStub.timesheetId2 = formData.timesheetId2
-        payStub.dateStart = formData.dateStart
-        payStub.dateEnd = formData.dateEnd
+        payStub.employeeId = formData.employeeId || payStub.employeeId
+        payStub.timesheetId1 = formData.timesheetId1 || payStub.timesheetId1
+        payStub.timesheetId2 = formData.timesheetId2 || payStub.timesheetId2
+        payStub.dateStart = formData.dateStart || payStub.dateStart
+        payStub.dateEnd = formData.dateEnd || payStub.dateEnd
         payStub.payStubDate = formData.payStubDate
         
         //check out in the console if the object is returning what is expected
         console.log("New Pay Stub Object: " + JSON.stringify(payStub, null, 2));
 
         //update the new time off record
-       updatePayStubRecord(payStub.id)
+        updatePayStubRecord(payStub.id, payStub)
             .then(response => {
                     console.log(response)
 
-                    //navigate to Time Off Page
-                    navigate('/time-off-e')
+                    //navigate to Pay Stub Page Manager
+                    navigate('/pay-stub-m')
                 })
                 .catch(err => {console.log(err);
                     if (err.status == 404)
-                        setError('Time Off Not Updated')
+                        setError('Pay Stub Not Updated')
                     })
 
     }
@@ -218,7 +212,7 @@ export const PayStubUpdatePage = () => {
             <h2>Update a Pay Stub Form</h2>
             <form onSubmit={handleSubmit(handleInitialSubmit)}>
                 
-                {/* employeeid will be deleted once user log in is configured */}
+                {/* employeeid will be deleted once user log in is configured, use defaultValue = {updatePayStub.employeeId} for employee id box*/}
                 <label htmlFor = "employee id"> Employee Id: </label>
                 <select id = "employee id" {...register(`employeeId`)}>
                 { 
@@ -231,22 +225,23 @@ export const PayStubUpdatePage = () => {
                 <br></br><br></br>
 
                 <label htmlFor = "time sheet id 1"> Time Sheet Id 1: </label> 
-                <input type = "text" id = "time sheet id 1" size = {100} {...register(`timesheetId1`, {required: true, maxLength:200})}></input>
+                <input type = "text" id = "time sheet id 1" size = {100} defaultValue = {updatePayStub.timesheetId1} {...register(`timesheetId1`, {required: true, maxLength:200})}></input>
                 {errors.timesheetId1 && <p style={{color: 'red'}}>Please Enter a Time Sheet Id</p>}
                 <br></br><br></br>
 
                 <label htmlFor = "time sheet id 2"> Time Sheet Id 2: </label> 
-                <input type = "text" id = "time sheet id 2" size = {100} {...register(`timesheetId2`, {required: false, maxLength:200})}></input>
+                <input type = "text" id = "time sheet id 2" size = {100} defaultValue = {updatePayStub.timesheetId2} {...register(`timesheetId2`, {required: false, maxLength:200})}></input>
                 {errors.timesheetId2 && <p style={{color: 'red'}}>Please Enter a Time Sheet Id</p>}
                 <br></br><br></br>
 
                 <label htmlFor = "date start"> Date Start: </label>
-                <input type = "date" id = "date start" {...register(`dateStart`, {required: true})}></input> 
-                {errors.dateStart && <p style={{color: 'red'}}>Please Enter a Date Start</p>}
+                <input type = "date" id = "date start" defaultValue = {updatePayStub.dateStart} {...register(`dateStart`, 
+                    {required: true, validate: () => `dateStart` < `dateEnd` })}></input> 
+                {errors.dateStart && <p style={{color: 'red'}}>Please Enter a Date Start or it needs to be Less Than or Equal To Date End</p>}
                 <br></br><br></br>
 
                 <label htmlFor = "date end"> Date End: </label> 
-                <input type = "date" id = "date end" {...register(`dateEnd`, {required: true})}></input> 
+                <input type = "date" id = "date end" defaultValue = {updatePayStub.dateEnd} {...register(`dateEnd`, {required: true})}></input> 
                 {errors.dateEnd && <p style={{color: 'red'}}>Please Enter a Date End</p>}
                 <br></br><br></br>
 

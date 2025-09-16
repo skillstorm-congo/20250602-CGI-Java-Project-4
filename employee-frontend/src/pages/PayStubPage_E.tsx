@@ -54,17 +54,19 @@ export const PayStubPage_E = () => {
     //NOTE: will adjust for employee vs manager view, notice it's using "set" in the filters but not adding it to a record
     const [employeeId, setEmployeeId] = useState<string>("");
     const [date, setDate] = useState<string>(""); // yyyy-mm-dd
-    const [payStubDate, setPayStubDate] = useState<string>(""); //<Tri>("any");
+    const [payStubDate, setPayStubDate] = useState<string>(""); 
 
 
-    //FUNCTION 1 of 2: loadTimesheetTable() - will populate findAll() first then call endpoints from controller to filter
+    //FUNCTION 1 of 2: loadPayStubTable() - will populate findAll() first then call endpoints from controller to filter
     async function loadPayStubTable() {
+        console.log("in loadPayStubTable()")
         setLoading(true);
         setError(null);
 
         //the methods() come from the api.ts for filter constants date, managerId, employeeId
         try {
                 let response;
+
                 if (date) 
                 {response = await findByDatePayStub(date);} 
                 else if (employeeId) 
@@ -72,17 +74,17 @@ export const PayStubPage_E = () => {
                 else 
                 {response = await getAllPayStub();}
 
-                //assign the timesheetData with try{}'s response from the data that Axios pulled from endpoints
+                //assign the payStubData with try{}'s response from the data that Axios pulled from endpoints
                 //this is what will will populate the table with the response data
                 let payStubData: payStubType[] = Array.isArray(response.data) ? response.data : []; 
-            
-                //Pay Stub Date-filter Boolean Response (skip if it stays on "any") - Line 156
-                if (payStubDate !== "All") 
+
+                //Pay Stub Date-filter 
+                if (payStubDate) // if it is not null 
                 {
                     const wantTrue = (payStubDate === "Paid"); //local constant for drop down menu to be a boolean/tri-type, if not "submitted" it'll be FALSE
-                    payStubData = payStubData.filter(t => (t.payStubDate !== null) === wantTrue); //set time off field to a true response or checkmark when true
+                    payStubData = payStubData.filter(t => (t.payStubDate !== null) === wantTrue);
                 }
-        
+
                 //the response from the filters updating rows of records/data with useState setRows
                 //need to catch errors incase time off can't load the data from db, for now any errors
                 setPayStub(payStubData);
@@ -91,7 +93,7 @@ export const PayStubPage_E = () => {
         {setError("Failed to load pay stub");} 
         finally {setLoading(false);}
 
-    }//end of loadTimeOfTable
+    }//end of loadPayStubTable
 
     //FUNCTION 2 of 2: clearTableFilters() - clear filters and set to "empty" state
     function clearTableFilters() {
@@ -177,7 +179,7 @@ export const PayStubPage_E = () => {
 
                 {/* BUTTONS */}
                 <div style={{ display: "flex", gap: ".5rem" }}>
-                    {/* Apply Button that calls function loadTimesheetTable()*/}
+                    {/* Apply Button that calls function loadPayStubTable()*/}
                     <button onClick={loadPayStubTable} disabled={loading}>
                         {loading ? "Loading..." : "Apply filters"}
                     </button>
@@ -309,18 +311,6 @@ const Td = (p: any) => (
     }}
   />
 )
-
-//HELPER FUNCTION - flag()
-function checkMark(v: boolean | null | undefined) 
-{
-  //Unicode resource -- https://unicode.org/charts//PDF/Unicode-10.0/U100-2B00.pdf
-  if (v === true)
-  {return "\u2705";}
-  else if (v === false)
-  {return "\u274C";}
-
- return  "";
-} 
 
 //HELPER FUNCTION - Employee Id Drop Down 
 function employeeDropDown(data :payStubType[])

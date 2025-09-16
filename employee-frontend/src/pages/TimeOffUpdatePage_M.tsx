@@ -5,15 +5,7 @@ import type { timeOffType } from "../types/types";
 import { useNavigate} from "react-router-dom";
 import { UpdateTimeOffContext} from "../context/UpdateTimeOffContext";
 import { useContext } from "react";
-import { useForm, useFormState, type SubmitHandler } from "react-hook-form";
-
-{/* To Do: 
-- fix onSubmit funciton , call on updateTimeOffRecord - pending CORS issue review with Jon 9.16.25
-- navigate to time off page - gtg
-- 'are you sure you want to submit/update request?' - gtg
-- 'clear' button - gtg
-*/}
-
+import { useForm, type SubmitHandler } from "react-hook-form";
 
 export const TimeOffUpdatePage_M = () => {
 
@@ -88,7 +80,7 @@ export const TimeOffUpdatePage_M = () => {
         console.log("New Time Off Object: " + JSON.stringify(timeOff, null, 2));
 
         //update the new time off record
-       updateTimeOffRecord(timeOff.id)
+       updateTimeOffRecord(timeOff.id, timeOff)
             .then(response => {
                     console.log(response)
 
@@ -159,7 +151,7 @@ export const TimeOffUpdatePage_M = () => {
             <form onSubmit={handleSubmit(handleInitialSubmit)}>
                 
                 <label htmlFor = "approved"> Check Box to Approve: </label>
-                <input type = "checkbox" id = "approved" {...register(`approved`, {required: true})}></input> 
+                <input type = "checkbox" id = "approved" {...register(`approved`, {required: false})}></input> 
                 {errors.approved && <p style={{color: 'red'}}>Please Check the box</p>}
                 <br></br><br></br>
 

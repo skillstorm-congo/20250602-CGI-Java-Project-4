@@ -6,10 +6,6 @@ import { useNavigate, useParams} from "react-router-dom";
 import { UpdateTimeOffContext } from "../context/UpdateTimeOffContext";
 import { useContext } from "react";
 
-{/* To Do: 
-- call on deleteTimeOffRecord - pending CORS issue review with Jon 9.16.25
-*/}
-
 export const TimeOffViewPage = () => {
 
     //used to route to view a time off record

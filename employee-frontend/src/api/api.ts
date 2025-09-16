@@ -1,5 +1,5 @@
 import axios from "axios"
-import type { UserType } from "../types/types";
+import type { payStubType, UserType } from "../types/types";
 
 //all local host 9000 from the gateway
 const baseUrl = 'http://localhost:9000/';
@@ -100,8 +100,8 @@ export const findByDateTimeOff = async (date: string | Date) => {
 }
 
 //6) update a time off record by time off id
-export const updateTimeOffRecord = async (id: number) => {
-    return await axios.put(`${baseUrl}time-off/${id}`);
+export const updateTimeOffRecord = async (id: number, timeOff:object) => {
+    return await axios.put(`${baseUrl}time-off/${id}`, timeOff);
 }
 
 //7) create a time off record 
@@ -154,8 +154,8 @@ export const createPayStub = async (payStub:object) => {
 }
 
 //8) update a pay stub record by pay stub id
-export const updatePayStubRecord = async (id: number) => {
-    return await axios.put(`${baseUrl}pay-stub/${id}`);
+export const updatePayStubRecord = async (id: number, payStub:object) => {
+    return await axios.put(`${baseUrl}pay-stub/${id}`, payStub);
 }
 // ------------------------------------------------------------------
 //USER FUNCTIONS

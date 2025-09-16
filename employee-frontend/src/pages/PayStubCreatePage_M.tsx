@@ -2,12 +2,11 @@ import { useState } from "react";
 import { useEffect } from "react";
 import type { payStubType} from "../types/types";
 import { useNavigate, } from "react-router-dom";
-import { useForm, useFormState, type SubmitHandler } from "react-hook-form";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import { createPayStub, getAllPayStub } from "../api/api";
 
-{/* To Do: 
-- fix onSubmit funciton , call on createPayStub - pending CORS issue review with Jon 9.16.25
-*/}
+// To Do:
+// - fix date start < date end  validate: .....
 
 export const PayStubCreatePage_M = () => {
 
@@ -316,18 +315,6 @@ const Td = (p: any) => (
     }}
   />
 )
-
-//HELPER FUNCTION - flag()
-function checkMark(v: boolean | null | undefined) 
-{
-  //Unicode resource -- https://unicode.org/charts//PDF/Unicode-10.0/U100-2B00.pdf
-  if (v === true)
-  {return "\u2705";}
-  else if (v === false)
-  {return "\u274C";}
-
- return  "";
-} 
 
 //HELPER FUNCTION - Employee Id Drop Down 
 function employeeDropDown(data:payStubType[])

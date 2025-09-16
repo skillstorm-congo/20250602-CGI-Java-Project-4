@@ -5,25 +5,16 @@ import type { timeOffType } from "../types/types";
 import { useNavigate} from "react-router-dom";
 import { UpdateTimeOffContext } from "../context/UpdateTimeOffContext";
 import { useContext } from "react";
-import { useForm, useFormState, type SubmitHandler } from "react-hook-form";
+import { useForm, type SubmitHandler } from "react-hook-form";
 
-{/* To Do: 
-- fix onSubmit funciton , call on updateTimeOffRecord - pending CORS issue review with Jon 9.16.25
-- navigate to time off page - gtg
-- 'are you sure you want to submit/update request?' - gtg
-- 'clear' button - gtg
-*/}
+// To Do:
+// - fix date start < date end  validate: .....
 
 
 export const TimeOffUpdatePage = () => {
 
     //used to route to view a time off record
     const navigate = useNavigate();
-
-    // in this component, we're merely taking in a value from the context's state
-    // useContext(<context name>) pulls in the context
-    // we desconstruct the array to pull out what we want
-    const updateTimeOff = useContext(UpdateTimeOffContext)?.updateTimeOff;
 
     //variables for React Hook From
     const { register, handleSubmit, formState: { errors }, reset } = useForm<Inputs>({ mode: 'all'});
@@ -61,11 +52,13 @@ export const TimeOffUpdatePage = () => {
 
     );
 
+     // in this component, we're merely taking in a value from the context's state
+    // if updateTimeOff is undefined then assign it to a default value of timeOff
+    const updateTimeOff = useContext(UpdateTimeOffContext)?.updateTimeOff ?? timeOff;
+
     // running the API call when this component loads
     useEffect(() => {
-        //if updateTimeOff exists, set it on the page, else show default
-        if (updateTimeOff)
-            setTimeOff(updateTimeOff);
+        setTimeOff(updateTimeOff);
     }, [updateTimeOff])
 
     //setting up our React Hook Form
@@ -84,18 +77,17 @@ export const TimeOffUpdatePage = () => {
         console.log("We are in onSubmit - handles form submission")
 
         //reset the time off object with new update
-        timeOff.dateStart = formData.dateStart
-        timeOff.dateEnd = formData.dateEnd
-        timeOff.comment = formData.comment
+        timeOff.dateStart = formData.dateStart || timeOff.dateStart
+        timeOff.dateEnd = formData.dateEnd || timeOff.dateEnd
+        timeOff.comment = formData.comment || timeOff.comment
         timeOff.submitted = formData.submitted
         timeOff.submittedDate = formData.submittedDate
-        
-        
+
         //check out in the console if the object is returning what is expected
         console.log("New Time Off Object: " + JSON.stringify(timeOff, null, 2));
 
         //update the new time off record
-       updateTimeOffRecord(timeOff.id)
+       updateTimeOffRecord(timeOff.id, timeOff)
             .then(response => {
                     console.log(response)
 
@@ -164,19 +156,19 @@ export const TimeOffUpdatePage = () => {
             <div> 
             <h2>Update a Time Off Request Form</h2>
             <form onSubmit={handleSubmit(handleInitialSubmit)}>
-                {/* dateStart, dateEnd, comment, submitted, submittedDate */}
+               
                 <label htmlFor = "date start"> Date Start: </label>
-                <input type = "date" id = "date start" {...register(`dateStart`, {required: true})}></input> 
+                <input type = "date" id = "date start" defaultValue = {updateTimeOff.dateStart} {...register(`dateStart`, {required: true})}></input> 
                 {errors.dateStart && <p style={{color: 'red'}}>Please Enter a Date Start</p>}
                 <br></br><br></br>
 
                 <label htmlFor = "date end"> Date End: </label> 
-                <input type = "date" id = "date end" {...register(`dateEnd`, {required: true})}></input> 
+                <input type = "date" id = "date end" defaultValue={updateTimeOff.dateEnd} {...register(`dateEnd`, {required: true})}></input> 
                 {errors.dateEnd && <p style={{color: 'red'}}>Please Enter a Date End</p>}
                 <br></br><br></br>
 
                 <label htmlFor = "comment"> Comment: </label> 
-                <input type = "text" id = "comment" size = {100} {...register(`comment`, {required: true, maxLength:200})}></input>
+                <input type = "text" id = "comment" defaultValue = {updateTimeOff.comment} size = {100} {...register(`comment`, {required: true, maxLength:200})}></input>
                 {errors.comment && <p style={{color: 'red'}}>Please Enter a Comment, " " is valid</p>}
                 <br></br><br></br>
 

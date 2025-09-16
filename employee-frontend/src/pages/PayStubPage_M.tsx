@@ -74,15 +74,15 @@ export const PayStubPage_M = () => {
                 else 
                 {response = await getAllPayStub();}
 
-                //assign the timesheetData with try{}'s response from the data that Axios pulled from endpoints
+                //assign the payStubData with try{}'s response from the data that Axios pulled from endpoints
                 //this is what will will populate the table with the response data
                 let payStubData: payStubType[] = Array.isArray(response.data) ? response.data : []; 
             
-                //Pay Stub Date-filter Boolean Response (skip if it stays on "any") - Line 156
-                if (payStubDate !== "All") 
+                //Pay Stub Date-filter 
+                if (payStubDate) // if it is not null 
                 {
-                    const wantTrue = (payStubDate === "Paid"); //local constant for drop down menu to be a boolean/tri-type, if not "submitted" it'll be FALSE
-                    payStubData = payStubData.filter(t => (t.payStubDate !== null) === wantTrue); //set time off field to a true response or checkmark when true
+                    const wantTrue = (payStubDate === "Paid"); //local constant for drop down menu
+                    payStubData = payStubData.filter(t => (t.payStubDate !== null) === wantTrue); 
                 }
         
                 //the response from the filters updating rows of records/data with useState setRows
@@ -93,7 +93,7 @@ export const PayStubPage_M = () => {
         {setError("Failed to load pay stub");} 
         finally {setLoading(false);}
 
-    }//end of loadTimeOfTable
+    }//end of loadPayStubTable
 
     //FUNCTION 2 of 2: clearTableFilters() - clear filters and set to "empty" state
     function clearTableFilters() {

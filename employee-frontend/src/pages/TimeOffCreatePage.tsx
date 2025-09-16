@@ -6,13 +6,7 @@ import { useForm, useFormState, type SubmitHandler } from "react-hook-form";
 import { getAllTimeOff, createTimeOff } from "../api/api";
 
 {/* To Do: 
-- fix the employee drop down function -gtg
-- fix onSubmit funciton , call on updateTimeOff - pending CORS issue review with Jon 9.16.25
-- navigate to time off page - gtg
-- 'are you sure you want to submit/update request?' - gtg
-- 'clear' button - gtg
-- check if all boxes are filled - gtg
-- quit button - gtg
+- fix date start < date end  validate: .....
 */}
 
 export const TimeOffCreatePage = () => {
