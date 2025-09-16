@@ -380,7 +380,7 @@ function generateId(data:payStubType[])
         randomNum = Math.floor(Math.random() * 500) + 1;
 
         //get time off record ids that are NOT AVAILABLE, if new random number is in the list, generate new number
-        usedIds(data).includes(randomNum) ? valid=true : valid = false;
+        valid = usedIds(data).includes(randomNum) ? true : false;
         
     }while(valid)
 

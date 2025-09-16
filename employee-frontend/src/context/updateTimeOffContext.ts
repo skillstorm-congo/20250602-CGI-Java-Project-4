@@ -1,4 +1,5 @@
 import { createContext } from "react";
+import type { timeOffType } from "../types/types";
 
 // if you put a default value in the parentheses, it'll type the context to that type
 // if you leave it blank and leave the createContext method untyped, it'll be able to hold anything!
@@ -8,7 +9,11 @@ import { createContext } from "react";
 // we'll have to come back to this file if we add things to the context in Frame.tsx
 //export const SubmissionContext = createContext('default value')
 
-//createContext<[string, (favorite: string) => void]>(['', () => {}]);
-
 //context for updating a time off record from time off view page
-export const updateTimeOffContext = createContext('default value')
+interface TimeOffTypeContext {
+    updateTimeOff: timeOffType | undefined,
+    setUpdateTimeOff: React.Dispatch<React.SetStateAction<timeOffType | undefined>>
+}
+
+export const UpdateTimeOffContext = createContext<TimeOffTypeContext | undefined>(undefined);
+

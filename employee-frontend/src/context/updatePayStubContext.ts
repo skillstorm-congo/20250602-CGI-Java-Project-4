@@ -1,4 +1,5 @@
 import { createContext } from "react";
+import type { payStubType } from "../types/types";
 
 // if you put a default value in the parentheses, it'll type the context to that type
 // if you leave it blank and leave the createContext method untyped, it'll be able to hold anything!
@@ -8,7 +9,12 @@ import { createContext } from "react";
 // we'll have to come back to this file if we add things to the context in Frame.tsx
 //export const SubmissionContext = createContext('default value')
 
-//createContext<[string, (favorite: string) => void]>(['', () => {}]);
-
 //context for updating a time off record from time off view page
-export const updatePayStubContext = createContext('default value')
+interface PayStubTypeContext {
+    updatePayStub: payStubType | undefined,
+    setUpdatePayStub: React.Dispatch<React.SetStateAction<payStubType | undefined>>
+}
+
+export const UpdatePayStubContext = createContext<PayStubTypeContext | undefined>(undefined)
+
+

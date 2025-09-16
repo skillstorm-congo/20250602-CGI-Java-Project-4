@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { updatePayStubRecord, getAllPayStub} from "../api/api";
 import type { payStubType } from "../types/types";
 import { useNavigate} from "react-router-dom";
-import { updatePayStubContext } from "../context/updatePayStubContext";
+import { UpdatePayStubContext } from "../context/UpdatePayStubContext";
 import { useContext } from "react";
 import { useForm, useFormState, type SubmitHandler } from "react-hook-form";
 
@@ -20,7 +20,7 @@ export const PayStubUpdatePage = () => {
     // in this component, we're merely taking in a value from the context's state
     // useContext(<context name>) pulls in the context
     // we desconstruct the array to pull out what we want
-    const [ updatePayStub ] = useContext(updatePayStubContext);
+    const updatePayStub = useContext(UpdatePayStubContext)?.updatePayStub;
 
     //variables for React Hook From
     const { register, handleSubmit, formState: { errors }, reset } = useForm<Inputs>({ mode: 'all'});
@@ -111,7 +111,7 @@ export const PayStubUpdatePage = () => {
     useEffect(() => {
         getPayStubs() 
 
-        //if updateTimeOff exists, set it on the page, else show default
+        //if updatePayStub exists, set it on the page, else show default
         if (updatePayStub)
             setPayStub(updatePayStub);
     }, [updatePayStub])

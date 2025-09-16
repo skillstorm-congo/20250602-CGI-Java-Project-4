@@ -3,15 +3,16 @@ import { Footer } from "../components/Footer"
 import { Header } from "../components/Header"
 import { Nav } from "../components/Nav";
 import { useState } from "react";
-import {updateTimeOffContext} from "../context/updateTimeOffContext"
-import { updatePayStubContext } from "../context/updatePayStubContext";
+import { UpdateTimeOffContext } from "../context/UpdateTimeOffContext";
+import { UpdatePayStubContext } from "../context/UpdatePayStubContext";
+import type { timeOffType, payStubType } from "../types/types";
 
 export const Frame = () => {
 
     // the state for our context
     // this default value is just what the original value of favorite will be
-    const [ updateTimeOff, setUpdateTimeOff ] = useState('');
-    const [ updatePayStub, setUpdatePayStub ] = useState('');
+    const [ updateTimeOff, setUpdateTimeOff ] = useState<timeOffType | undefined>(undefined);
+    const [ updatePayStub, setUpdatePayStub ] = useState<payStubType | undefined>(undefined);
 
 
     return (
@@ -19,11 +20,11 @@ export const Frame = () => {
             <Header/>
             <Nav/>
             <main>
-                <updateTimeOffContext.Provider value={[ updateTimeOff, setUpdateTimeOff ]}>
-                <updatePayStubContext.Provider value={[ updatePayStub, setUpdatePayStub]}>
+                <UpdateTimeOffContext.Provider value={{ updateTimeOff, setUpdateTimeOff }}>
+                <UpdatePayStubContext.Provider value={{ updatePayStub, setUpdatePayStub}}>
                 <Outlet />
-                </updatePayStubContext.Provider>
-                </updateTimeOffContext.Provider>
+                </UpdatePayStubContext.Provider>
+                </UpdateTimeOffContext.Provider>
             </main>
             <Footer/>
         </>

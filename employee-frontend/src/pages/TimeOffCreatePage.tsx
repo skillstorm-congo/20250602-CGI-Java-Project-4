@@ -376,7 +376,7 @@ function generateId(timeOffs:timeOffType[])
         randomNum = Math.floor(Math.random() * 500) + 1;
 
         //get time off record ids that are NOT AVAILABLE, if new random number is in the list, generate new number
-        usedIds(timeOffs).includes(randomNum) ? valid=true : valid = false;
+        valid = usedIds(timeOffs).includes(randomNum) ? true : false;
         
     }while(valid)
 

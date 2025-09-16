@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { findByIdTimeOff, deleteTimeOff} from "../api/api";
 import type { timeOffType } from "../types/types";
 import { useNavigate, useParams} from "react-router-dom";
-import { updateTimeOffContext } from "../context/updateTimeOffContext";
+import { UpdateTimeOffContext } from "../context/UpdateTimeOffContext";
 import { useContext } from "react";
 
 {/* To Do: 
@@ -19,7 +19,7 @@ export const TimeOffViewPage = () => {
     const params = useParams();
 
     // we don't need the first element in the array (updateTimeOffContext), so we skip it!
-    const [ , setUpdateTimeOff] = useContext(updateTimeOffContext);
+    const   setUpdateTimeOff = useContext(UpdateTimeOffContext)?.setUpdateTimeOff;
 
     //setting up local state for the Time Off Object we'll get from the DB 
     const [timeOff, setTimeOff] = useState<timeOffType>(
@@ -45,7 +45,10 @@ export const TimeOffViewPage = () => {
         findByIdTimeOff(timeOff.id).then(response => 
             {
                 setTimeOff(response.data);
-                setUpdateTimeOff(response.data);
+
+                //if statement here
+                if (setUpdateTimeOff)
+                    setUpdateTimeOff(response.data);
             }
             ).catch(err => {console.log(err);} )
     }
