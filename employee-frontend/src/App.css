@@ -142,3 +142,13 @@ form h3 span {
     font-size: 13px;
     font-style: italic;
 }
+
+/*mobile table*/
+@media (max-width: 640px) {
+  header {font-size: 22px;}
+  table, thead, tbody, th, td, tr { display: block; }
+  thead { display: none; }
+  tr { border: 1px solid var(--line); border-radius: var(--radius); margin-bottom: 10px; overflow: hidden; }
+  td { border: none; border-bottom: 1px solid var(--line); }
+  td::before { content: attr(data-label); font-weight: 600; display: block; margin-bottom: 4px; color: var(--muted); }
+}
