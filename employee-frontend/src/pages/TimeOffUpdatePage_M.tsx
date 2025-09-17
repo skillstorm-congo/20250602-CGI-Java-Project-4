@@ -70,14 +70,12 @@ export const TimeOffUpdatePage_M = () => {
     //handles the form submission
     const onSubmit: SubmitHandler<Inputs> = formData =>
     {
-        console.log("We are in onSubmit - handles form submission")
-
         //reset the time off object with new update
         timeOff.approved = formData.approved
         timeOff.approvedDate= formData.approvedDate
         
         //check out in the console if the object is returning what is expected
-        console.log("New Time Off Object: " + JSON.stringify(timeOff, null, 2));
+        //console.log("New Time Off Object: " + JSON.stringify(timeOff, null, 2));
 
         //update the new time off record
        updateTimeOffRecord(timeOff.id, timeOff)

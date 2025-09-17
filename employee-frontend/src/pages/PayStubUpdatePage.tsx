@@ -7,16 +7,13 @@ import { UpdatePayStubContext } from "../context/UpdatePayStubContext";
 import { useContext } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 
-// To Do:
-// - fix date start < date end line 239 validate: .....
-
 export const PayStubUpdatePage = () => {
 
     //used to route to view a time off record
     const navigate = useNavigate();
 
     //variables for React Hook From
-    const { register, handleSubmit, formState: { errors }, reset } = useForm<Inputs>({ mode: 'all'});
+    const { register, handleSubmit, watch, formState: { errors }, reset } = useForm<Inputs>({ mode: 'all'});
 
     // setting up some state to use with our error handling
     const [ , setError ] = useState<string>('');
@@ -121,11 +118,12 @@ export const PayStubUpdatePage = () => {
         payStubDate: string | null,
     }
 
+    //watch the dateStart so we can validate that date start is <= date end in the form
+    const startDate = watch('dateStart');
+
     //handles the form submission
     const onSubmit: SubmitHandler<Inputs> = formData =>
     {
-        console.log("We are in onSubmit - handles form submission")
-
         //reset the pay stub object with new update
         payStub.employeeId = formData.employeeId || payStub.employeeId
         payStub.timesheetId1 = formData.timesheetId1 || payStub.timesheetId1
@@ -135,9 +133,9 @@ export const PayStubUpdatePage = () => {
         payStub.payStubDate = formData.payStubDate
         
         //check out in the console if the object is returning what is expected
-        console.log("New Pay Stub Object: " + JSON.stringify(payStub, null, 2));
+        //console.log("New Pay Stub Object: " + JSON.stringify(payStub, null, 2));
 
-        //update the new time off record
+        //update the pay stub record
         updatePayStubRecord(payStub.id, payStub)
             .then(response => {
                     console.log(response)
@@ -235,14 +233,14 @@ export const PayStubUpdatePage = () => {
                 <br></br><br></br>
 
                 <label htmlFor = "date start"> Date Start: </label>
-                <input type = "date" id = "date start" defaultValue = {updatePayStub.dateStart} {...register(`dateStart`, 
-                    {required: true, validate: () => `dateStart` < `dateEnd` })}></input> 
-                {errors.dateStart && <p style={{color: 'red'}}>Please Enter a Date Start or it needs to be Less Than or Equal To Date End</p>}
+                <input type = "date" id = "date start" defaultValue = {updatePayStub.dateStart} {...register(`dateStart`, {required: true})}></input> 
+                {errors.dateStart && <p style={{color: 'red'}}>Please Enter a Date Start</p>}
                 <br></br><br></br>
 
                 <label htmlFor = "date end"> Date End: </label> 
-                <input type = "date" id = "date end" defaultValue = {updatePayStub.dateEnd} {...register(`dateEnd`, {required: true})}></input> 
-                {errors.dateEnd && <p style={{color: 'red'}}>Please Enter a Date End</p>}
+                <input type = "date" id = "date end" defaultValue = {updatePayStub.dateEnd} {...register(`dateEnd`, 
+                    {required: true, validate: (value) => new Date(value) >= new Date(startDate) })}></input> 
+                {errors.dateEnd && <p style={{color: 'red'}}>Please Enter a Date End or it needs to be Greater Than or Equal To Date Start</p>}
                 <br></br><br></br>
 
                 <label htmlFor = "pay stub date"> Pay Stub Date: </label>

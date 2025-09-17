@@ -7,17 +7,13 @@ import { UpdateTimeOffContext } from "../context/UpdateTimeOffContext";
 import { useContext } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 
-// To Do:
-// - fix date start < date end  validate: .....
-
-
 export const TimeOffUpdatePage = () => {
 
     //used to route to view a time off record
     const navigate = useNavigate();
 
     //variables for React Hook From
-    const { register, handleSubmit, formState: { errors }, reset } = useForm<Inputs>({ mode: 'all'});
+    const { register, handleSubmit, watch, formState: { errors }, reset } = useForm<Inputs>({ mode: 'all'});
 
     // setting up some state to use with our error handling
     const [ , setError ] = useState<string>('');
@@ -71,11 +67,12 @@ export const TimeOffUpdatePage = () => {
         submittedDate: string | null 
     }
 
+    //watch the dateStart so we can validate that date start is <= date end in the form
+    const startDate = watch('dateStart');
+
     //handles the form submission
     const onSubmit: SubmitHandler<Inputs> = formData =>
     {
-        console.log("We are in onSubmit - handles form submission")
-
         //reset the time off object with new update
         timeOff.dateStart = formData.dateStart || timeOff.dateStart
         timeOff.dateEnd = formData.dateEnd || timeOff.dateEnd
@@ -84,7 +81,7 @@ export const TimeOffUpdatePage = () => {
         timeOff.submittedDate = formData.submittedDate
 
         //check out in the console if the object is returning what is expected
-        console.log("New Time Off Object: " + JSON.stringify(timeOff, null, 2));
+        //console.log("New Time Off Object: " + JSON.stringify(timeOff, null, 2));
 
         //update the new time off record
        updateTimeOffRecord(timeOff.id, timeOff)
@@ -163,8 +160,9 @@ export const TimeOffUpdatePage = () => {
                 <br></br><br></br>
 
                 <label htmlFor = "date end"> Date End: </label> 
-                <input type = "date" id = "date end" defaultValue={updateTimeOff.dateEnd} {...register(`dateEnd`, {required: true})}></input> 
-                {errors.dateEnd && <p style={{color: 'red'}}>Please Enter a Date End</p>}
+                <input type = "date" id = "date end" defaultValue={updateTimeOff.dateEnd} {...register(`dateEnd`, 
+                    {required: true, validate: (value) => new Date(value) >= new Date(startDate) })}></input> 
+                {errors.dateEnd && <p style={{color: 'red'}}>Please Enter a Date End or it needs to be Greater Than or Equal To Date Start</p>}
                 <br></br><br></br>
 
                 <label htmlFor = "comment"> Comment: </label> 
