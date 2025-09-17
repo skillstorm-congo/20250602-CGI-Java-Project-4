@@ -1,12 +1,49 @@
 import { useState } from "react";
 import { useEffect } from "react";
-import type { payStubType} from "../types/types";
+import type { payStubType, TimesheetType} from "../types/types";
 import { useNavigate, } from "react-router-dom";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { createPayStub, getAllPayStub } from "../api/api";
+import { createPayStub, getAllPayStub, findTimesheetsByEmployeeId } from "../api/api";
 
 export const PayStubCreatePage_M = () => {
 
+    //setting up local state for the Pay Stub Object we'll get from the DB 
+    const [timesheets, setTimesheets] = useState<TimesheetType[]>(
+        [  
+            {  
+                id: 6,
+                employeeId: 66,
+                fiscalYearFiscalWeek: "202535",
+                totalRegularHours: 40,
+                totalOvertimeHours: 2,
+                totalTimeOffHours: 0,
+                dateStart: "2025-08-25", 
+                dateEnd: "2025-08-29",
+                submitted: true,
+                submittedDate: "2025-08-29",
+                approved: true,
+                approvedDate: "2025-09-02",
+                comment: null,
+                timeOffId: null,
+                regularHoursDay1: 8,
+                regularHoursDay2: 8,
+                regularHoursDay3: 8,
+                regularHoursDay4: 8,
+                regularHoursDay5: 8,
+                overtimeHoursDay1: 0,
+                overtimeHoursDay2: 0,
+                overtimeHoursDay3: 2,
+                overtimeHoursDay4: 0,
+                overtimeHoursDay5: 0,
+                timeOffHoursDay1: 0,
+                timeOffHoursDay2: 0, 
+                timeOffHoursDay3: 0,
+                timeOffHoursDay4: 0,
+                timeOffHoursDay5: 0,
+            }
+    ]
+    );
+    
     //used to route to view a time off record
     const navigate = useNavigate();
 
@@ -86,7 +123,7 @@ export const PayStubCreatePage_M = () => {
         ]
     );
 
-    //using our API method to retrieve all time off records
+    //using our API method to retrieve all pay stub records
     function getPayStubs() 
     {
         getAllPayStub().then(response => 
@@ -115,6 +152,9 @@ export const PayStubCreatePage_M = () => {
 
     //watch the dateStart so we can validate that date start is <= date end in the form
     const startDate = watch('dateStart');
+
+    //watch the dateStart so we can validate that date start is <= date end in the form
+    const employeeId = watch('employeeId');
 
     //handles the form submission
     const onSubmit: SubmitHandler<Inputs> = formData =>
@@ -152,6 +192,127 @@ export const PayStubCreatePage_M = () => {
                     })
 
     }
+    //
+    //call function to get all time sheet(s) associated to an employee id
+     function getTimeSheets(employeeId: number) 
+     {    
+        findTimesheetsByEmployeeId(employeeId).then(response => 
+                    {
+                        setTimesheets(response.data);
+                    }
+                    ).catch(err => {console.log(err);} )
+    }
+
+    //FUNCTION - Generate a table of time sheets based on employee id for the form
+    function createTimesheetTbl(employeeId: string | number | undefined)
+    {
+        console.log("employeeId out of switch:  " + employeeId)
+        console.log("typeof:  " + typeof employeeId)
+
+        switch(employeeId)
+        {
+            case 0: //default employee id drop down
+                    console.log("employeeId case 0:  " + employeeId)
+                    return ("No Timesheets Available for Pay Stub choose another Employee Id");
+                
+            case 66: //default value for example
+                    console.log("employeeId case 66:  " + employeeId)
+                    return ("No Timesheets Available for Pay Stub choose another Employee Id");
+
+
+            case "0": //default employee id drop down
+                    console.log("employeeId case string 0:  " + employeeId)
+                    return ("No Timesheets Available for Pay Stub choose another Employee Id");
+
+                
+            case "66": //default value for example
+                    console.log("employeeId case string 66:  " + employeeId)
+                    return ("No Timesheets Available for Pay Stub choose another Employee Id");
+
+            case undefined:
+                    console.log("employeeId case undefined:  " + employeeId)
+                    return ("No Timesheets Available for Pay Stub choose another Employee Id");
+
+            default:
+                console.log("In get time sheets. ")
+                console.log("employeeId default:  " + employeeId)
+
+                //make sure if it came in as a string to convert it to a number
+                if (typeof employeeId === "string")
+                    employeeId = parseInt(employeeId);
+
+                //call function to get all time sheet(s) associated to an employee id
+                getTimeSheets(employeeId);
+
+                //take a look at timeSheets
+                console.log("timeSheets: " + timesheets)
+                console.log("timeSheets length: " + timesheets.length)
+
+                //timesheets.forEach(t => console.log(JSON.stringify(t, null, 2)));
+
+        //         //time sheet must be 'approved' = true, filter out
+        //         const approvedTimesheets = timesheets.filter(t => t.approved); 
+
+        //         //sort approvedTimesheets by date start ascending order(oldest at the bottom)
+        //         approvedTimesheets.sort((a, b) => 
+        //             {
+        //                 const dateA = new Date(a.dateStart);
+        //                 const dateB = new Date(b.dateStart);
+
+        //                 return (dateB.getTime() - dateA.getTime());
+        //             });
+
+        //         console.log("approved timeSheets: " + approvedTimesheets)
+        //         console.log("approved timeSheets length: " + approvedTimesheets.length)
+
+        //         for (let timesheet in approvedTimesheets)
+        //         {
+        //             console.log(JSON.stringify(timesheet, null, 2))
+        //         }
+
+        //         //if approvedTimeSheets is not empty, create table, else do not create table *employee id 39 has no timesheets
+        //         if (approvedTimesheets.length >= 1)
+        //         {
+        //             //create table
+        //             return 
+        //             ( <div>
+        //                 <table>
+        //                 <thead>
+        //                 <tr>
+        //                     <Th>ID</Th>
+        //                     <Th>Employee</Th>
+        //                     <Th>Week</Th>
+        //                     <Th>Start</Th>
+        //                     <Th>End</Th>
+        //                     <Th>Submitted</Th>
+        //                     <Th>Approved</Th>
+        //                 </tr>
+        //                 </thead>
+        //                     <tbody>
+        //                     {/* Render table rows based on myDataField */}
+        //                     {approvedTimesheets.map((t) => (
+        //                         <tr key={t.id}>
+        //                         <Td>{t.id}</Td>
+        //                         <Td>{t.employeeId}</Td>
+        //                         <Td>{t.fiscalYearFiscalWeek != null ? String(t.fiscalYearFiscalWeek) : ""}</Td>
+        //                         <Td>{t.dateStart}</Td>
+        //                         <Td>{t.dateEnd}</Td>
+        //                         <Td style={{ textAlign: "center" }}>{checkMark(t.submitted)}</Td>
+        //                         <Td style={{ textAlign: "center" }}>{checkMark(t.approved)}</Td>
+        //                         </tr>
+        //                     ))}
+        //                     </tbody>
+        //                 </table>
+        //             </div>
+        //             )
+
+        //         }
+        //         else
+        //             return ("No Timesheets Available for Pay Stub choose another Employee Id");
+        }
+        
+    }
+
 
     //html body
     return (
@@ -207,7 +368,15 @@ export const PayStubCreatePage_M = () => {
                     </tbody>
                 </table>
         
-        </div> {/*End of Table*/}
+            </div> {/*End of Table*/}
+
+            <div>
+            {/*Begining of Timesheet(s)Table*/}
+            <h2>Available Timesheet(s) for {employeeId}</h2>
+
+            {/* create a table for available time sheets for an employee id */}
+            {createTimesheetTbl(employeeId)}
+            </div>
 
            {/*Begining of Form*/}
             <div> 
@@ -372,6 +541,19 @@ function generateId(data:payStubType[])
 
     return randomNum;
 }
+
+//HELPER FUNCTION - flag()
+function checkMark(v: boolean | null | undefined) 
+{
+  //Unicode resource -- https://unicode.org/charts//PDF/Unicode-10.0/U100-2B00.pdf
+  if (v === true)
+  {return "\u2705";}
+  else if (v === false)
+  {return "\u274C";}
+
+ return  "";
+} 
+
 
 
 

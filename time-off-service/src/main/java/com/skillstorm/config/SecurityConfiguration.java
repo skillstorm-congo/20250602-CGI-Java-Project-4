@@ -20,7 +20,7 @@ public class SecurityConfiguration {
 	    http
 	      .csrf(csrf -> csrf.disable()) //REST + Postman
 	      .authorizeHttpRequests(auth -> auth
-	        .requestMatchers("/time-off/**", "/actuator/**").permitAll()
+	        .requestMatchers("/time-off/**", "/actuator/**", "/swagger-ui/**", "/api-docs/**").permitAll()
 	        .anyRequest().permitAll()   //come back later
 	      )
 	      .httpBasic(Customizer.withDefaults())

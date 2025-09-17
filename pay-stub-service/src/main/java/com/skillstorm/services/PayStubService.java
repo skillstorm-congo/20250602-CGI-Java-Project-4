@@ -2,15 +2,19 @@ package com.skillstorm.services;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import com.skillstorm.clients.EmployeeServiceClient;
+import com.skillstorm.clients.TimesheetServiceClient;
 import com.skillstorm.models.Employee;
 import com.skillstorm.models.PayStub;
+import com.skillstorm.models.Timesheet;
 import com.skillstorm.repositories.PayStubRepository;
 
 @Service
@@ -22,13 +26,17 @@ public class PayStubService
 	
 	//inject EmployeeServiceClient bean & add to constructor
 	private final EmployeeServiceClient employeeServiceClient;
+	
+	//inject TimesheetServiceClient bean & add to constructor
+	private final TimesheetServiceClient timesheetServiceClient;
 
 	
 	//constructor injection, only every going to have one of this class, annotation is optional since it's the only constructor
-	public PayStubService(PayStubRepository repo, EmployeeServiceClient employeeServiceClient) 
+	public PayStubService(PayStubRepository repo, EmployeeServiceClient employeeServiceClient, TimesheetServiceClient timesheetServiceClient) 
 	{
 		this.repo = repo;
 		this.employeeServiceClient = employeeServiceClient;
+		this.timesheetServiceClient = timesheetServiceClient;
 	}
 	
 
@@ -149,6 +157,17 @@ public class PayStubService
 		this.repo.deleteById(id);
 		
 		return ResponseEntity.noContent().build();
+	}
+	
+	//find time sheet(s) by employee id (Method X of Y)
+	public ResponseEntity<Iterable<Timesheet>> findTimesheetsByEmployeeId(int employeeId)
+	{
+		//get all time sheets associated to an employee id
+		List<Timesheet> timeSheets = this.timesheetServiceClient.findByEmployeeId(employeeId);
+		
+		if (!timeSheets.iterator().hasNext())
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+		return ResponseEntity.ok(timeSheets);
 	}
 	
 
