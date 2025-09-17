@@ -120,7 +120,7 @@ useEffect(() => {loadTimesheetTable();}, []); //dependency array is empty bc it'
         <h1 style={{ display: "flex", alignItems: "center", gap: ".75rem" }}>
             Timesheets
             <Link to="/timesheet/new"><button>Create New Timesheet</button></Link>
-            <Link to="/timesheet/update"><button>Update Timesheet</button></Link>
+            <Link to="/timesheet/${timesheetRow.id}/update"><button>Update Timesheet</button></Link>
         </h1>
         
 

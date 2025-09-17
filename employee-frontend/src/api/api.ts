@@ -1,9 +1,9 @@
 import axios from "axios"
-import type { payStubType, UserType } from "../types/types";
+//import type { payStubType, UserType } from "../types/types";
 
 //all local host 9000 from the gateway
 const baseUrl = 'http://localhost:9000/';
-const userBase = "http://localhost:17000";
+//const userBase = "http://localhost:17000";
 
 //Resource: Axios - https://axios-http.com/docs/req_config
 axios.defaults.withCredentials = true;
@@ -36,7 +36,7 @@ export const findByDateTimesheet = async (date: string | Date) => {
     return await axios.get(`${baseUrl}timesheet/by-date`, {params: {date: toISODate(date)},});
 }
 
-//6) let an employee log their hours by JSON body to create
+//6) let an employee create & log their hours by JSON body to create
 export const logHoursTimesheet = async (payload: any) => {
     return await axios.post(`${baseUrl}timesheet/log-hours`, payload);
 }

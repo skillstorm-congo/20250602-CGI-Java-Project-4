@@ -16,6 +16,8 @@ import { TimeOffUpdatePage_M } from './pages/TimeOffUpdatePage_M'
 import { PayStubViewPage_M } from './pages/PayStubViewPage_M'
 import { PayStubCreatePage_M } from './pages/PayStubCreatePage_M'
 import { PayStubUpdatePage } from './pages/PayStubUpdatePage'
+import UpdateTimesheetPage from './pages/UpdateTimesheetPage'
+import { TimesheetCreatePage } from './pages/TimesheetCreatePage'
 
 function App() {
 
@@ -24,7 +26,6 @@ function App() {
       <Routes>
         <Route element={<Frame />}>
           <Route index element={<HomePage />} />
-          <Route path="timesheet" element={<Timesheet />} />
           <Route path="time-off-e" element={<TimeOffPage_E />} />
           <Route path="pay-stub-e" element={<PayStubPage_E />} />
           <Route path="time-off-m" element={<TimeOffPage_M />} />
@@ -59,6 +60,17 @@ function App() {
 
           {/* Pay Stub Update Page*/}
           <Route path='pay-stub-m/:id/update' element={<PayStubUpdatePage />} />
+
+
+          {/* --------TIMESHEET Pages-------- */}
+          {/* Timesheet ALL Page - Loads all of the viewable timesheets in company without employee names */}
+          <Route path="timesheet" element={<Timesheet />} />
+
+          {/* Timesheet UPDATE Page - A button from the viewable timesheet page will allow employee to update a timesheet that is NOT approved by a manager */}
+          <Route path="timesheet/:id/update" element={<UpdateTimesheetPage />} />
+
+          {/* Timesheet CREATE Page - A button from the viewable timesheet page will allow employee to create a new timesheet that will let them start logging hours*/}
+          <Route path="timesheet/new" element={<TimesheetCreatePage />} />
 
         </Route>
       </Routes>
