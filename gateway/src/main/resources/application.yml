@@ -55,6 +55,23 @@ management:
       exposure:
         include: gateway
 
+#swagger documentation: API Endpoints Per Microservice
+springdoc:
+  swagger-ui:
+    config-url: /v3/api-docs/swagger-config
+    urls:
+    - url: /time-off/v3/api-docs
+      name: Time Off Microservice
+    - url: /pay-stub/v3/api-docs
+      name: Pay Stub Microservice
+    - url: /timesheet/v3/api-docs
+      name: Timesheet Microservice
+    - url: /user/v3/api-docs
+      name: User Microservice
+    - url: /employee/v3/api-docs
+      name: Employee Microservice
+
+
 
 
 

@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.skillstorm.clients.EmployeeServiceClient;
+import com.skillstorm.clients.TimesheetServiceClient;
 import com.skillstorm.models.PayStub;
+import com.skillstorm.models.Timesheet;
 import com.skillstorm.services.PayStubService;
 
 
@@ -91,6 +93,15 @@ public class PayStubController
 	{
 			return this.service.deletById(id);
 	}
+	
+	//find a pay stub record(s) by employee id with Error Response (Method X of Y)
+	@GetMapping("/timesheet/{employeeId}")
+	public ResponseEntity<Iterable<Timesheet>> findTimesheetsByEmployeeId(@PathVariable int employeeId)
+	{
+		return this.service.findTimesheetsByEmployeeId(employeeId);
+	}
+	
+
 
 	
 }

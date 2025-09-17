@@ -157,5 +157,11 @@ export const createPayStub = async (payStub:object) => {
 export const updatePayStubRecord = async (id: number, payStub:object) => {
     return await axios.put(`${baseUrl}pay-stub/${id}`, payStub);
 }
+
+//9) update a pay stub record by pay stub id
+export const findTimesheetsByEmployeeId = async (employeeId: number) => {
+    return await axios.get(`${baseUrl}pay-stub/timesheet/${employeeId}`);
+}
+
 // ------------------------------------------------------------------
 //USER FUNCTIONS

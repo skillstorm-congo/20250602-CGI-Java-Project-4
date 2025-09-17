@@ -21,3 +21,9 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka
 
+#swagger documentation for API Endpoints
+springdoc:
+  swagger-ui:
+    path: /timesheet/swagger-ui.html
+  api-docs:
+    path: /timesheet/v3/api-docs
