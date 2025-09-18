@@ -168,22 +168,20 @@ export const updatePayStubRecord = async (id: number, payStub:object) => {
     return await axios.put(`${baseUrl}pay-stub/${id}`, payStub);
 }
 
-<<<<<<< HEAD
-//9) update a pay stub record by pay stub id
+//THIS GOT DELETED WITH GIT PULL/REBASE -> PayStubeCreatePage cant work without them
+//9) update a paystub record by pay stub id
 export const findTimesheetsByEmployeeId = async (employeeId: number) => {
-    return await axios.get(`${baseUrl}pay-stub/timesheet/${employeeId}`);
+    return await axios.get('${baseURL}pay-stub/timesheet/${employeeID}');
 }
-
-//10) get a list of employees associated to a manager Id
+//THIS GOT DELETED WITH GIT PULL/REBASE -> PayStubeCreatePage cant work without them
+//10) get a list of employees associated to a manger id
 export const findEmployeeIdsByManagerId = async (managerId: number) => {
-    return await axios.get(`${baseUrl}pay-stub/employees`, {params: {managerId},});
+    return await axios.get('${baseURL}pay-stub/employees', {params: {managerId},});
 }
 
-=======
 export function checkLoginStatus() {
     throw new Error("Function not implemented.");
 }
->>>>>>> ae177ab (Frontend edits to take out login useage from clean up)
 // ------------------------------------------------------------------
 //USER FUNCTIONS
 const API_BASE = import.meta.env.VITE_API ?? "http://localhost:9000";
