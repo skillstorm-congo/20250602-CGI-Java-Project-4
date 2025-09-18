@@ -207,7 +207,7 @@ Create a full-stack web application that will facilitate employee time tracking 
 
       - MISCELLANEOUS
 
-        1) ER_Diagram_20250917.png
+        1) ER_Diagram_20250918.png
             - Image of Entitiy Relationship Diagram
       
         2) README.md
@@ -224,11 +224,11 @@ This application/website provides hours of fun for all users of any age! You can
 
 <!-- Beginning of project 4 ER image    -->
 
-### **Project 5 Entity Relationship(ER) Diagram**
+### **Project 4 Entity Relationship(ER) Diagram**
 
 <details>
 <summary>Click Here to See Image | Legend: Crows Feet = Many & 2 Ticks = One </summary>
-<img alt="ER_Diagram_20250909.png" src="https://github.com/skillstorm-congo/20250602-CGI-Java-Project-4/blob/main/ER_Diagram_20250909.png?raw=true" data-hpc="true" class="Box-sc-g0xbh4-0 fzFXnm">
+<img alt="ER_Diagram_20250918.png" src="https://github.com/skillstorm-congo/20250602-CGI-Java-Project-4/blob/main/ER_Diagram_20250918.png?raw=true" data-hpc="true" class="Box-sc-g0xbh4-0 fzFXnm">
 </details>
 
 <!-- End of project 4 ER image    -->
