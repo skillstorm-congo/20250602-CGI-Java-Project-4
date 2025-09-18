@@ -169,5 +169,25 @@ public class PayStubService
 		return ResponseEntity.ok(timeSheets);
 	}
 	
+	//find employees' id by manager id (Method 10 of 10)
+	public ResponseEntity<ArrayList<Integer>> findEmployeesByManagerId(int managerId)
+	{
+		//get all employee ids associated to a manager id
+		ResponseEntity<Iterable<Employee>> employees = this.employeeServiceClient.findByManagerId(managerId);
+		
+		//iterate through each employee and add the employee id to a list
+		ArrayList<Integer> employeeList = new ArrayList<Integer>();
+				
+		for (Employee employee : employees.getBody())
+		{
+			employeeList.add(employee.getId());
+		}
+		
+		//return list
+		if (!employeeList.iterator().hasNext())
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+		return ResponseEntity.ok(employeeList);
+
+	}
 
 }

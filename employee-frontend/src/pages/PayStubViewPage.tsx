@@ -6,10 +6,10 @@ import { useParams} from "react-router-dom";
 
 export const PayStubViewPage = () => {
 
-    //getting access to our quizId with useParams()
+    //getting access to our pay stub with useParams()
     const params = useParams();
 
-    //setting up local state for the Time Off Object we'll get from the DB 
+    //setting up local state for the pay stub Object we'll get from the DB 
     const [payStub, setPayStub] = useState<payStubType>(
         {  
             id:  Number.parseInt(params.id as string),
@@ -29,7 +29,7 @@ export const PayStubViewPage = () => {
 
     );
 
-    //using our API method to retrieve a time off record
+    //using our API method to retrieve a pay stub record
     function getPayStub() 
     {
         findByIdPayStub(payStub.id).then(response => 
@@ -42,13 +42,12 @@ export const PayStubViewPage = () => {
     // running the API call when this component loads
     useEffect(() => {
         getPayStub();  
-        //setPayStub(payStub); //see default value
     }, [])
 
     //html body
     return (
         <main>
-            <h1>Pay Stub View Page</h1>
+            <h1>Pay Stub View Employee</h1>
             <p>A Pay Stub is created by a manager. The state is pay stub date. If pay stub date is null, pay stub has NOT been PAID OUT.</p>
             
             {/*Begining of Table*/}

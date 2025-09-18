@@ -11,11 +11,11 @@ export const TimeOffViewPage = () => {
     //used to route to view a time off record
     const navigate = useNavigate();
 
-    //getting access to our quizId with useParams()
+    //getting access to our time off with useParams()
     const params = useParams();
 
     // we don't need the first element in the array (updateTimeOffContext), so we skip it!
-    const   setUpdateTimeOff = useContext(UpdateTimeOffContext)?.setUpdateTimeOff;
+    const setUpdateTimeOff = useContext(UpdateTimeOffContext)?.setUpdateTimeOff;
 
     //setting up local state for the Time Off Object we'll get from the DB 
     const [timeOff, setTimeOff] = useState<timeOffType>(
@@ -42,7 +42,6 @@ export const TimeOffViewPage = () => {
             {
                 setTimeOff(response.data);
 
-                //if statement here
                 if (setUpdateTimeOff)
                     setUpdateTimeOff(response.data);
             }
@@ -62,13 +61,12 @@ export const TimeOffViewPage = () => {
     // running the API call when this component loads
     useEffect(() => {
         getTimeOff();  
-        //setTimeOff(timeOff); //see default value
     }, [])
 
     //html body
     return (
         <main>
-            <h1>Time Off View Page</h1>
+            <h1>Time Off View Employee</h1>
             <p>A Time Off Request is created by an employee. These requests' state are: not submitted or submitted. If they have been submitted then their state are: not approved or approved.</p>
             <p>Only a manager can approve a time off and once a time off record has been submitted, an employee can no longer 'update' the request.</p>
 

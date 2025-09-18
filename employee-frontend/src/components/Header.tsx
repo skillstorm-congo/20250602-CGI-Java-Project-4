@@ -2,7 +2,7 @@
 export const Header = () => {
     return (
             <header>
-                Employee Management FRONTEND
+                Employee Management
             </header>
     )
 }

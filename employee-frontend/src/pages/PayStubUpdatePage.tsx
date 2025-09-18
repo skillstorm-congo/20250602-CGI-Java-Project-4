@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useEffect } from "react";
-import { updatePayStubRecord, getAllPayStub} from "../api/api";
-import type { payStubType } from "../types/types";
+import { updatePayStubRecord, findTimesheetsByEmployeeId} from "../api/api";
+import type { payStubType, TimesheetType} from "../types/types";
 import { useNavigate} from "react-router-dom";
 import { UpdatePayStubContext } from "../context/UpdatePayStubContext";
 import { useContext } from "react";
@@ -9,12 +9,18 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 
 export const PayStubUpdatePage = () => {
 
-    //used to route to view a time off record
+    //used to route to view pay stub record
     const navigate = useNavigate();
 
     //variables for React Hook From
     const { register, handleSubmit, watch, formState: { errors }, reset } = useForm<Inputs>({ mode: 'all'});
 
+    //setting up local state for the timesheetTable we'll get from the DB via api call
+    const [timesheetTable, setTimesheetTable] = useState(<></>)
+
+    //setting up local state for the Pay Stub Object we'll get from the DB 
+    let getTimesheets : TimesheetType[];
+    
     // setting up some state to use with our error handling
     const [ , setError ] = useState<string>('');
 
@@ -30,6 +36,7 @@ export const PayStubUpdatePage = () => {
     const handleInitialSubmit = () => {
         setShowConfirm(true);
     }
+
     //setting up local state for the Pay Stub Object we'll get from the DB 
     const [payStub, setPayStub] = useState<payStubType>(
         {  
@@ -47,70 +54,21 @@ export const PayStubUpdatePage = () => {
             totalTimeOffHours: 0,
             totalPaid: 5555.69  
         }
-
     );
-
-    //setting up local variables to get all time off records for unique list of employee ids and time off request ids
-    const [payStubs, setPayStubs] = useState<payStubType[]>(
-        [  
-            {  
-                id: 6,
-                employeeId: 66,
-                timesheetId1: 10,
-                timesheetId2: 20,
-                fiscalYearFiscalWeekStart: "202531",
-                fiscalYearFiscalWeekEnd: "202532",
-                dateStart: "2025-07-28",
-                dateEnd: "2025-08-08",
-                payStubDate: "2025-08-08", //null,
-                totalRegularHours: 45,
-                totalOvertimeHours: 2,
-                totalTimeOffHours: 0,
-                totalPaid: 5555.69
-            },
-            {
-                id: 666,
-                employeeId: 66666,
-                timesheetId1: 10,
-                timesheetId2: 20,
-                fiscalYearFiscalWeekStart: "202531",
-                fiscalYearFiscalWeekEnd: "202532",
-                dateStart: "2025-07-28",
-                dateEnd: "2025-08-08",
-                payStubDate: "2025-28-08", //null,
-                totalRegularHours: 40,
-                totalOvertimeHours: 0,
-                totalTimeOffHours: 0,
-                totalPaid: 5698.25
-            } 
-            
-        ]
-    );
-    
-    //using our API method to retrieve all time off records
-    function getPayStubs() 
-    {
-        getAllPayStub().then(response => 
-            {
-                setPayStubs(response.data);
-            }
-            ).catch(err => {console.log(err);} )
-    }
 
     // in this component, we're merely taking in a value from the context's state
     // if updatePayStub is undefined, set it to default value of payStub
     const updatePayStub = useContext(UpdatePayStubContext)?.updatePayStub ?? payStub;
 
-    // running the API call when this component loads
+    // running the API call when this component loads, load pay stub & timesheet table
     useEffect(() => {
-        getPayStubs() 
         setPayStub(updatePayStub);
+        createTimesheetTbl(updatePayStub.employeeId)
     }, [updatePayStub])
 
     //setting up our React Hook Form
     type Inputs =
     {
-        employeeId: number,
         timesheetId1: number,
         timesheetId2: number,
         dateStart: string,
@@ -118,22 +76,18 @@ export const PayStubUpdatePage = () => {
         payStubDate: string | null,
     }
 
-    //watch the dateStart so we can validate that date start is <= date end in the form
+    //watch the dateStart to validate: date start is <= date end in the form
     const startDate = watch('dateStart');
 
     //handles the form submission
     const onSubmit: SubmitHandler<Inputs> = formData =>
     {
         //reset the pay stub object with new update
-        payStub.employeeId = formData.employeeId || payStub.employeeId
         payStub.timesheetId1 = formData.timesheetId1 || payStub.timesheetId1
         payStub.timesheetId2 = formData.timesheetId2 || payStub.timesheetId2
         payStub.dateStart = formData.dateStart || payStub.dateStart
         payStub.dateEnd = formData.dateEnd || payStub.dateEnd
         payStub.payStubDate = formData.payStubDate
-        
-        //check out in the console if the object is returning what is expected
-        //console.log("New Pay Stub Object: " + JSON.stringify(payStub, null, 2));
 
         //update the pay stub record
         updatePayStubRecord(payStub.id, payStub)
@@ -147,13 +101,88 @@ export const PayStubUpdatePage = () => {
                     if (err.status == 404)
                         setError('Pay Stub Not Updated')
                     })
-
     }
+
+    //FUNCTION - Generate a table of time sheets based on employee id for the form
+    async function createTimesheetTbl(employeeId: string | number | undefined)
+    {
+        if (employeeId)
+        {
+            //if employeeId is string, convert to a number
+            if (typeof employeeId === "string")
+                employeeId = parseInt(employeeId);
+
+            //call function to get all time sheet(s) associated to an employee id
+            await findTimesheetsByEmployeeId(employeeId).then(response => 
+                {
+                    //get the timesheet array and use immediately
+                    getTimesheets = response.data;
+
+                    //time sheet must be 'approved' = true, filter out
+                    const approvedTimesheets = getTimesheets.filter(t => t.approved); 
+
+                    //sort approvedTimesheets by date start ascending order(oldest at the bottom)
+                    approvedTimesheets.sort((a, b) => 
+                        {
+                            const dateA = new Date(a.dateStart);
+                            const dateB = new Date(b.dateStart);
+
+                            return (dateB.getTime() - dateA.getTime());
+                        });
+
+                    //if approvedTimeSheets is not empty, create table, else do not create table
+                    if (approvedTimesheets.length >= 1)
+                    {
+                        //create table
+                        setTimesheetTable
+                        ( <div>
+                            <table>
+                            <thead>
+                            <tr>
+                                <Th>ID</Th>
+                                <Th>Employee</Th>
+                                <Th>Week</Th>
+                                <Th>Start</Th>
+                                <Th>End</Th>
+                                <Th>Submitted</Th>
+                                <Th>Approved</Th>
+                            </tr>
+                            </thead>
+                                <tbody>
+                                {/* Render table rows based on timesheets data*/}
+                                {approvedTimesheets.map((t) => (
+                                    <tr key={t.id}>
+                                    <Td>{t.id}</Td>
+                                    <Td>{t.employeeId}</Td>
+                                    <Td>{t.fiscalYearFiscalWeek != null ? String(t.fiscalYearFiscalWeek) : ""}</Td>
+                                    <Td>{t.dateStart}</Td>
+                                    <Td>{t.dateEnd}</Td>
+                                    <Td style={{ textAlign: "center" }}>{checkMark(t.submitted)}</Td>
+                                    <Td style={{ textAlign: "center" }}>{checkMark(t.approved)}</Td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </table>
+                        </div>
+                        )
+
+                    }//end of if statement
+                    else
+                        setTimesheetTable(<p>No Timesheets Available for Pay Stub choose another Employee Id</p>);
+
+                }//end of function
+                ).catch(err => {console.log(err);} )
+        }//end of ifstatement
+        else
+            //employee id is undefined / falsy
+            setTimesheetTable(<p>No Timesheets Available for Pay Stub choose another Employee Id</p>)
+
+    }//end of createTimesheetTable function
 
     //html body
     return (
         <main>
-            <h1>Pay Stub Update Page</h1>
+            <h1>Pay Stub Update Manager</h1>
             <p>A Pay Stub is created by a manager. The state is pay stub date. If pay stub date is null, pay stub has NOT been PAID OUT.</p>
 
             {/*Begining of Table*/}
@@ -205,23 +234,19 @@ export const PayStubUpdatePage = () => {
             </div>
             {/*End of Table*/}
 
+            <div>
+            {/*Begining of Timesheet(s)Table*/}
+            <h2>Available Timesheet(s)</h2>
+
+            {/* create a table for available time sheets for an employee id */}
+            {timesheetTable}
+            </div>
+
             {/*Begining of Form*/}
             <div> 
             <h2>Update a Pay Stub Form</h2>
             <form onSubmit={handleSubmit(handleInitialSubmit)}>
                 
-                {/* employeeid will be deleted once user log in is configured, use defaultValue = {updatePayStub.employeeId} for employee id box*/}
-                <label htmlFor = "employee id"> Employee Id: </label>
-                <select id = "employee id" {...register(`employeeId`)}>
-                { 
-                    employeeDropDown(payStubs).map(id => 
-                    {
-                        return(<option key = {id}>{id}</option>)
-                    })    
-                }
-                </select>
-                <br></br><br></br>
-
                 <label htmlFor = "time sheet id 1"> Time Sheet Id 1: </label> 
                 <input type = "text" id = "time sheet id 1" size = {100} defaultValue = {updatePayStub.timesheetId1} {...register(`timesheetId1`, {required: true, maxLength:200})}></input>
                 {errors.timesheetId1 && <p style={{color: 'red'}}>Please Enter a Time Sheet Id</p>}
@@ -251,11 +276,11 @@ export const PayStubUpdatePage = () => {
                 <div style={{ marginTop: '50px', marginBottom: '50px' }}>
                     <button style={{ backgroundColor: 'yellow', color: 'black', padding: '10px 20px', border: 'none', borderRadius: '5px' , margin: '10px'}}
                         type = "button"
-                        onClick={() => {reset({employeeId: 0, timesheetId1: 0, timesheetId2: 0, dateEnd: "", dateStart: "", payStubDate: ""});}} >
+                        onClick={() => {reset({timesheetId1: 0, timesheetId2: 0, dateEnd: "", dateStart: "", payStubDate: ""});}} >
                         Clear
                     </button>
                         
-                    {/* Submit button to Update Time Off Record */}
+                    {/* Submit button to Update Pay Stub Record */}
                     <input style={{ backgroundColor: 'green', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '5px', margin: '10px' }} type="submit" />
                 </div>  
 
@@ -271,9 +296,9 @@ export const PayStubUpdatePage = () => {
                 )}
             </form>
 
-             {/* using useNavigate here to take us to the pay stub manager page */}
+             {/* using useNavigate here to take us to the pay stub view page */}
             <br></br>
-            <button style={{ backgroundColor: 'red', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '5px' }} onClick={() => navigate(`/pay-stub-m`)}>Cancel</button>
+            <button style={{ backgroundColor: 'red', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '5px' }} onClick={() => navigate(`/pay-stub-m/${payStub.id}`)}>Cancel</button>
 
             </div>
         
@@ -309,26 +334,17 @@ const Td = (p: any) => (
   />
 )
 
-//HELPER FUNCTION - Employee Id Drop Down 
-function employeeDropDown(data:payStubType[])
+//HELPER FUNCTION - flag()
+function checkMark(v: boolean | null | undefined) 
 {
-    //set up an empty array
-    const allIds:number[] = [];
+  //Unicode resource -- https://unicode.org/charts//PDF/Unicode-10.0/U100-2B00.pdf
+  if (v === true)
+  {return "\u2705";}
+  else if (v === false)
+  {return "\u274C";}
 
-    //add all employee id to an array
-    data.forEach(element => 
-    {
-        allIds.push(element.employeeId);
-        
-    } )
+ return  "";
+} 
 
-    //add "0" for clear state
-    allIds.push(0);
-
-    //get all unique ids in the array
-    const uniqueIds = [...new Set(allIds)];
-
-    return uniqueIds;
-}
 
 

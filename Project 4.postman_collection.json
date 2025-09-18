@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "b56ed189-0f91-4fad-930e-e4af1abba4dc",
+		"_postman_id": "70cb76ae-3037-4a7a-8d53-b3fd35b0d8cb",
 		"name": "Project 4",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "26834563"
+		"_exporter_id": "45548510"
 	},
 	"item": [
 		{
@@ -18,7 +18,14 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": ""
+									"raw": "localhost:9000/pay-stub",
+									"host": [
+										"localhost"
+									],
+									"port": "9000",
+									"path": [
+										"pay-stub"
+									]
 								}
 							},
 							"response": []
@@ -132,11 +139,11 @@
 									}
 								},
 								"url": {
-									"raw": "localhost:8081/pay-stub",
+									"raw": "localhost:9000/pay-stub",
 									"host": [
 										"localhost"
 									],
-									"port": "8081",
+									"port": "9000",
 									"path": [
 										"pay-stub"
 									]
@@ -199,6 +206,58 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "findTimesheetByEmployeeId() Copy",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8081/pay-stub/timesheet/84",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"pay-stub",
+										"timesheet",
+										"84"
+									],
+									"query": [
+										{
+											"key": "employeeId",
+											"value": "64",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "findEmployeesByManagerId()",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:9000/pay-stub/employees?managerId=2",
+									"host": [
+										"localhost"
+									],
+									"port": "9000",
+									"path": [
+										"pay-stub",
+										"employees"
+									],
+									"query": [
+										{
+											"key": "managerId",
+											"value": "2"
+										}
+									]
+								}
+							},
+							"response": []
 						}
 					]
 				},
@@ -229,7 +288,15 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": ""
+									"raw": "localhost:9000/time-off/14",
+									"host": [
+										"localhost"
+									],
+									"port": "9000",
+									"path": [
+										"time-off",
+										"14"
+									]
 								}
 							},
 							"response": []
@@ -324,11 +391,11 @@
 									}
 								},
 								"url": {
-									"raw": "localhost:8080/time-off",
+									"raw": "localhost:9000/time-off",
 									"host": [
 										"localhost"
 									],
-									"port": "8080",
+									"port": "9000",
 									"path": [
 										"time-off"
 									]
@@ -854,6 +921,58 @@
 							"path": [
 								"pay-stub",
 								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findTimesheetByEmployeeId()",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8081/pay-stub/timesheet/84",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"pay-stub",
+								"timesheet",
+								"84"
+							],
+							"query": [
+								{
+									"key": "employeeId",
+									"value": "64",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findEmployeesByManagerId()",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8081/pay-stub/employees?managerId=2",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"pay-stub",
+								"employees"
+							],
+							"query": [
+								{
+									"key": "managerId",
+									"value": "2"
+								}
 							]
 						}
 					},

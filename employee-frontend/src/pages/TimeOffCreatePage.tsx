@@ -149,7 +149,7 @@ export const TimeOffCreatePage = () => {
     //html body
     return (
         <main>
-            <h1>Time Off Create Page</h1>
+            <h1>Time Off Create</h1>
             <p>A Time Off Request is created by an employee. These requests' state are: not submitted or submitted. If they have been submitted then their state are: not approved or approved.</p>
             <p>Only a manager can approve a time off and once a time off record has been submitted, an employee can no longer 'update' the request.</p>
 

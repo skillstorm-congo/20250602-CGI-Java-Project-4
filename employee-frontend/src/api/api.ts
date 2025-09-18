@@ -163,5 +163,10 @@ export const findTimesheetsByEmployeeId = async (employeeId: number) => {
     return await axios.get(`${baseUrl}pay-stub/timesheet/${employeeId}`);
 }
 
+//10) get a list of employees associated to a manager Id
+export const findEmployeeIdsByManagerId = async (managerId: number) => {
+    return await axios.get(`${baseUrl}pay-stub/employees`, {params: {managerId},});
+}
+
 // ------------------------------------------------------------------
 //USER FUNCTIONS

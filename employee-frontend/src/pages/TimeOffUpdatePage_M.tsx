@@ -73,9 +73,6 @@ export const TimeOffUpdatePage_M = () => {
         //reset the time off object with new update
         timeOff.approved = formData.approved
         timeOff.approvedDate= formData.approvedDate
-        
-        //check out in the console if the object is returning what is expected
-        //console.log("New Time Off Object: " + JSON.stringify(timeOff, null, 2));
 
         //update the new time off record
        updateTimeOffRecord(timeOff.id, timeOff)
@@ -95,7 +92,7 @@ export const TimeOffUpdatePage_M = () => {
     //html body
     return (
         <main>
-            <h1>Time Off Update Page</h1>
+            <h1>Time Off Update Manager</h1>
             <p>A Time Off Request is created by an employee. These requests' state are: not submitted or submitted. If they have been submitted then their state are: not approved or approved.</p>
             <p>Only a manager can approve a time off and once a time off record has been submitted, an employee can no longer 'update' the request.</p>
 
@@ -190,8 +187,7 @@ export const TimeOffUpdatePage_M = () => {
         
         </main>
     )
-
-} //end of const TimeOffPage_E
+} //end of const TimeOffUpdatePage_M
 
 
 //HELPER CONSTANT - table head

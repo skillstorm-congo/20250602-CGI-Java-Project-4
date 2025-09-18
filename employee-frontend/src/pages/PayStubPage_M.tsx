@@ -45,13 +45,11 @@ export const PayStubPage_M = () => {
     ]
     );
 
-    //CONSTANT - ROW-RECORD STATES for data being transfered for using TimesheetType 
-    //const [rows, setRows] = useState<TimesheetType[]>([]);
+    //CONSTANT - ROW-RECORD STATES for data being transfered for using pay stub type
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    //CONSTANT - FILTER STATES for table: employeeId, managerId, date, submitted, approved
-    //NOTE: will adjust for employee vs manager view, notice it's using "set" in the filters but not adding it to a record
+    //CONSTANT - FILTER STATES for table: employeeId, managerId, date, pay stub date
     const [employeeId, setEmployeeId] = useState<string>("");
     const [managerId, setManagerId] = useState<string>("");
     const [date, setDate] = useState<string>(""); // yyyy-mm-dd
@@ -98,12 +96,12 @@ export const PayStubPage_M = () => {
     //FUNCTION 2 of 2: clearTableFilters() - clear filters and set to "empty" state
     function clearTableFilters() {
         setEmployeeId("");
-        setManagerId("0");
+        setManagerId("");
         setDate("");
         setPayStubDate("All");
     }
 
-    //using our API method to retrieve all time off records
+    //using our API method to retrieve all pay stub records
     function getPayStub() 
     {
         getAllPayStub().then(response => 
@@ -116,15 +114,12 @@ export const PayStubPage_M = () => {
     // running the API call when this component loads
     useEffect(() => {
         loadPayStubTable(); //new table with filters
-        //getPayStub(); //orig table with
-        //setPayStub(payStub); //see default values
     }, [])
 
 
     return (
         <main>
             <h1>Pay Stub Manager</h1>
-            <h2>Welcome to the Pay Stub Page for Manager!</h2>
             <p>A Pay Stub is created by a manager. The state is pay stub date. If pay stub date is null, pay stub has NOT been PAID OUT.</p>
             
             {/*Begining of Table */}
@@ -155,6 +150,7 @@ export const PayStubPage_M = () => {
                     value={employeeId}
                     onChange={(e) => setEmployeeId(e.target.value)}
                 >
+                <option value="" disabled hidden>Select an Id...</option>
                 { 
                     employeeDropDown(payStub).map(id => 
                     {
@@ -171,7 +167,7 @@ export const PayStubPage_M = () => {
                     value={managerId}
                     onChange={(e) => setManagerId(e.target.value)}
                 >
-                <option>0</option>
+                <option value="" disabled hidden>Select an Id...</option>
                 <option>1</option>
                 <option>2</option>
                 <option>3</option>
@@ -248,17 +244,11 @@ export const PayStubPage_M = () => {
                     <thead>
                         <tr>
                             <Th> Employee Id</Th>
-                            {/* <Th> Time Sheet Id 1</Th>
-                            <Th> Time Sheet Id 2</Th> */}
                             <Th> Fiscal Year Fiscal Week Start </Th>
                             <Th> Fiscal Year Fiscal Week End </Th>
                             <Th> Date Start </Th>
                             <Th> Date End </Th>
                             <Th> Pay Stub Date</Th>
-                            {/* <Th> Total Regular Hours</Th>
-                            <Th> Total Overtime Hours</Th>
-                            <Th> Total Time Off Hours</Th>
-                            <Th> Total Paid</Th> */}
                             <Th> View Record</Th>
                         </tr>
                     </thead>
@@ -270,17 +260,11 @@ export const PayStubPage_M = () => {
                                 return(
                                         <tr key={payStub.id}>
                                             <Td>{payStub.employeeId}</Td>
-                                            {/* <Td>{payStub.timesheetId1}</Td>
-                                            <Td>{payStub.timesheetId2}</Td> */}
                                             <Td>{payStub.fiscalYearFiscalWeekStart}</Td>
                                             <Td>{payStub.fiscalYearFiscalWeekEnd}</Td>
                                             <Td>{payStub.dateStart}</Td>
                                             <Td>{payStub.dateEnd}</Td>
                                             <Td>{payStub.payStubDate}</Td>
-                                            {/* <Td>{payStub.totalRegularHours}</Td>
-                                            <Td>{payStub.totalOvertimeHours}</Td>
-                                            <Td>{payStub.totalTimeOffHours}</Td>
-                                            <Td>{payStub.totalPaid}</Td> */}
 
                                             <td data-label="Action">
                                             <button onClick={() => navigate(`/pay-stub-m/${payStub.id}`)}>
@@ -298,11 +282,7 @@ export const PayStubPage_M = () => {
                     </tbody>
                 </table>
                 </div>
-
         </main>
-
-
-
     )
 
 }//end of const PayStubPage_E
@@ -334,17 +314,6 @@ const Td = (p: any) => (
   />
 )
 
-//HELPER FUNCTION - flag()
-function checkMark(v: boolean | null | undefined) 
-{
-  //Unicode resource -- https://unicode.org/charts//PDF/Unicode-10.0/U100-2B00.pdf
-  if (v === true)
-  {return "\u2705";}
-  else if (v === false)
-  {return "\u274C";}
-
- return  "";
-} 
 
 //HELPER FUNCTION - Employee Id Drop Down 
 function employeeDropDown(data :payStubType[])

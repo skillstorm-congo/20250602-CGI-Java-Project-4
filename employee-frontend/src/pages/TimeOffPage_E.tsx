@@ -46,13 +46,11 @@ export const TimeOffPage_E = () => {
         ]
     );
 
-    //CONSTANT - ROW-RECORD STATES for data being transfered for using TimesheetType 
-    //const [rows, setRows] = useState<TimesheetType[]>([]);
+    //CONSTANT - ROW-RECORD STATES for data being transfered for using time off Type 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    //CONSTANT - FILTER STATES for table: employeeId, managerId, date, submitted, approved
-    //NOTE: will adjust for employee vs manager view, notice it's using "set" in the filters but not adding it to a record
+    //CONSTANT - FILTER STATES for table: employeeId, date, submitted, approved
     const [employeeId, setEmployeeId] = useState<string>("");
     const [date, setDate] = useState<string>(""); // yyyy-mm-dd
     const [submitted, setSubmitted] = useState<Tri>("any");
@@ -73,7 +71,7 @@ export const TimeOffPage_E = () => {
                 else 
                 {response = await getAllTimeOff();}
 
-                //assign the timesheetData with try{}'s response from the data that Axios pulled from endpoints
+                //assign the timeOffData with try{}'s response from the data that Axios pulled from endpoints
                 //this is what will will populate the table with the response data
                 let timeOffData: timeOffType[] = Array.isArray(response.data) ? response.data : []; 
             
@@ -83,7 +81,7 @@ export const TimeOffPage_E = () => {
                     const wantTrue = (submitted === "true"); //local constant for drop down menu to be a boolean/tri-type, if not "submitted" it'll be FALSE
                     timeOffData = timeOffData.filter(t => (t.submitted === true) === wantTrue); //set time off field to a true response or checkmark when true
                 }
-                //APPROVED-filter Boolean Response (same logic as above) - Line 168
+                //APPROVED-filter Boolean Response (same logic as above) 
                 if (approved !== "any") 
                 {
                     const wantTrue = (approved === "true");
@@ -120,15 +118,13 @@ export const TimeOffPage_E = () => {
 
     // running the API call when this component loads
     useEffect(() => {
-        loadTimeOffTable(); //new table with filters
-        //getTimeOff();  //original table 
-        //setTimeOff(timeOff); //see default values
+        loadTimeOffTable(); 
     }, [])
 
     //html body
     return (
         <main>
-            <h1>Time Off Page Employee</h1>
+            <h1>Time Off Employee</h1>
             <p>A Time Off Request is created by an employee. These requests' state are: not submitted or submitted. If they have been submitted then their state are: not approved or approved.</p>
             <p>Only a manager can approve a time off and once a time off record has been submitted, an employee can no longer 'update' the request.</p>
 
@@ -182,12 +178,11 @@ export const TimeOffPage_E = () => {
                 </label>
 
                 <label>
-                <div>Submitted</div> {/* Refer to lines 75-78*/}
+                <div>Submitted</div> 
                 <select
                     value={submitted}
                     onChange={(e) => setSubmitted(e.target.value as Tri)}
                 >
-                    {/* Refer to lines 34, 75-78*/}
                     <option value="any">Any</option> 
                     <option value="true">Submitted</option>
                     <option value="false">Not submitted</option>
@@ -195,12 +190,11 @@ export const TimeOffPage_E = () => {
                 </label>
 
                 <label>
-                <div>Approved</div> {/* Refer to lines 80-83*/}
+                <div>Approved</div> 
                 <select
                     value={approved}
                     onChange={(e) => setApproved(e.target.value as Tri)}
                 >
-                    {/* Refer to lines 34, 80-83*/}
                     <option value="any">Any</option> 
                     <option value="true">Approved</option>
                     <option value="false">Not approved</option>
@@ -221,7 +215,7 @@ export const TimeOffPage_E = () => {
                         Clear
                     </button>
 
-                    {/* See All Records Button that calls function loadTimesheetTable()*/}
+                    {/* See All Records Button that calls function loadTimeOffTable()*/}
                     <button onClick={() => {getTimeOff();}} 
                         disabled={loading}
                     >
@@ -298,10 +292,8 @@ export const TimeOffPage_E = () => {
                     </tbody>
                 </table>
         </div>
-
         </main>
     )
-
 } //end of const TimeOffPage_E
 
 

@@ -11,7 +11,7 @@ export const TimeOffViewPage_M = () => {
     //used to route to view a time off record
     const navigate = useNavigate();
 
-    //getting access to our quizId with useParams()
+    //getting access to our time off with useParams()
     const params = useParams();
 
     // we don't need the first element in the array (updateTimeOffContext), so we skip it!
@@ -61,13 +61,12 @@ export const TimeOffViewPage_M = () => {
     // running the API call when this component loads
     useEffect(() => {
         getTimeOff();  
-        //setTimeOff(timeOff); //see default value
     }, [])
 
     //html body
     return (
         <main>
-            <h1>Time Off View Page Manager</h1>
+            <h1>Time Off View Manager</h1>
             <p>A Time Off Request is created by an employee. These requests' state are: not submitted or submitted. If they have been submitted then their state are: not approved or approved.</p>
             <p>Only a manager can approve a time off and once a time off record has been submitted, an employee can no longer 'update' the request.</p>
 
@@ -151,7 +150,6 @@ export const TimeOffViewPage_M = () => {
 
         </main>
     )
-
 } //end of const TimeOffViewPage_M
 
 
@@ -193,19 +191,5 @@ function checkMark(v: boolean | null | undefined)
  return  "";
 } 
 
-//HELPER FUNCTION - Update & Delete Buttons
-function upDelButtons(timeOff:timeOffType) 
-{
-    if (timeOff.submitted)
-    {
-        if(timeOff.approved === null)
-            return (<button onClick={() => deleteTimeOff }>{"\u279C"}</button>)
-        
-        else //it is true or false
-            return (<button>{"\u{1F6D1}"}</button>)
-    }       
-    else
-        return (<button>{"\u{1F6D1}"}</button>)
 
-} 
 

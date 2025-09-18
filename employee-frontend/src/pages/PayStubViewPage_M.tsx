@@ -8,16 +8,16 @@ import { UpdatePayStubContext } from "../context/UpdatePayStubContext";
 
 export const PayStubViewPage_M = () => {
 
-    //getting access to our quizId with useParams()
+    //getting access to our pay stub with useParams()
     const params = useParams();
 
-    //used to route to view a time off record
+    //used to route to update pay stub record
     const navigate = useNavigate();
 
-    // we don't need the first element in the array (updateTimeOffContext), so we skip it!
+    // we don't need the first element in the array (updatePayStubContext), so we skip it!
     const setUpdatePayStub = useContext(UpdatePayStubContext)?.setUpdatePayStub;
     
-    //setting up local state for the Time Off Object we'll get from the DB 
+    //setting up local state for the Pay Stub Object we'll get from the DB 
     const [payStub, setPayStub] = useState<payStubType>(
         {  
             id:  Number.parseInt(params.id as string),
@@ -37,7 +37,7 @@ export const PayStubViewPage_M = () => {
 
     );
 
-    //using our API method to retrieve a time off record
+    //using our API method to retrieve a pay stub record
     function getPayStub() 
     {
         findByIdPayStub(payStub.id).then(response => 
@@ -53,10 +53,9 @@ export const PayStubViewPage_M = () => {
     // running the API call when this component loads
     useEffect(() => {
         getPayStub();  
-        //setPayStub(payStub); //see default value
     }, [])
 
-    //using our API method to delete a time off record
+    //using our API method to delete a pay stub record
     function deletePayStubRecord() 
     {
         deletePayStub(payStub.id).then(response => 
@@ -66,7 +65,6 @@ export const PayStubViewPage_M = () => {
             ).catch(err => {console.log(err);} )
     }
     
-
     //html body
     return (
         <main>

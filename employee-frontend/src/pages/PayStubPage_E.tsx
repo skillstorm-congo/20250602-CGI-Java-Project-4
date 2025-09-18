@@ -6,7 +6,7 @@ import { useNavigate} from "react-router-dom";
 
 export const PayStubPage_E = () => {
 
-    //setting up navigation to view a time off record
+    //setting up navigation to view a pay stub record
     const navigate = useNavigate();
 
     //setting up local state for the Pay Stub Object we'll get from the DB 
@@ -45,17 +45,14 @@ export const PayStubPage_E = () => {
     ]
     );
 
-    //CONSTANT - ROW-RECORD STATES for data being transfered for using TimesheetType 
-    //const [rows, setRows] = useState<TimesheetType[]>([]);
+    //CONSTANT - ROW-RECORD STATES for data being transfered for using pay stub type
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    //CONSTANT - FILTER STATES for table: employeeId, managerId, date, submitted, approved
-    //NOTE: will adjust for employee vs manager view, notice it's using "set" in the filters but not adding it to a record
+    //CONSTANT - FILTER STATES for table: employeeId, date, pay stub date
     const [employeeId, setEmployeeId] = useState<string>("");
     const [date, setDate] = useState<string>(""); // yyyy-mm-dd
     const [payStubDate, setPayStubDate] = useState<string>(""); 
-
 
     //FUNCTION 1 of 2: loadPayStubTable() - will populate findAll() first then call endpoints from controller to filter
     async function loadPayStubTable() {
@@ -102,7 +99,7 @@ export const PayStubPage_E = () => {
         setPayStubDate("All");
     }
 
-    //using our API method to retrieve all time off records
+    //using our API method to retrieve all pay stub records
     function getPayStub() 
     {
         getAllPayStub().then(response => 
@@ -115,15 +112,12 @@ export const PayStubPage_E = () => {
     // running the API call when this component loads
     useEffect(() => {
         loadPayStubTable(); //new table with filters
-        //getPayStub(); //orig table with
-        //setPayStub(payStub); //see default values
     }, [])
 
 
     return (
         <main>
             <h1>Pay Stub Employee</h1>
-            <h2>Welcome to the Pay Stub Page for Employee!</h2>
             <p>A Pay Stub is created by a manager. The state is pay stub date. If pay stub date is null, pay stub has NOT been PAID OUT.</p>
             
             {/*Begining of Table */}
@@ -225,17 +219,11 @@ export const PayStubPage_E = () => {
                     <thead>
                         <tr>
                             <Th> Employee Id</Th>
-                            {/* <Th> Time Sheet Id 1</Th>
-                            <Th> Time Sheet Id 2</Th> */}
                             <Th> Fiscal Year Fiscal Week Start </Th>
                             <Th> Fiscal Year Fiscal Week End </Th>
                             <Th> Date Start </Th>
                             <Th> Date End </Th>
                             <Th> Pay Stub Date</Th>
-                            {/* <Th> Total Regular Hours</Th>
-                            <Th> Total Overtime Hours</Th>
-                            <Th> Total Time Off Hours</Th>
-                            <Th> Total Paid</Th> */}
                             <Th> View Record</Th>
                         </tr>
                     </thead>
@@ -247,17 +235,11 @@ export const PayStubPage_E = () => {
                                 return(
                                         <tr key={payStub.id}>
                                             <Td>{payStub.employeeId}</Td>
-                                            {/* <Td>{payStub.timesheetId1}</Td>
-                                            <Td>{payStub.timesheetId2}</Td> */}
                                             <Td>{payStub.fiscalYearFiscalWeekStart}</Td>
                                             <Td>{payStub.fiscalYearFiscalWeekEnd}</Td>
                                             <Td>{payStub.dateStart}</Td>
                                             <Td>{payStub.dateEnd}</Td>
                                             <Td>{payStub.payStubDate}</Td>
-                                            {/* <Td>{payStub.totalRegularHours}</Td>
-                                            <Td>{payStub.totalOvertimeHours}</Td>
-                                            <Td>{payStub.totalTimeOffHours}</Td>
-                                            <Td>{payStub.totalPaid}</Td> */}
 
                                             <td data-label="Action">
                                             <button onClick={() => navigate(`/pay-stub/${payStub.id}`)}>
@@ -276,11 +258,7 @@ export const PayStubPage_E = () => {
                     </tbody>
                 </table>
                 </div>
-
         </main>
-
-
-
     )
 
 }//end of const PayStubPage_E

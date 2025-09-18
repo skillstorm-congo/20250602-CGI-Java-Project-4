@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import type { payStubType, TimesheetType} from "../types/types";
 import { useNavigate, } from "react-router-dom";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { createPayStub, getAllPayStub, findTimesheetsByEmployeeId } from "../api/api";
+import { createPayStub, getAllPayStub, findTimesheetsByEmployeeId, findEmployeeIdsByManagerId } from "../api/api";
 
 export const PayStubCreatePage_M = () => {
 
@@ -13,43 +13,11 @@ export const PayStubCreatePage_M = () => {
     //setting up local state for the Pay Stub Object we'll get from the DB 
     let getTimesheets : TimesheetType[];
 
-    const [timesheets, setTimesheets] = useState<TimesheetType[]>(
-        [  
-            {  
-                id: 6,
-                employeeId: 66,
-                fiscalYearFiscalWeek: "202535",
-                totalRegularHours: 40,
-                totalOvertimeHours: 2,
-                totalTimeOffHours: 0,
-                dateStart: "2025-08-25", 
-                dateEnd: "2025-08-29",
-                submitted: true,
-                submittedDate: "2025-08-29",
-                approved: true,
-                approvedDate: "2025-09-02",
-                comment: null,
-                timeOffId: null,
-                regularHoursDay1: 8,
-                regularHoursDay2: 8,
-                regularHoursDay3: 8,
-                regularHoursDay4: 8,
-                regularHoursDay5: 8,
-                overtimeHoursDay1: 0,
-                overtimeHoursDay2: 0,
-                overtimeHoursDay3: 2,
-                overtimeHoursDay4: 0,
-                overtimeHoursDay5: 0,
-                timeOffHoursDay1: 0,
-                timeOffHoursDay2: 0, 
-                timeOffHoursDay3: 0,
-                timeOffHoursDay4: 0,
-                timeOffHoursDay5: 0,
-            }
-    ]
-    );
-    
-    //used to route to view a time off record
+    //setting up local state for manager id user selection
+    const [managerId, setManagerId] = useState<string>("");
+    const [employeeIds, setEmployeeIds] = useState<number[]>([6, 66, 666]);
+
+    //used to route to view a pay stub record
     const navigate = useNavigate();
 
     //variables for React Hook From
@@ -91,7 +59,7 @@ export const PayStubCreatePage_M = () => {
 
     );
 
-    //setting up local variables to get all time off records for unique list of employee ids and time off request ids
+    //setting up local variables to get all pay stub records for unique list of employee ids 
     const [payStubs, setPayStubs] = useState<payStubType[]>(
         [  
             {  
@@ -103,7 +71,7 @@ export const PayStubCreatePage_M = () => {
                 fiscalYearFiscalWeekEnd: "202532",
                 dateStart: "2025-07-28",
                 dateEnd: "2025-08-08",
-                payStubDate: "2025-08-08", //null,
+                payStubDate: "2025-08-08", 
                 totalRegularHours: 45,
                 totalOvertimeHours: 2,
                 totalTimeOffHours: 0,
@@ -118,7 +86,7 @@ export const PayStubCreatePage_M = () => {
                 fiscalYearFiscalWeekEnd: "202532",
                 dateStart: "2025-07-28",
                 dateEnd: "2025-08-08",
-                payStubDate: "2025-28-08", //null,
+                payStubDate: "2025-28-08",
                 totalRegularHours: 40,
                 totalOvertimeHours: 0,
                 totalTimeOffHours: 0,
@@ -136,6 +104,16 @@ export const PayStubCreatePage_M = () => {
                 setPayStubs(response.data);
             }
             ).catch(err => {console.log(err);} )
+    }
+
+    //FUNCTION - get a list of employee ids associated to a manager id for employee drop down box in the form
+    function getEmployeesIds( managerId: number)
+    {
+        findEmployeeIdsByManagerId(managerId).then(response =>
+        {
+            setEmployeeIds(response.data); 
+        }
+        ).catch(err => {console.log(err);} )
     }
 
     // running the API call when this component loads
@@ -177,244 +155,101 @@ export const PayStubCreatePage_M = () => {
             payStubDate: formData.payStubDate,
         }
 
-        //create a new time off record
+        //create a new pay stub record
         createPayStub(payStub)
             .then(response => {
                     console.log(response)
 
-                    //navigate to Time Off Page
+                    //navigate to pay stub m Page
                     navigate('/pay-stub-m')
                 })
                 .catch(err => {console.log(err);
                     if (err.status == 404)
                         setError('Pay Stub Not Created')
                     })
-
     }
     
-    // //call function to get all time sheet(s) associated to an employee id
-    //  async function getTimeSheets(employeeId: number) 
-    //  {    
-    //     await findTimesheetsByEmployeeId(employeeId).then(response => 
-    //                 {
-    //                     console.log(response.data)
-    //                     setTimesheets(response.data);
-    //                 }
-    //                 ).catch(err => {console.log(err);} )
-    // }
-
-    // //FUNCTION - Generate a table of time sheets based on employee id for the form
-    // async function createTimesheetTbl(employeeId: string | number | undefined)
-    // {
-    //     console.log("employeeId out of switch:  " + employeeId)
-    //     console.log("typeof:  " + typeof employeeId)
-
-    //     switch(employeeId)
-    //     {
-    //         case 0: //default employee id drop down
-    //                 console.log("employeeId case 0:  " + employeeId)
-    //                 return ("No Timesheets Available for Pay Stub choose another Employee Id");
-                
-    //         case 66: //default value for example
-    //                 console.log("employeeId case 66:  " + employeeId)
-    //                 return ("No Timesheets Available for Pay Stub choose another Employee Id");
-
-
-    //         case "0": //default employee id drop down
-    //                 console.log("employeeId case string 0:  " + employeeId)
-    //                 return ("No Timesheets Available for Pay Stub choose another Employee Id");
-
-                
-    //         case "66": //default value for example
-    //                 console.log("employeeId case string 66:  " + employeeId)
-    //                 return ("No Timesheets Available for Pay Stub choose another Employee Id");
-
-    //         case undefined:
-    //                 console.log("employeeId case undefined:  " + employeeId)
-    //                 return ("No Timesheets Available for Pay Stub choose another Employee Id");
-
-    //         default:
-    //             console.log("In get time sheets. ")
-    //             console.log("employeeId default:  " + employeeId)
-
-    //             //make sure if it came in as a string to convert it to a number
-    //             if (typeof employeeId === "string")
-    //                 employeeId = parseInt(employeeId);
-
-    //             //call function to get all time sheet(s) associated to an employee id
-    //             await getTimeSheets(employeeId);
-
-                
-
-    //             //take a look at timeSheets - uses default value till the end
-    //             console.log("timeSheets: " + timesheets)
-    //             console.log("timeSheets length: " + timesheets.length)
-
-    //             timesheets.forEach(t => console.log(JSON.stringify(t, null, 2)));
-
-    //             //time sheet must be 'approved' = true, filter out
-    //             const approvedTimesheets = timesheets.filter(t => t.approved); 
-
-    //             //sort approvedTimesheets by date start ascending order(oldest at the bottom)
-    //             approvedTimesheets.sort((a, b) => 
-    //                 {
-    //                     const dateA = new Date(a.dateStart);
-    //                     const dateB = new Date(b.dateStart);
-
-    //                     return (dateB.getTime() - dateA.getTime());
-    //                 });
-
-    //             console.log("approved timeSheets: " + approvedTimesheets)
-    //             console.log("approved timeSheets length: " + approvedTimesheets.length)
-
-    //             for (let timesheet in approvedTimesheets)
-    //             {
-    //                 console.log(JSON.stringify(timesheet, null, 2))
-    //             }
-
-    //             //if approvedTimeSheets is not empty, create table, else do not create table *employee id 39 has no timesheets
-    //             if (approvedTimesheets.length >= 1)
-    //             {
-    //                 //create table
-    //                 setTimesheetTable
-    //                 ( <div>
-    //                     <table>
-    //                     <thead>
-    //                     <tr>
-    //                         <Th>ID</Th>
-    //                         <Th>Employee</Th>
-    //                         <Th>Week</Th>
-    //                         <Th>Start</Th>
-    //                         <Th>End</Th>
-    //                         <Th>Submitted</Th>
-    //                         <Th>Approved</Th>
-    //                     </tr>
-    //                     </thead>
-    //                         <tbody>
-    //                         {/* Render table rows based on myDataField */}
-    //                         {approvedTimesheets.map((t) => (
-    //                             <tr key={t.id}>
-    //                             <Td>{t.id}</Td>
-    //                             <Td>{t.employeeId}</Td>
-    //                             <Td>{t.fiscalYearFiscalWeek != null ? String(t.fiscalYearFiscalWeek) : ""}</Td>
-    //                             <Td>{t.dateStart}</Td>
-    //                             <Td>{t.dateEnd}</Td>
-    //                             <Td style={{ textAlign: "center" }}>{checkMark(t.submitted)}</Td>
-    //                             <Td style={{ textAlign: "center" }}>{checkMark(t.approved)}</Td>
-    //                             </tr>
-    //                         ))}
-    //                         </tbody>
-    //                     </table>
-    //                 </div>
-    //                 )
-
-    //             }
-    //             else
-    //                 return ("No Timesheets Available for Pay Stub choose another Employee Id");
-            
-    //     }
-        
-    // }
-
     //FUNCTION - Generate a table of time sheets based on employee id for the form
     async function createTimesheetTbl(employeeId: string | number | undefined)
     {
-        switch(employeeId)
+        if (employeeId)
         {
-            case "0": //default employee id drop down
-                    console.log("employeeId case string 0:  " + employeeId)
-                    setTimesheetTable(<p>No Timesheets Available for Pay Stub choose another Employee Id</p>)
-                    break;
+            //if employeeId is string, convert to a number
+            if (typeof employeeId === "string")
+                employeeId = parseInt(employeeId);
 
-            case undefined:
-                    console.log("employeeId case undefined:  " + employeeId)
-                    setTimesheetTable(<p>No Timesheets Available for Pay Stub choose another Employee Id</p>)
-                    break;
+            //call function to get all time sheet(s) associated to an employee id
+            await findTimesheetsByEmployeeId(employeeId).then(response => 
+                {
+                    //get the timesheet array and use immediately
+                    getTimesheets = response.data;
 
-            default:
-                console.log("In switch get time sheets. ")
-                console.log("employeeId default:  " + employeeId)
-                console.log("typeof:  " + typeof employeeId)
+                    //time sheet must be 'approved' = true, filter out
+                    const approvedTimesheets = getTimesheets.filter(t => t.approved); 
 
-                //if employeeId is string, convert to a number
-                if (typeof employeeId === "string")
-                    employeeId = parseInt(employeeId);
-
-                //call function to get all time sheet(s) associated to an employee id
-                await findTimesheetsByEmployeeId(employeeId).then(response => 
-                    {
-                        setTimesheets(response.data);
-
-                        //get the timesheet array and use immediately
-                        getTimesheets = response.data;
-
-                        //take a look at the timesheet response
-                        // getTimesheets.forEach(t => console.log(JSON.stringify(t, null, 2)));
-
-                        //time sheet must be 'approved' = true, filter out
-                        const approvedTimesheets = getTimesheets.filter(t => t.approved); 
-
-                        //sort approvedTimesheets by date start ascending order(oldest at the bottom)
-                        approvedTimesheets.sort((a, b) => 
-                            {
-                                const dateA = new Date(a.dateStart);
-                                const dateB = new Date(b.dateStart);
-
-                                return (dateB.getTime() - dateA.getTime());
-                            });
-
-                        //if approvedTimeSheets is not empty, create table, else do not create table
-                        if (approvedTimesheets.length >= 1)
+                    //sort approvedTimesheets by date start ascending order(oldest at the bottom)
+                    approvedTimesheets.sort((a, b) => 
                         {
-                            //create table
-                            setTimesheetTable
-                            ( <div>
-                                <table>
-                                <thead>
-                                <tr>
-                                    <Th>ID</Th>
-                                    <Th>Employee</Th>
-                                    <Th>Week</Th>
-                                    <Th>Start</Th>
-                                    <Th>End</Th>
-                                    <Th>Submitted</Th>
-                                    <Th>Approved</Th>
-                                </tr>
-                                </thead>
-                                    <tbody>
-                                    {/* Render table rows based on timesheets data*/}
-                                    {approvedTimesheets.map((t) => (
-                                        <tr key={t.id}>
-                                        <Td>{t.id}</Td>
-                                        <Td>{t.employeeId}</Td>
-                                        <Td>{t.fiscalYearFiscalWeek != null ? String(t.fiscalYearFiscalWeek) : ""}</Td>
-                                        <Td>{t.dateStart}</Td>
-                                        <Td>{t.dateEnd}</Td>
-                                        <Td style={{ textAlign: "center" }}>{checkMark(t.submitted)}</Td>
-                                        <Td style={{ textAlign: "center" }}>{checkMark(t.approved)}</Td>
-                                        </tr>
-                                    ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                            )
+                            const dateA = new Date(a.dateStart);
+                            const dateB = new Date(b.dateStart);
 
-                        }//end of if statement
-                        else
-                            setTimesheetTable(<p>No Timesheets Available for Pay Stub choose another Employee Id</p>);
+                            return (dateB.getTime() - dateA.getTime());
+                        });
 
-                    }//end of function
-                    ).catch(err => {console.log(err);} )
- 
-        }//end of switch statement
-        
+                    //if approvedTimeSheets is not empty, create table, else do not create table
+                    if (approvedTimesheets.length >= 1)
+                    {
+                        //create table
+                        setTimesheetTable
+                        ( <div>
+                            <table>
+                            <thead>
+                            <tr>
+                                <Th>ID</Th>
+                                <Th>Employee</Th>
+                                <Th>Week</Th>
+                                <Th>Start</Th>
+                                <Th>End</Th>
+                                <Th>Submitted</Th>
+                                <Th>Approved</Th>
+                            </tr>
+                            </thead>
+                                <tbody>
+                                {/* Render table rows based on timesheets data*/}
+                                {approvedTimesheets.map((t) => (
+                                    <tr key={t.id}>
+                                    <Td>{t.id}</Td>
+                                    <Td>{t.employeeId}</Td>
+                                    <Td>{t.fiscalYearFiscalWeek != null ? String(t.fiscalYearFiscalWeek) : ""}</Td>
+                                    <Td>{t.dateStart}</Td>
+                                    <Td>{t.dateEnd}</Td>
+                                    <Td style={{ textAlign: "center" }}>{checkMark(t.submitted)}</Td>
+                                    <Td style={{ textAlign: "center" }}>{checkMark(t.approved)}</Td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </table>
+                        </div>
+                        )
+
+                    }//end of if statement
+                    else
+                        setTimesheetTable(<p>No Timesheets Available for Pay Stub choose another Employee Id</p>);
+
+                }//end of function
+                ).catch(err => {console.log(err);} )
+        }//end of ifstatement
+        else
+            //employee id is undefined / falsy
+            setTimesheetTable(<p>No Timesheets Available for Pay Stub choose another Employee Id</p>)
+                    
     }//end of createTimesheetTable function
 
 
     //html body
     return (
         <main>
-            <h1>Pay Stub Create Page</h1>
+            <h1>Pay Stub Create Manager</h1>
             <p>A Pay Stub is created by a manager. The state is pay stub date. If pay stub date is null, pay stub has NOT been PAID OUT.</p>
 
             {/*Begining of Table*/}
@@ -467,9 +302,27 @@ export const PayStubCreatePage_M = () => {
         
             </div> {/*End of Table*/}
 
+            {/*Manager Id Selection*/}
+            <div>
+            <br></br>
+            <label>
+                <div>Manager ID</div>
+                <select
+                    value={managerId}
+                    onChange={(e) => {setManagerId(e.target.value); getEmployeesIds(Number(e.target.value));}}
+                >
+                <option value="" disabled hidden>Select an Id...</option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                </select>
+            </label>
+            <br></br><br></br>
+            </div>
+
             <div>
             {/*Begining of Timesheet(s)Table*/}
-            <h2>Available Timesheet(s)</h2>
+            <h3>Available Timesheet(s) For Employee</h3>
 
             {/* create a table for available time sheets for an employee id */}
             {timesheetTable}
@@ -485,13 +338,12 @@ export const PayStubCreatePage_M = () => {
                 <select id = "employee id" {...register(`employeeId`, 
                 {
                     onChange:(e) => {
-                        //setEmployeeId(e.target.value)
                         createTimesheetTbl(e.target.value)
                     }
 
                 })}>
                 { 
-                    employeeDropDown(payStubs).map(id => 
+                    employeeIds.map(id => 
                     {
                         return(<option key = {id}>{id}</option>)
                     })    
@@ -532,7 +384,7 @@ export const PayStubCreatePage_M = () => {
                     Clear
                 </button>
                     
-                {/* Submit button to Update Time Off Record */}
+                {/* Submit button to submit Pay Stub Record */}
                     <input style={{ backgroundColor: 'green', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '5px', margin: '10px' }} type="submit" />
                 </div>  
 
@@ -545,9 +397,7 @@ export const PayStubCreatePage_M = () => {
                     <button style={{ backgroundColor: 'orange', color: 'black', padding: '10px 20px', border: 'none', borderRadius: '5px' , margin: '10px'}}
                             onClick={handleCancelConfirm}>Cancel</button>
                     </div>
-                )}
-
-                        
+                )}      
             </form>
 
             {/* using useNavigate here to take us to the home page */}
@@ -558,8 +408,7 @@ export const PayStubCreatePage_M = () => {
 
         </main>
     )
-
-} //end of const TimeOffPage_E
+} //end of const PayStubCreatePage_M
 
 
 //HELPER CONSTANT - table head
@@ -588,29 +437,7 @@ const Td = (p: any) => (
   />
 )
 
-//HELPER FUNCTION - Employee Id Drop Down 
-function employeeDropDown(data:payStubType[])
-{
-    //set up an empty array
-    const allIds:number[] = [];
-
-    //add all employee id to an array
-    data.forEach(element => 
-    {
-        allIds.push(element.employeeId);
-        
-    } )
-
-    //add "0" for clear state
-    allIds.push(0);
-
-    //get all unique ids in the array
-    const uniqueIds = [...new Set(allIds)];
-
-    return uniqueIds;
-}
-
-//HELPER FUNCTION - Time Off Ids NOT AVAILABLE
+//HELPER FUNCTION - Pay Stub Ids NOT AVAILABLE
 function usedIds(data:payStubType[])
 {
     //set up an empty array
@@ -628,7 +455,7 @@ function usedIds(data:payStubType[])
     return uniqueIds;
 }
 
-//HELPER FUNCTION - Generate a random postive integer for Time Off Id
+//HELPER FUNCTION - Generate a random postive integer for Pay Stub Id
 function generateId(data:payStubType[])
 {
     let valid = true;
@@ -638,7 +465,7 @@ function generateId(data:payStubType[])
         //generate a random positive integer, returns a random integer from 1 to 500:
         randomNum = Math.floor(Math.random() * 500) + 1;
 
-        //get time off record ids that are NOT AVAILABLE, if new random number is in the list, generate new number
+        //get pay stub record ids that are NOT AVAILABLE, if new random number is in the list, generate new number
         valid = usedIds(data).includes(randomNum) ? true : false;
         
     }while(valid)

@@ -1,6 +1,7 @@
 package com.skillstorm.controllers;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -97,6 +98,14 @@ public class PayStubController
 	{
 		return this.service.findTimesheetsByEmployeeId(employeeId);
 	}
+	
+	//find a employees by manager id with Error Response (Method 10 of 10)
+	@GetMapping("/employees")
+	public ResponseEntity<ArrayList<Integer>> findEmployeesByManagerId(@RequestParam(required=true) int managerId)
+	{
+		return this.service.findEmployeesByManagerId(managerId);
+	}
+	
 	
 
 	
