@@ -15,18 +15,6 @@ public class SecurityConfiguration {
 	    http
 	      .csrf(csrf -> csrf.disable()) //REST + Postman
 	      .authorizeHttpRequests(auth -> auth
-	        //.requestMatchers("/actuator/**").permitAll()
-	        
-	        //ADMIN endpoints
-	        //.requestMatchers("GET", "/timesheet").hasRole("ADMIN")
-	        //.requestMatchers("GET",  "/timesheet/manager-id/**").hasRole("ADMIN")
-	        // .requestMatchers("PUT",  "/timesheet/*/approve-by-manager/**").hasRole("ADMIN")
-	        //.requestMatchers("PUT",  "/timesheet/*/unapprove").hasRole("ADMIN")
-	        //.requestMatchers("DELETE","/timesheet/delete/**").hasRole("ADMIN")
-	        
-	        //use needs a valid login credentials
-	        //.requestMatchers("/timesheet/**").authenticated()
-	    		  
 	    		  .requestMatchers("/**").permitAll()
 	      )
 	      .httpBasic(Customizer.withDefaults())
