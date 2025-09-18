@@ -6,6 +6,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
+
 @Configuration
 public class SecurityConfiguration {
 
@@ -14,38 +15,35 @@ public class SecurityConfiguration {
 	    http
 	      .csrf(csrf -> csrf.disable()) //REST + Postman
 	      .authorizeHttpRequests(auth -> auth
-	        .requestMatchers("/timesheet/**", "/actuator/**").permitAll()
-	        .anyRequest().permitAll()   //come back later
+	        //.requestMatchers("/actuator/**").permitAll()
+	        
+	        //ADMIN endpoints
+	        //.requestMatchers("GET", "/timesheet").hasRole("ADMIN")
+	        //.requestMatchers("GET",  "/timesheet/manager-id/**").hasRole("ADMIN")
+	        // .requestMatchers("PUT",  "/timesheet/*/approve-by-manager/**").hasRole("ADMIN")
+	        //.requestMatchers("PUT",  "/timesheet/*/unapprove").hasRole("ADMIN")
+	        //.requestMatchers("DELETE","/timesheet/delete/**").hasRole("ADMIN")
+	        
+	        //use needs a valid login credentials
+	        //.requestMatchers("/timesheet/**").authenticated()
+	    		  
+	    		  .requestMatchers("/**").permitAll()
 	      )
 	      .httpBasic(Customizer.withDefaults())
 	      .formLogin(form -> form.disable());
+	    
 	    return http.build();
-	  }
+	}
 }
-/*
- @Bean
-SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-  http
-    .csrf(csrf -> csrf.disable()) //REST + Postman
-    .cors(Customizer.withDefaults()) //looking for Cors bean
-    .authorizeHttpRequests(auth -> auth
-      .requestMatchers("/timesheet/**", "/actuator/**").permitAll()
-      .anyRequest().permitAll()   //come back later
-    )
-    .httpBasic(Customizer.withDefaults())
-    .formLogin(form -> form.disable());
-  return http.build();
-} 
 
-@Bean
-CorsFilter corsFilter() {
-	CorsConfiguration cfg = new CorsConfiguration();
-	cfg.setAllowedOriginPatterns(List.of("http://localhost:5173"));
-  cfg.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
-  cfg.setAllowedHeaders(List.of("Authorization","Content-Type","X-XSRF-TOKEN"));
-  cfg.setAllowCredentials(true); // allow cookies
 
-  UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-  source.registerCorsConfiguration("/**", cfg);
-  return new CorsFilter(source);
-} */
+
+
+
+
+
+
+
+
+
+

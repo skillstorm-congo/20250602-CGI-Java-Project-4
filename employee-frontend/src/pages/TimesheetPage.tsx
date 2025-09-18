@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import type { TimesheetType } from "../types/types";
-import {findAllTimesheets, findByEmployeeIdTimesheet, findByManagerIdTimesheet, findByDateTimesheet} from "../api/api";
+import {findAllTimesheets, findByEmployeeIdTimesheet, findByManagerIdTimesheet, findByDateTimesheet, approvedByManagerIdTimesheet} from "../api/api";
 import { Link } from "react-router-dom";
+import { useUserScope } from "../context/UserScope";
 
 /*-------------------------------------------------------------------------------------
 
@@ -43,6 +44,9 @@ type Tri = "any" | "true" | "false";
 
 export const Timesheet = () => {
 
+    //SCOPE - pole + id incoming here with the scope context
+    const { scope } = useUserScope();
+
     //CONSTANT - ROW-RECORD STATES for data being transfered for using TimesheetType 
     const [rows, setRows] = useState<TimesheetType[]>([]);
     const [loading, setLoading] = useState(false);
@@ -50,28 +54,73 @@ export const Timesheet = () => {
 
     //CONSTANT - FILTER STATES for table: employeeId, managerId, date, submitted, approved
     //NOTE: will adjust for employee vs manager view, notice it's using "set" in the filters but not adding it to a record
-    const [employeeId, setEmployeeId] = useState<string>("");
-    const [managerId, setManagerId] = useState<string>("");
+    //const [employeeId, setEmployeeId] = useState<string>("");
+    //const [managerId, setManagerId] = useState<string>("");
     const [date, setDate] = useState<string>(""); // yyyy-mm-dd
     const [submitted, setSubmitted] = useState<Tri>("any");
     const [approved, setApproved] = useState<Tri>("any");
+    const [approvingId, setApprovingId] = useState<number | null>(null);
+    const [notice, setNotice] = useState<string | null>(null);  
+    async function handleApprove(tsId: number) {
+        if (scope.role !== "MANAGER") return;
+        setApprovingId(tsId);
+        setError(null);
+        setNotice(null);
+        try {
+            await approvedByManagerIdTimesheet(tsId, Number(scope.id));
+            // remove from pending list immediately
+            setRows(prev => prev.filter(r => r.id !== tsId));
+            setNotice(`Timesheet #${tsId} approved.`);
+        } catch (e: any) {
+            setError(e?.response?.data?.message || e?.message || "Failed to approve timesheet.");
+        } finally {
+            setApprovingId(null);
+        }
+    }
 
     //FUNCTION 1 of 2: loadTimesheetTable() - will populate findAll() first then call endpoints from controller to filter
     async function loadTimesheetTable() {
+
+        //SCOPE - return nothing until the employee user picks their role + id
+        if (!scope.role || !scope.id) return;
+
         setLoading(true);
         setError(null);
 
         //the methods() come from the api.ts for filter constants date, managerId, employeeId
+        //try {
+        //let response;
+        //if (date) {
+        //    response = await findByDateTimesheet(date);
+        //} else if (managerId) {
+        //    response = await findByManagerIdTimesheet(Number(managerId));
+        //} else if (employeeId) {
+        //    response = await findByEmployeeIdTimesheet(Number(employeeId));
+        //} else {
+        //    response = await findAllTimesheets();
+        //}
         try {
-        let response;
-        if (date) {
-            response = await findByDateTimesheet(date);
-        } else if (managerId) {
-            response = await findByManagerIdTimesheet(Number(managerId));
-        } else if (employeeId) {
-            response = await findByEmployeeIdTimesheet(Number(employeeId));
-        } else {
-            response = await findAllTimesheets();
+
+            if (scope.role === "MANAGER") {
+                const res = await findByManagerIdTimesheet(Number(scope.id));
+                let data: TimesheetType[] = Array.isArray(res.data) ? res.data : [];
+                // pending only
+                data = data.filter(ts => ts.submitted === true && ts.approved !== true);
+                // sort newest start date first
+                data.sort((a, b) => String(b.dateStart).localeCompare(String(a.dateStart)));
+                setRows(data);
+                return;
+            }
+
+            let response;
+            if (date) {
+                response = await findByDateTimesheet(date);
+            } else if (scope.role === "EMPLOYEE") {
+                response = await findByEmployeeIdTimesheet(Number(scope.id));
+            } else {
+                //if user doesn't pick an option -> make sure the table doesnt load and return the nothing table
+                setRows([]);
+                return;
         }
 
         //assign the timesheetData with try{}'s response from the data that Axios pulled from endpoints
@@ -103,8 +152,8 @@ export const Timesheet = () => {
 
     //FUNCTION 2 of 2: clearTableFilters() - clear filters and set to "empty" state
     function clearTableFilters() {
-        setEmployeeId("");
-        setManagerId("");
+        //setEmployeeId("");
+        //setManagerId("");
         setDate("");
         setSubmitted("any");
         setApproved("any");
@@ -112,17 +161,25 @@ export const Timesheet = () => {
 
 //EFFECT to call function loadTimesheetTable() 1x on mount--->Note: everything populates for now by default, look at if-statement in 1st function
 //how page is styled along with table
-useEffect(() => {loadTimesheetTable();}, []); //dependency array is empty bc it'll populate either way
+useEffect(() => {loadTimesheetTable();}, [scope.role, scope.id, date, submitted, approved]); //dependency array is set now
 
     return (
         <section style={{ padding: "1rem" }}>
 
         <h1 style={{ display: "flex", alignItems: "center", gap: ".75rem" }}>
-            Timesheets
+            {scope.role === "MANAGER" ? "Pending Approvals (Your Team)" : "Timesheets"}
+            {scope.role !== "MANAGER" && (<Link to="/timesheet/new"><button>Create New Timesheet</button></Link>)}
+            {/*Timesheets
             <Link to="/timesheet/new"><button>Create New Timesheet</button></Link>
-            <Link to="/timesheet/${timesheetRow.id}/update"><button>Update Timesheet</button></Link>
+            <Link to="/timesheet/${timesheetRow.id}/update"><button>Update Timesheet</button></Link> */}
         </h1>
         
+        {/* Guard rail */}
+        {!scope.role || !scope.id ? (
+            <div style={{ padding: ".75rem", border: "1px dashed #aaa", marginTop: ".5rem" }}>
+            Pick your <strong>Employee Type</strong> and <strong>ID</strong> (top right) to view timesheets.
+            </div>
+        ) : null}
 
         {/* SECTION: Filters above table */}
         <div
@@ -134,142 +191,155 @@ useEffect(() => {loadTimesheetTable();}, []); //dependency array is empty bc it'
             marginBottom: "1rem",
             }}
         >
+        {/* Take out Employee Id and Manager Id top filters since using SCOPE */}
+
+        <label>
+        <div>Date</div>
+        <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+        />
+        </label>
+
+        {/* Hide Submitted/Approved filters for MANAGER since they're locked to "pending" */}
+        {scope.role !== "MANAGER" && (
+
+            <>
+
             <label>
-            <div>Employee ID</div>
-            <input
-                type="number"
-                value={employeeId}
-                onChange={(e) => setEmployeeId(e.target.value)}
-                placeholder="Enter Id"
-            />
+
+                <div>Submitted</div> {/* Refer to lines 75-78*/}
+
+                <select
+                    value={submitted}
+                    onChange={(e) => setSubmitted(e.target.value as Tri)}
+                >
+
+                    {/* Refer to lines 34, 75-78*/}
+
+                    <option value="any">Any</option> 
+                    
+                    <option value="true">Submitted</option>
+                    <option value="false">Not submitted</option>
+                </select>
             </label>
 
             <label>
-            <div>Manager ID</div>
-            <input
-                type="number"
-                value={managerId}
-                onChange={(e) => setManagerId(e.target.value)}
-                placeholder="Enter Manager Id"
-            />
+
+                <div>Approved</div> {/* Refer to lines 80-83*/}
+
+                <select
+                    value={approved}
+                    onChange={(e) => setApproved(e.target.value as Tri)}
+                >
+                    {/* Refer to lines 34, 80-83*/}
+                    <option value="any">Any</option> 
+                    <option value="true">Approved</option>
+                    <option value="false">Not approved</option>
+                </select>
             </label>
-
-            <label>
-            <div>Date</div>
-            <input
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-            />
-            </label>
-
-            <label>
-            <div>Submitted</div> {/* Refer to lines 75-78*/}
-            <select
-                value={submitted}
-                onChange={(e) => setSubmitted(e.target.value as Tri)}
-            >
-                {/* Refer to lines 34, 75-78*/}
-                <option value="any">Any</option> 
-                <option value="true">Submitted</option>
-                <option value="false">Not submitted</option>
-            </select>
-            </label>
-
-            <label>
-            <div>Approved</div> {/* Refer to lines 80-83*/}
-            <select
-                value={approved}
-                onChange={(e) => setApproved(e.target.value as Tri)}
-            >
-                {/* Refer to lines 34, 80-83*/}
-                <option value="any">Any</option> 
-                <option value="true">Approved</option>
-                <option value="false">Not approved</option>
-            </select>
-            </label>
-
-            {/* BUTTONS */}
-            <div style={{ display: "flex", gap: ".5rem" }}>
-                {/* Apply Button that calls function loadTimesheetTable()*/}
-                <button onClick={loadTimesheetTable} disabled={loading}>
-                    {loading ? "Loading..." : "Apply filters"}
-                </button>
-
-                {/* Clear Button that calls function clearTableFilters()*/}
-                <button onClick={() => {clearTableFilters(); 
-                    setTimeout(loadTimesheetTable, 0);}} //setTimeout() reloads on loadTimesheetTabl()
-                    disabled={loading}
-                 >
-                    Clear
-                </button>
-            </div>
-        </div>
-
-        {/* SECTION: Errors */}
-        {error && (
-            <div
-            style={{
-                background: "#ffe6e6",
-                border: "1px solid #ffb3b3",
-                padding: ".75rem",
-                marginBottom: "1rem",
-            }}
-            >
-            {error}
-            </div>
+            </>
         )}
 
-        {/* SECTION: Table */}
-        <div style={{ overflowX: "auto" }}>
-            <table
-            style={{
-                width: "100%",
-                borderCollapse: "collapse",
-                minWidth: 900,
-            }}
-            >
-            <thead>
-                <tr>
-                <Th>ID</Th>
-                <Th>Employee</Th>
-                <Th>Week</Th>
-                <Th>Start</Th>
-                <Th>End</Th>
-                <Th>Submitted</Th>
-                <Th>Approved</Th>
-                <Th title="Sum of regular">Regular Hours</Th>
-                <Th title="Sum of overtime">Overtime Hours</Th>
-                <Th title="Sum of time off">Requested Time Off</Th>
-                <Th>Comment</Th>
-                </tr>
-            </thead>
-            <tbody>
-                {rows.map((timesheetRow) => (
-                <tr key={timesheetRow.id}>
-                    <Td>{timesheetRow.id}</Td>
-                    <Td>{timesheetRow.employeeId}</Td>
-                    <Td>{timesheetRow.fiscalYearFiscalWeek != null ? String(timesheetRow.fiscalYearFiscalWeek) : ""}</Td>
-                    <Td>{formatDate(timesheetRow.dateStart)}</Td>
-                    <Td>{formatDate(timesheetRow.dateEnd)}</Td>
-                    <Td style={{ textAlign: "center" }}>{checkMark(timesheetRow.submitted)}</Td>
-                    <Td style={{ textAlign: "center" }}>{checkMark(timesheetRow.approved)}</Td>
-                    <Td>{formatNum(timesheetRow.totalRegularHours)}</Td>
-                    <Td>{formatNum(timesheetRow.totalOvertimeHours)}</Td>
-                    <Td>{formatNum(timesheetRow.totalTimeOffHours)}</Td>
-                    <Td>{timesheetRow.comment != null ? timesheetRow.comment : ""}</Td>
-                </tr>
-                ))}
-                {!loading && rows.length === 0 && (
-                <tr>
-                    <Td colSpan={11} style={{ textAlign: "center", padding: "1rem" }}>
-                    No timesheets found.
-                    </Td>
-                </tr>
-                )}
-            </tbody>
-            </table>
+        {/* BUTTONS */}
+        <div style={{ display: "flex", gap: ".5rem" }}>
+            {/* Apply Button that calls function loadTimesheetTable() and loads on scope*/}
+            <button onClick={loadTimesheetTable} disabled={loading || !scope.role || !scope.id}>
+                {loading ? "Loading..." : scope.role === "MANAGER" ? "Refresh" : "Apply filters"}
+            </button>
+
+            {/* Clear Button that calls function clearTableFilters()*/}
+            <button onClick={() => {clearTableFilters(); 
+                setTimeout(loadTimesheetTable, 0);}} //setTimeout() reloads on loadTimesheetTabl()
+                disabled={loading}
+                >
+                Clear
+            </button>
         </div>
+        </div>
+
+            {/* SECTION: Errors */}
+            {error && (
+                <div
+                style={{
+                    background: "#ffe6e6",
+                    border: "1px solid #ffb3b3",
+                    padding: ".75rem",
+                    marginBottom: "1rem",
+                }}
+                >
+                {error}
+                </div>
+            )}
+
+            {/* SECTION: Table */}
+            <div style={{ overflowX: "auto" }}>
+                <table
+                style={{
+                    width: "100%",
+                    borderCollapse: "collapse",
+                    minWidth: 900,
+                }}
+                >
+                <thead>
+                    <tr>
+                    <Th>ID</Th>
+                    <Th>Employee</Th>
+                    <Th>Week</Th>
+                    <Th>Start</Th>
+                    <Th>End</Th>
+                    <Th>Submitted</Th>
+                    <Th>Approved</Th>
+                    <Th title="Sum of regular">Regular Hours</Th>
+                    <Th title="Sum of overtime">Overtime Hours</Th>
+                    <Th title="Sum of time off">Requested Time Off</Th>
+                    <Th>Comment</Th>
+                    {scope.role === "MANAGER" && <Th></Th>}
+                    </tr>
+                </thead>
+                <tbody>
+                    {rows.map((timesheetRow) => (
+                    <tr key={timesheetRow.id}>
+                        <Td>{timesheetRow.id}</Td>
+                        <Td>{timesheetRow.employeeId}</Td>
+                        <Td>{timesheetRow.fiscalYearFiscalWeek != null ? String(timesheetRow.fiscalYearFiscalWeek) : ""}</Td>
+                        <Td>{formatDate(timesheetRow.dateStart)}</Td>
+                        <Td>{formatDate(timesheetRow.dateEnd)}</Td>
+                        <Td style={{ textAlign: "center" }}>{checkMark(timesheetRow.submitted)}</Td>
+                        <Td style={{ textAlign: "center" }}>{checkMark(timesheetRow.approved)}</Td>
+                        <Td>{formatNum(timesheetRow.totalRegularHours)}</Td>
+                        <Td>{formatNum(timesheetRow.totalOvertimeHours)}</Td>
+                        <Td>{formatNum(timesheetRow.totalTimeOffHours)}</Td>
+                        <Td>{timesheetRow.comment != null ? timesheetRow.comment : ""}</Td>
+                        {scope.role === "MANAGER" && (
+                            <Td>
+                                <div style={{ display: "flex", gap: ".5rem" }}>
+                                    <Link to={`/timesheet/${timesheetRow.id}/update`}>
+                                        <button>Open</button>
+                                    </Link>
+                                    <button
+                                        onClick={() => handleApprove(timesheetRow.id)}
+                                        disabled={approvingId === timesheetRow.id || loading}
+                                        title="Approve this timesheet"
+                                    >
+                                        {approvingId === timesheetRow.id ? "Approving…" : "Approve"}
+                                    </button>
+                                </div>
+                            </Td>
+                        )}
+                    </tr>
+                    ))}
+                    {!loading && rows.length === 0 && (
+                    <tr>
+                        <Td colSpan={scope.role === "MANAGER" ? 12 :11} style={{ textAlign: "center", padding: "1rem" }}>
+                        No timesheets found.
+                        </Td>
+                    </tr>
+                    )}
+                </tbody>
+                </table>
+            </div>
         </section>
     );
 };

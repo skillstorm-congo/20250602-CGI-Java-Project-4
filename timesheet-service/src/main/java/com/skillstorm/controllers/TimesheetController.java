@@ -18,27 +18,47 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.skillstorm.clients.TimeoffServiceClient;
+import com.skillstorm.clients.UserServiceClient;
 import com.skillstorm.models.Timesheet;
 import com.skillstorm.services.TimesheetService;
+
 
 @RestController
 @RequestMapping("/timesheet")
 public class TimesheetController {
 	
 	private final TimesheetService svc;
+
 	
 	@Autowired
 	public TimesheetController(TimesheetService svc) {
 	  this.svc = svc;
 	}
 
-	//GET findAll() 1 of 11
+	/*
+	 * In front page, header to pick on whatever page to choose a user to store in context
+	 * -> Timesheet page userId = user -> will expose what's needed
+	 * -> Trigger off a range of valid admin ids 
+	 * 
+	 * Make another context for user role types for each page to use and what to show
+	 * -> store a user object that has a role, the id
+	 * -> display dynamic content based on what the id role is
+	 * 
+	 * Make a note in the beginning "For the purposes of this presentation to not login on every page..."
+	 * 
+	 */
+	
+	//GET findAll() 1 of 11 - ADMIN
 	@GetMapping
-    public ResponseEntity<List<Timesheet>> findAll() { return svc.getAll(); }
+    public ResponseEntity<List<Timesheet>> findAll() { 
+		return svc.getAll(); 
+		}
 
-	//GET findById() 2 of 11
-	@GetMapping("/{id}")
-	public Timesheet findById(@PathVariable int id) { return svc.get(id); }
+	//GET findById() 2 of 11 
+	public Timesheet findById(@PathVariable int id) { 
+		return svc.get(id); 
+		}
 
 	//GET findByEmployeeId() 3 of 11
 	@GetMapping("/by-employee/{employeeId}")
@@ -46,7 +66,7 @@ public class TimesheetController {
 	  return svc.byEmployee(employeeId);
 	}
 
-	//GET findByManagerId() 4 of 11
+	//GET findByManagerId() 4 of 11 - ADMIN
 	@GetMapping("/manager-id/{managerId}")
 	public ResponseEntity<Iterable<Timesheet>> findByManagerId(@PathVariable int managerId) {
 	  return this.svc.findByManagerId(managerId);
@@ -59,7 +79,7 @@ public class TimesheetController {
 	  return svc.byDate(date);
 	}
 
-	//POST logHours() 6 of 11
+	//POST logHours() 6 of 11 
 	@PostMapping("/log-hours")
 	public ResponseEntity<Timesheet> lLogHours(@RequestBody Timesheet body) {
 	  boolean existed = svc.exists(body.getId());
@@ -75,7 +95,7 @@ public class TimesheetController {
 		return svc.submit(id); 
 	}
 
-	//PUT approvedByManagerId() 8 of 11
+	//PUT approvedByManagerId() 8 of 11 - ADMIN
 	@PutMapping("/{id}/approve-by-manager/{managerId}")
 	public Timesheet approvedByManagerId(
 			@PathVariable("id") int id, 
@@ -83,7 +103,7 @@ public class TimesheetController {
 		return svc.approve(id, managerId); 
 	}
 	
-	//PUT unapprove() 9 of 11
+	//PUT un approve() 9 of 11 - ADMIN
 	@PutMapping("/{id}/unapprove")
 	public Timesheet unapprove(@PathVariable int id, @PathVariable("managerId") int managerId) {
 		return svc.unapprove(id, managerId);
@@ -95,10 +115,22 @@ public class TimesheetController {
 	  return svc.updateHoursByBody(body);
 	}
 
-	//DELETE deleteTimesheet() 11 of 11
+	//DELETE deleteTimesheet() 11 of 11 - ADMIN
 	@DeleteMapping("/delete/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteTimesheet(@PathVariable int id) { 
 		svc.delete(id); 
+	}
+
+	//FEIGN Client Controller 
+	//GET /time sheet/unapproved-timeoff?employeeId=42&start=2025-08-25&end=2025-08-29
+	@GetMapping("/unapproved-timeoff")
+	public ResponseEntity<List<TimeoffServiceClient.TimeOffView>> unapprovedTimeoffOptions(
+	    @RequestParam int employeeId,
+	    @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
+	    @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
+
+	  var list = svc.listUnapprovedTimeOffForTimesheet(employeeId, start, end);
+	  return ResponseEntity.ok(list);
 	}
 }

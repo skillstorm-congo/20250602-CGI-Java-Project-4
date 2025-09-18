@@ -16,7 +16,7 @@ spring:
       server:
         webflux:
           routes:
-          - id: timesheet-route
+          - id: timesheet-service-route
             uri: lb://timesheet-service
             predicates:
             - Path=/timesheet/**
@@ -31,7 +31,7 @@ spring:
           - id: employee-service-route
             uri: lb://employee-service
             predicates:
-            - Path=/employee-service/**
+            - Path=/employee/**
 
 # a typical/standard gateway port
 server:

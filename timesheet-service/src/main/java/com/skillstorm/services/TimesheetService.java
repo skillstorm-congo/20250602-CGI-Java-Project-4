@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.skillstorm.clients.EmployeeServiceClient;
+import com.skillstorm.clients.TimeoffServiceClient;
+import com.skillstorm.clients.TimeoffServiceClient.TimeOffView;
 import com.skillstorm.clients.UserServiceClient;
 import com.skillstorm.models.Employee;
 import com.skillstorm.models.Timesheet;
@@ -25,13 +27,14 @@ import jakarta.transaction.Transactional;
 public class TimesheetService {
 	
 	private final TimesheetRepository repo;
-	
 	private final EmployeeServiceClient employeeServiceClient;
+	private final TimeoffServiceClient timeoffServiceClient;
 	private final UserServiceClient userServiceClient;
 
-	public TimesheetService(TimesheetRepository repo, EmployeeServiceClient employeeServiceClient, UserServiceClient userServiceClient) {
+	public TimesheetService(TimesheetRepository repo, EmployeeServiceClient employeeServiceClient, TimeoffServiceClient timeoffServiceClient, UserServiceClient userServiceClient) {
 		this.repo = repo;
 		this.employeeServiceClient = employeeServiceClient;
+		this.timeoffServiceClient = timeoffServiceClient;
 		this.userServiceClient = userServiceClient;
 		}
 
@@ -61,13 +64,13 @@ public class TimesheetService {
 			employeeList.add(employee.getId());
 		}
 		
-		//find all pay stubs where employee ids are in the employeeList
-		Iterable<Timesheet> payStub = this.repo.findByManagerId(employeeList);
+		//find all time sheets where employee ids are in the employeeList
+		Iterable<Timesheet> timesheetsByM = this.repo.findByManagerId(employeeList);
 
-		if (!payStub.iterator().hasNext())
+		if (!timesheetsByM.iterator().hasNext())
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 		
-		return ResponseEntity.ok(payStub);
+		return ResponseEntity.ok(timesheetsByM);
 		}
 
 	public List<Timesheet> byDate(LocalDate date) {
@@ -88,7 +91,7 @@ public class TimesheetService {
 	    }
 
 	    Timesheet t = get(patch.getId());
-
+	    
 	    //block edits once approved
 	    if (Boolean.TRUE.equals(t.getApproved())) {
 	    	throw new ResponseStatusException(HttpStatus.CONFLICT, "Timesheet already approved.");
@@ -135,12 +138,26 @@ public class TimesheetService {
 	    if (patch.getComment() != null)   
 	    	t.setComment(patch.getComment());
 	  
-	    if (patch.getTimeOffId() != null) 
+	    if (patch.getTimeOffId() != null) {
+	    	var toResp = timeoffServiceClient.findById(patch.getTimeOffId());
+		    var to = toResp.getBody();
+		    if (to == null) {
+		      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "timeOffId not found.");
+		    }
+		    if (to.employeeId() != t.getEmployeeId()) {
+		      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "timeOffId does not belong to this employee.");
+		    }
+		    if (isTrue(to.approved())) {
+		      throw new ResponseStatusException(HttpStatus.CONFLICT, "timeOffId is already approved.");
+		    }
+		    if (!overlaps(to.dateStart(), to.dateEnd(), t.getDateStart(), t.getDateEnd())) {
+		      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "timeOffId does not overlap this timesheet range.");
+		    }
 		    t.setTimeOffId(patch.getTimeOffId());
-
+	    }
 	    repo.save(t);
 	    return reload(t.getId());
-	    }
+	}
 	
 	@Transactional
 	public Timesheet submit(int id) {
@@ -319,7 +336,28 @@ public class TimesheetService {
 	    if (v instanceof String s && !s.isBlank()) return Integer.parseInt(s);
 	    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "user-service missing " + key);
 	  	}
-
+	private static boolean isTrue(Boolean b)  { return Boolean.TRUE.equals(b); }
+	private static boolean overlaps(LocalDate aStart, LocalDate aEnd, LocalDate bStart, LocalDate bEnd) {
+	  return !aStart.isAfter(bEnd) && !bStart.isAfter(aEnd);
+	}
+	public List<TimeOffView> listUnapprovedTimeOffForTimesheet(int employeeId,
+            java.time.LocalDate tsStart,
+            java.time.LocalDate tsEnd) {
+	var resp = timeoffServiceClient.findByEmployeeId(employeeId);
+	var items = resp.getBody();
+	if (items == null) return java.util.List.of();
+	
+	return items.stream()
+	.filter(to -> to.employeeId() == employeeId)
+	// unapproved: submitted == true and approved != true
+	.filter(to -> isTrue(to.submitted()) && !isTrue(to.approved()))
+	// only ones that overlap the timesheet period
+	.filter(to -> overlaps(to.dateStart(), to.dateEnd(), tsStart, tsEnd))
+	.sorted(java.util.Comparator.comparing(TimeOffView::dateStart)
+	.thenComparing(TimeOffView::id))
+	.toList();
+	}
+		
 	//for Role - maybe use in future, keep for now
 	private static String getStr(Map<String,Object> map, String key) {
 	    Object v = map.get(key);

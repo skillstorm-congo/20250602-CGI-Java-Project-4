@@ -66,6 +66,17 @@ export const deleteTimesheet = async (id: number) => {
   return await axios.delete(`${baseUrl}timesheet/delete/${id}`);
 };
 
+//12) get the time off requests that not approved 
+export const listUnapprovedTimeoffOptions = async (employeeId: number, start: string | Date, end: string | Date) => {
+  const toISO = (d: string | Date) => (typeof d === "string" ? d : d.toISOString().slice(0, 10));
+  return await axios.get(`${baseUrl}timesheet/unapproved-timeoff`, {params: { employeeId, start: toISO(start), end: toISO(end)},});
+}
+
+//13) get a list of employees UNDER a manager id
+export const findEmployeesByManagerId = async (managerId: number) => {
+  return await axios.get(`${baseUrl}employee/manager-id`, { params: { managerId } });
+};
+
 //Helper - byDate(), refer back to type on note about why date is a little weird in TS
 const toISODate = (d: string | Date) =>
   typeof d === "string" ? d : d.toISOString().slice(0, 10);
@@ -74,8 +85,7 @@ const toISODate = (d: string | Date) =>
 //TIME OFF FUNCTIONS//
 
 //1) get all time off records
-export const getAllTimeOff = async() => 
-{
+export const getAllTimeOff = async() => {
     return await axios.get(`${baseUrl}time-off`);
 }
 
@@ -158,6 +168,7 @@ export const updatePayStubRecord = async (id: number, payStub:object) => {
     return await axios.put(`${baseUrl}pay-stub/${id}`, payStub);
 }
 
+<<<<<<< HEAD
 //9) update a pay stub record by pay stub id
 export const findTimesheetsByEmployeeId = async (employeeId: number) => {
     return await axios.get(`${baseUrl}pay-stub/timesheet/${employeeId}`);
@@ -168,5 +179,13 @@ export const findEmployeeIdsByManagerId = async (managerId: number) => {
     return await axios.get(`${baseUrl}pay-stub/employees`, {params: {managerId},});
 }
 
+=======
+export function checkLoginStatus() {
+    throw new Error("Function not implemented.");
+}
+>>>>>>> ae177ab (Frontend edits to take out login useage from clean up)
 // ------------------------------------------------------------------
 //USER FUNCTIONS
+const API_BASE = import.meta.env.VITE_API ?? "http://localhost:9000";
+const USER_BASE = `${API_BASE}/user`;
+const TIMESHEET_BASE = `${API_BASE}/timesheet`;

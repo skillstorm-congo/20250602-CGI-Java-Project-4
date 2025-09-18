@@ -34,7 +34,7 @@ public class UserController {
         this.userRepo = userRepo;
     }
     
-    @GetMapping("/private")
+    @GetMapping("/private") //Basic AUTH
     public String privateData(Principal principal, Authentication auth) {
 
         /**
@@ -47,7 +47,7 @@ public class UserController {
     }
 
 
-    @GetMapping("/login")
+    @GetMapping("/login") //Basic AUTH
     public ResponseEntity<String> login(Principal principal, CsrfToken token) {
         if(token.getToken() != null){
             return ResponseEntity.ok("User: [" + principal.getName() + "] is signed in.");
@@ -55,7 +55,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).header("message", "User: is not signed in.").build();
     }
     
-    @GetMapping("/login-status")
+    @GetMapping("/login-status") //PUBLIC
     public ResponseEntity<String> loginStatus(@Nullable Principal principal) {
         if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not signed in.");
@@ -64,7 +64,7 @@ public class UserController {
     }
 
 
-    @PostMapping("/register")
+    @PostMapping("/register") //PUBLIC
     public ResponseEntity<Void> register(@RequestBody User user) {
         try {
             userService.register(user);
@@ -76,7 +76,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/register/admin")
+    @PostMapping("/register/admin") //PUBLIC
     public ResponseEntity<Void> registerAdmin(@RequestBody User user) {
         try {
             userService.registerAdmin(user);
@@ -88,7 +88,7 @@ public class UserController {
         }
     }
     
-    @GetMapping("/employeeUser")
+    @GetMapping("/employeeUser") //Basic AUTH
     public EmployeeUserDTO employeeUser(Principal principal) {
     	
     	User user = userRepo.findByUsername(principal.getName())

@@ -18,12 +18,16 @@ import { PayStubCreatePage_M } from './pages/PayStubCreatePage_M'
 import { PayStubUpdatePage } from './pages/PayStubUpdatePage'
 import UpdateTimesheetPage from './pages/UpdateTimesheetPage'
 import { TimesheetCreatePage } from './pages/TimesheetCreatePage'
+import ManagerEmployeesPage from './pages/ManagerEmployeesPage'
+import { UserScopeProvider } from './context/UserScope'
 
 function App() {
 
   return (
     <BrowserRouter>
+    <UserScopeProvider>
       <Routes>
+        
         <Route element={<Frame />}>
           <Route index element={<HomePage />} />
           <Route path="time-off-e" element={<TimeOffPage_E />} />
@@ -72,8 +76,12 @@ function App() {
           {/* Timesheet CREATE Page - A button from the viewable timesheet page will allow employee to create a new timesheet that will let them start logging hours*/}
           <Route path="timesheet/new" element={<TimesheetCreatePage />} />
 
+          <Route path="employee/manager-id" element={<ManagerEmployeesPage />} />
+
         </Route>
+        
       </Routes>
+      </UserScopeProvider>
     </BrowserRouter>
   );
 }

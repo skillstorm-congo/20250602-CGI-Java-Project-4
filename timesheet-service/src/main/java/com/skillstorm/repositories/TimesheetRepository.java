@@ -42,5 +42,6 @@ public interface TimesheetRepository extends CrudRepository<Timesheet, Integer> 
 	@Modifying
 	@Query(value = "SELECT * FROM time_sheet"
 			+ " WHERE employee_id in ?1", nativeQuery = true)
-	Iterable<Timesheet> findByManagerId(ArrayList<Integer> employeeList);
+	Iterable<Timesheet> findByManagerId(ArrayList<Integer> employeeList);     
+      
 }

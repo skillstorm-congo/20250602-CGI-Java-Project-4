@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import type { TimesheetType } from "../types/types";
-import {findByIdTimesheet, findByEmployeeIdTimesheet, updateHoursTimesheet, submitTimesheet,} from "../api/api";
+import {findByIdTimesheet, findByEmployeeIdTimesheet, updateHoursTimesheet, submitTimesheet, findByEmployeeIdTimeOff} from "../api/api";
+import { useUserScope } from "../context/UserScope";
 
 /*-------------------------------------------------------------------------------------
 
@@ -20,19 +21,58 @@ Effect #1
 -------------------------------------------------------------------------------------*/
 
 type Num = number | "";
-
+type TimeOff  = {
+  id: number,
+  employeeId: number,
+  dateStart: string,
+  dateEnd: string,
+  approved?: boolean | null,
+  submitted?: boolean | null,
+  comment?: string | null
+}
 const iso = (d?: string | Date | null) =>
   !d ? "" : (typeof d === "string" ? d : d.toISOString()).slice(0, 10);
 
+//COMPONENT
 export default function UpdateTimesheetPage() {
+
+  const { scope } = useUserScope(); //SCOPE context
+
   const { id } = useParams(); // /timesheet/:id/update
   const routeId = id ? Number(id) : NaN;
 
+  //SCOPE - before anything else, make sure the role is set to the employee it needs to be
+  if (scope.role !== "EMPLOYEE") {
+    return (
+      <section style={{ padding: "1rem" }}>
+        <h1>Update UNAPPROVED Timesheet</h1>
+        <MsgBox kind="err">
+          This page is for Employees only. Switch your scope to <strong>Employee</strong>.
+        </MsgBox>
+      </section>
+    );
+  }
+  const scopedEmpId = Number(scope.id);
+  if (!Number.isFinite(scopedEmpId)) {
+    return (
+      <section style={{ padding: "1rem" }}>
+        <h1>Update UNAPPROVED Timesheet</h1>
+        <MsgBox kind="err">
+          Pick your <strong>Employee</strong> scope and enter your ID (top-right) to continue.
+        </MsgBox>
+      </section>
+    );
+  }
+
   // selection + data
-  const [employeeId, setEmployeeId] = useState<string>("");
+  //const [employeeId, setEmployeeId] = useState<string>(""); //take out because it's set in the scope already
   const [choices, setChoices] = useState<TimesheetType[]>([]);
   const [selected, setSelected] = useState<TimesheetType | null>(null);
   const [choiceId, setChoiceId] = useState<string>("");
+  const [approvedTO, setApprovedTO] = useState<TimeOff[]>([]);
+  const [pendingTO, setPendingTO] = useState<TimeOff[]>([]);
+  const [approvedToId, setApprovedToId] = useState<string>("");
+  const [pendingToId, setPendingToId] = useState<string>("");
 
   // form state (hours + comment only — backend ignores totals/fiscalWeek)
   const [comment, setComment] = useState<string>("");
@@ -82,6 +122,8 @@ export default function UpdateTimesheetPage() {
     setT3(numOrBlank(ts.timeOffHoursDay3));
     setT4(numOrBlank(ts.timeOffHoursDay4));
     setT5(numOrBlank(ts.timeOffHoursDay5));
+
+    loadTimeOff(scopedEmpId, { start: ts.dateStart, end: ts.dateEnd });
   }
 
   // load choices for an employee (unapproved only)
@@ -106,13 +148,38 @@ export default function UpdateTimesheetPage() {
     }
   }
 
-  // if URL has an id: try to load it. If it’s approved, switch to picker mode.
+  async function loadTimeOff(empIdNum: number, week?: { start?: string | Date | null; end?: string | Date | null }) {
+    try {
+      const res = await findByEmployeeIdTimeOff(empIdNum);
+      const all: TimeOff[] = res.data ?? [];
+      const overlapsWeek = (to: TimeOff) =>
+        week?.start && week?.end
+          ? rangesOverlap(iso(week.start), iso(week.end), to.dateStart, to.dateEnd)
+          : true;
+      setApprovedTO(all.filter(t => t.approved === true).filter(overlapsWeek));
+      setPendingTO (all.filter(t => t.approved !== true).filter(overlapsWeek));
+    } catch (e: any) {
+      // don't block page if this fails—just show a note
+      setNotice(prev => (prev ? prev + " " : "") + "Could not load time-off options.");
+    }
+  }
+
+  //SCOPE - autoload the employees unapproved timesheet lists whenever that scope changes
+  useEffect(() => {
+    if (!Number.isFinite(scopedEmpId)) return;
+    loadUnapproved(scopedEmpId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scopedEmpId]);
+
+
+  // if URL has an id: try to load it
   useEffect(() => {
     (async () => {
-      if (!Number.isFinite(routeId)) return; // picker mode until employeeId entered
+      if (!Number.isFinite(routeId)) return;
       setLoading(true);
       setError(null);
       setNotice(null);
+
       try {
         const res = await findByIdTimesheet(routeId);
         const ts: TimesheetType = res.data;
@@ -120,26 +187,36 @@ export default function UpdateTimesheetPage() {
           setError("Timesheet not found.");
           return;
         }
-        // If approved, force picker mode focused on this employee
+
+        //SCOPE - making sure employee only sees their own stuff
+        if (ts.employeeId !== scopedEmpId) {
+          setError("You can only edit your own unapproved timesheets.");
+          await loadUnapproved(scopedEmpId);
+          setSelected(null);
+          setChoiceId("");
+          return;
+        }
+
         if (ts.approved === true) {
           setNotice("That timesheet is already approved — choose another unapproved one.");
-          setEmployeeId(String(ts.employeeId ?? ""));
+          //setEmployeeId(String(ts.employeeId ?? ""));
           await loadUnapproved(ts.employeeId!);
           setSelected(null);
           setChoiceId("");
-        } else {
-          setEmployeeId(String(ts.employeeId ?? ""));
-          hydrateForm(ts);
-          setChoiceId(String(ts.id));
         }
-      } catch (e: any) {
-        setError(e?.response?.data?.message || e?.message || "Failed to load timesheet.");
-      } finally {
-        setLoading(false);
-      }
+        //setEmployeeId(String(ts.employeeId ?? ""));
+        hydrateForm(ts);
+        setChoiceId(String(ts.id));
+
+        } catch (e: any) {
+          setError(e?.response?.data?.message || e?.message || "Failed to load timesheet.");
+        } finally {
+          setLoading(false);
+        }
     })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [routeId]);
+
+    //SCOPE - return based on routing ids and scope id now
+  }, [routeId, scopedEmpId]);
 
   // when a dropdown choice changes, load that TS into the form
   useEffect(() => {
@@ -187,13 +264,6 @@ export default function UpdateTimesheetPage() {
   } finally {
     setSaving(false);
   }
-      /*await updateHoursTimesheet(payload);
-      setNotice("Saved.");
-    } catch (e: any) {
-      setError(e?.response?.data?.message || e?.message || "Failed to save.");
-    } finally {
-      setSaving(false);
-    } */
   }
 
   async function handleSubmitTimesheet() {
@@ -212,14 +282,36 @@ export default function UpdateTimesheetPage() {
       setSaving(false);
     }
   }
+  function applyApprovedTimeOff() {
+    if (!selected || !approvedToId) return;
+    const to = approvedTO.find(t => String(t.id) === approvedToId);
+    if (!to) return;
+
+    const weekDays = weekMonToFri(iso(selected.dateStart), iso(selected.dateEnd));
+    const toStart = new Date(to.dateStart);
+    const toEnd   = new Date(to.dateEnd);
+
+    const inTO = (d: Date) => d >= toStart && d <= toEnd;
+
+    const next = [t1, t2, t3, t4, t5] as Num[];
+    weekDays.forEach((d, idx) => {
+      if (inTO(d)) next[idx] = 8.0; // default per-day time-off hours
+    });
+    [setT1, setT2, setT3, setT4, setT5].forEach((setter, i) => setter(next[i]));
+    setNotice(`Applied time-off #${to.id} to this week.`);
+  }
 
   return (
     <section style={{ padding: "1rem" }}>
       <h1>Update UNAPPROVED Timesheet</h1>
 
       {/* 1) Employee picker + load choices */}
-      <div style={{ display: "flex", gap: ".5rem", alignItems: "end", flexWrap: "wrap" }}>
-        <label>
+      <div style={{ display: "flex", gap: ".75rem", alignItems: "end", flexWrap: "wrap" }}>
+        <div style={{ fontSize: 14, opacity: 0.8 }}>
+          Active scope: <strong>EMPLOYEE #{scopedEmpId}</strong>
+        </div>
+
+         {/* <label>
           <div>Employee ID</div>
           <input
             type="number"
@@ -236,7 +328,7 @@ export default function UpdateTimesheetPage() {
           disabled={loading || !employeeId}
         >
           Get-unapproved
-        </button>
+        </button>*/}
 
         <label style={{ marginLeft: "1rem" }}>
           <div>Pick Unapproved</div>
@@ -255,6 +347,36 @@ export default function UpdateTimesheetPage() {
         </label>
       </div>
 
+      {/* NEW: Time-off helpers */}
+      {selected && (
+        <div style={{ marginTop: ".75rem", display: "flex", gap: "1rem", alignItems: "end", flexWrap: "wrap" }}>
+          <label>
+            <div>Apply approved time-off (overlapping this week)</div>
+            <select value={approvedToId} onChange={(e) => setApprovedToId(e.target.value)}>
+              <option value="">— pick approved —</option>
+              {approvedTO.map(t => (
+                <option key={t.id} value={String(t.id)}>
+                  #{t.id} • {iso(t.dateStart)} → {iso(t.dateEnd)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <button onClick={applyApprovedTimeOff} disabled={!approvedToId}>Apply</button>
+
+          <label>
+            <div>View pending time-off (not approved)</div>
+            <select value={pendingToId} onChange={(e) => setPendingToId(e.target.value)}>
+              <option value="">— pick pending —</option>
+              {pendingTO.map(t => (
+                <option key={t.id} value={String(t.id)}>
+                  #{t.id} • {iso(t.dateStart)} → {iso(t.dateEnd)}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+      )}
+      
       {/* messages */}
       {notice && <MsgBox kind="ok">{notice}</MsgBox>}
       {error && <MsgBox kind="err">{error}</MsgBox>}
@@ -355,4 +477,22 @@ function MsgBox({ kind, children }: { kind: "ok" | "err"; children: React.ReactN
       ? { background: "#e6f7ff", border: "1px solid #b3e0ff", padding: ".75rem", marginTop: ".75rem" }
       : { background: "#ffe6e6", border: "1px solid #ffb3b3", padding: ".75rem", marginTop: ".75rem" };
   return <div style={style}>{children}</div>;
+}
+// date helpers for overlap + week Mon–Fri
+function rangesOverlap(aStart: string, aEnd: string, bStart: string, bEnd: string) {
+  const aS = new Date(aStart), aE = new Date(aEnd);
+  const bS = new Date(bStart), bE = new Date(bEnd);
+  return aS <= bE && bS <= aE;
+}
+function weekMonToFri(startISO?: string, endISO?: string) {
+  // returns up to 5 Date objects across the visible week (Mon–Fri)
+  const out: Date[] = [];
+  if (!startISO || !endISO) return out;
+  const s = new Date(startISO); const e = new Date(endISO);
+  for (let d = new Date(s); d <= e && out.length < 5; d = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1)) {
+    out.push(new Date(d));
+  }
+  // pad to exactly 5 slots if the range is shorter
+  while (out.length < 5) out.push(new Date(out[out.length - 1].getFullYear(), out[out.length - 1].getMonth(), out[out.length - 1].getDate() + 1));
+  return out.slice(0, 5);
 }
