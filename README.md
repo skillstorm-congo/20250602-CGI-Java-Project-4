@@ -246,29 +246,17 @@ Run the following in order:
 
 
 ### **Application/Website Pages**  
+<details>
+<summary>Click Here to See Image</summary>
+<img alt="webpages.png" src="https://github.com/skillstorm-congo/20250602-CGI-Java-Project-4/blob/main/webpages.png?raw=true" data-hpc="true" class="Box-sc-g0xbh4-0 fzFXnm">
+</details>
 
-Home Page:
-- List of All Quizzes
-
-
-Quiz Page:
-- Information on a selected quiz from the Home Page
-
-
-Quiz Taking Page:
-- Questions & answers for a quiz, originating from Quiz Page
-- User will submit quiz here
-
-
-Quiz Score Page:
-- Quiz results from user input, originates from Quiz Taking Page
-
-
-------------------------------------
+<hr>
 
 <!-- Begining of Endpoints -->
 ### **Postman Endpoints**  
 [Gateway](http://localhost:9000/swagger-ui/index.html)  
+
 *servers must be running
 
 <!-- End of Endpoints -->
