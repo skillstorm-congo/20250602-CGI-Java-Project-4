@@ -212,13 +212,16 @@ Create a full-stack web application that will facilitate employee time tracking 
       
         2) README.md
 
+        3) webpages.png
+            - image of web pages' relationship
+
 </details>
 
 <hr>
 
-### **Quiz Application/Website**  
+### **Employee Management Application/Website**  
 
-This application/website provides hours of fun for all users of any age! You can choose from 6 quizzes to partake in and they range from tea trivia to unicorn personlity. Each quiz is unique as is its answer types and grading/scoring method.
+This application/website is a central HR resource hub for timesheets, time off requests, and pay stubs for employees.  
 
 <hr>
 
@@ -235,12 +238,12 @@ This application/website provides hours of fun for all users of any age! You can
 
 <hr>
 
-### **How to Start the Quiz Application/Website**  
+### **How to Start the Application/Website**  
 
 Run the following in order:
 - MySql Database
-- Spring Boot (possibility of installing libraries/dependencies)
-- React (possibility of installing libraries/dependencies)
+- Spring Boot (*install libraries/dependencies)
+- React (*install libraries/dependencies)
 
 <hr>
 
