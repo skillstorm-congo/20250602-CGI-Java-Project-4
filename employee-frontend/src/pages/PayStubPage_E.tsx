@@ -56,7 +56,6 @@ export const PayStubPage_E = () => {
 
     //FUNCTION 1 of 2: loadPayStubTable() - will populate findAll() first then call endpoints from controller to filter
     async function loadPayStubTable() {
-        console.log("in loadPayStubTable()")
         setLoading(true);
         setError(null);
 
@@ -76,10 +75,13 @@ export const PayStubPage_E = () => {
                 let payStubData: payStubType[] = Array.isArray(response.data) ? response.data : []; 
 
                 //Pay Stub Date-filter 
-                if (payStubDate) // if it is not null 
-                {
-                    const wantTrue = (payStubDate === "Paid"); //local constant for drop down menu to be a boolean/tri-type, if not "submitted" it'll be FALSE
-                    payStubData = payStubData.filter(t => (t.payStubDate !== null) === wantTrue);
+                if (payStubDate)  // if it is not null
+                { 
+                    if (payStubDate !== "All") 
+                    {
+                        const wantTrue = (payStubDate === "Paid"); //local constant for drop down menu to be a boolean/tri-type, if not "submitted" it'll be FALSE
+                        payStubData = payStubData.filter(t => (t.payStubDate !== null) === wantTrue);
+                    }
                 }
 
                 //the response from the filters updating rows of records/data with useState setRows
@@ -139,6 +141,7 @@ export const PayStubPage_E = () => {
                     value={employeeId}
                     onChange={(e) => setEmployeeId(e.target.value)}
                 >
+                <option value="" disabled hidden>Select an Id...</option>
                 { 
                     employeeDropDown(payStub).map(id => 
                     {

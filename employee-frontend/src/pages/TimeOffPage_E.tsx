@@ -158,6 +158,7 @@ export const TimeOffPage_E = () => {
                     value={employeeId}
                     onChange={(e) => setEmployeeId(e.target.value)}
                 >
+                <option value="" disabled hidden>Select an Id...</option>
                 { 
                     employeeDropDown(timeOff).map(id => 
                     {

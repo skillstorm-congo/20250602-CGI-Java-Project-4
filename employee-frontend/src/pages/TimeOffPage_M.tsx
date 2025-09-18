@@ -104,7 +104,7 @@ export const TimeOffPage_M = () => {
     //FUNCTION 2 of 2: clearTableFilters() - clear filters and set to "empty" state
     function clearTableFilters() {
         setEmployeeId("");
-        setManagerId("0");
+        setManagerId("");
         setDate("");
         setSubmitted("any");
         setApproved("any");
@@ -151,6 +151,7 @@ export const TimeOffPage_M = () => {
                     value={employeeId}
                     onChange={(e) => setEmployeeId(e.target.value)}
                 >
+                <option value="" disabled hidden>Select an Id...</option>
                 { 
                     employeeDropDown(timeOff).map(id => 
                     {
@@ -167,7 +168,7 @@ export const TimeOffPage_M = () => {
                     value={managerId}
                     onChange={(e) => setManagerId(e.target.value)}
                 >
-                <option>0</option>
+                <option value="" disabled hidden>Select an Id...</option>
                 <option>1</option>
                 <option>2</option>
                 <option>3</option>

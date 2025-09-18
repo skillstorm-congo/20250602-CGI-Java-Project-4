@@ -168,12 +168,12 @@ export const updatePayStubRecord = async (id: number, payStub:object) => {
 //THIS GOT DELETED WITH GIT PULL/REBASE -> PayStubeCreatePage cant work without them
 //9) update a paystub record by pay stub id
 export const findTimesheetsByEmployeeId = async (employeeId: number) => {
-    return await axios.get('${baseURL}pay-stub/timesheet/${employeeID}');
+    return await axios.get(`${baseUrl}pay-stub/timesheet/${employeeId}`);
 }
 //THIS GOT DELETED WITH GIT PULL/REBASE -> PayStubeCreatePage cant work without them
 //10) get a list of employees associated to a manger id
 export const findEmployeeIdsByManagerId = async (managerId: number) => {
-    return await axios.get('${baseURL}pay-stub/employees', {params: {managerId},});
+    return await axios.get(`${baseUrl}pay-stub/employees`, {params: {managerId},});
 }
 
 export function checkLoginStatus() {

@@ -77,12 +77,15 @@ export const PayStubPage_M = () => {
                 let payStubData: payStubType[] = Array.isArray(response.data) ? response.data : []; 
             
                 //Pay Stub Date-filter 
-                if (payStubDate) // if it is not null 
-                {
-                    const wantTrue = (payStubDate === "Paid"); //local constant for drop down menu
-                    payStubData = payStubData.filter(t => (t.payStubDate !== null) === wantTrue); 
+                if (payStubDate)  // if it is not null
+                { 
+                    if (payStubDate !== "All") 
+                    {
+                        const wantTrue = (payStubDate === "Paid"); //local constant for drop down menu to be a boolean/tri-type, if not "submitted" it'll be FALSE
+                        payStubData = payStubData.filter(t => (t.payStubDate !== null) === wantTrue);
+                    }
                 }
-        
+
                 //the response from the filters updating rows of records/data with useState setRows
                 //need to catch errors incase time off can't load the data from db, for now any errors
                 setPayStub(payStubData);
