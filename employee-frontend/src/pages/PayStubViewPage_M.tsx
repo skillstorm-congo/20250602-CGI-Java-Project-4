@@ -6,12 +6,6 @@ import { useNavigate, useParams} from "react-router-dom";
 import { useContext } from "react";
 import { UpdatePayStubContext } from "../context/UpdatePayStubContext";
 
-
-
-{/* To Do: 
--- nice little pay stub image
-*/}
-
 export const PayStubViewPage_M = () => {
 
     //getting access to our quizId with useParams()

@@ -11,6 +11,8 @@ export const PayStubCreatePage_M = () => {
     const [timesheetTable, setTimesheetTable] = useState(<></>)
 
     //setting up local state for the Pay Stub Object we'll get from the DB 
+    let getTimesheets : TimesheetType[];
+
     const [timesheets, setTimesheets] = useState<TimesheetType[]>(
         [  
             {  
@@ -317,56 +319,40 @@ export const PayStubCreatePage_M = () => {
     //FUNCTION - Generate a table of time sheets based on employee id for the form
     async function createTimesheetTbl(employeeId: string | number | undefined)
     {
-        console.log("employeeId out of switch:  " + employeeId)
-        console.log("typeof:  " + typeof employeeId)
-
         switch(employeeId)
         {
-            case 0: //default employee id drop down
-                    console.log("employeeId case 0:  " + employeeId)
-                    return ("No Timesheets Available for Pay Stub choose another Employee Id");
-                
-            case 66: //default value for example
-                    console.log("employeeId case 66:  " + employeeId)
-                    return ("No Timesheets Available for Pay Stub choose another Employee Id");
-
-
             case "0": //default employee id drop down
                     console.log("employeeId case string 0:  " + employeeId)
-                    return ("No Timesheets Available for Pay Stub choose another Employee Id");
-
-                
-            case "66": //default value for example
-                    console.log("employeeId case string 66:  " + employeeId)
-                    return ("No Timesheets Available for Pay Stub choose another Employee Id");
+                    setTimesheetTable(<p>No Timesheets Available for Pay Stub choose another Employee Id</p>)
+                    break;
 
             case undefined:
                     console.log("employeeId case undefined:  " + employeeId)
-                    return ("No Timesheets Available for Pay Stub choose another Employee Id");
+                    setTimesheetTable(<p>No Timesheets Available for Pay Stub choose another Employee Id</p>)
+                    break;
 
             default:
                 console.log("In switch get time sheets. ")
                 console.log("employeeId default:  " + employeeId)
                 console.log("typeof:  " + typeof employeeId)
 
-                //make sure if it came in as a string to convert it to a number
+                //if employeeId is string, convert to a number
                 if (typeof employeeId === "string")
                     employeeId = parseInt(employeeId);
 
                 //call function to get all time sheet(s) associated to an employee id
                 await findTimesheetsByEmployeeId(employeeId).then(response => 
                     {
-                        console.log(response.data);
                         setTimesheets(response.data);
 
-                        //take a look at timeSheets - uses default value till the end
-                        console.log("timeSheets: " + timesheets)
-                        console.log("timeSheets length: " + timesheets.length)
+                        //get the timesheet array and use immediately
+                        getTimesheets = response.data;
 
-                        timesheets.forEach(t => console.log(JSON.stringify(t, null, 2)));
+                        //take a look at the timesheet response
+                        // getTimesheets.forEach(t => console.log(JSON.stringify(t, null, 2)));
 
                         //time sheet must be 'approved' = true, filter out
-                        const approvedTimesheets = timesheets.filter(t => t.approved); 
+                        const approvedTimesheets = getTimesheets.filter(t => t.approved); 
 
                         //sort approvedTimesheets by date start ascending order(oldest at the bottom)
                         approvedTimesheets.sort((a, b) => 
@@ -377,12 +363,7 @@ export const PayStubCreatePage_M = () => {
                                 return (dateB.getTime() - dateA.getTime());
                             });
 
-                        
-                        console.log("approved timeSheets length: " + approvedTimesheets.length)
-                        console.log("approved timeSheets: ")
-                        approvedTimesheets.forEach(t => console.log(JSON.stringify(t, null, 2)));
-
-                        //if approvedTimeSheets is not empty, create table, else do not create table *employee id 39 has no timesheets
+                        //if approvedTimeSheets is not empty, create table, else do not create table
                         if (approvedTimesheets.length >= 1)
                         {
                             //create table
@@ -401,7 +382,7 @@ export const PayStubCreatePage_M = () => {
                                 </tr>
                                 </thead>
                                     <tbody>
-                                    {/* Render table rows based on myDataField */}
+                                    {/* Render table rows based on timesheets data*/}
                                     {approvedTimesheets.map((t) => (
                                         <tr key={t.id}>
                                         <Td>{t.id}</Td>
@@ -420,7 +401,8 @@ export const PayStubCreatePage_M = () => {
 
                         }//end of if statement
                         else
-                            return ("No Timesheets Available for Pay Stub choose another Employee Id");
+                            setTimesheetTable(<p>No Timesheets Available for Pay Stub choose another Employee Id</p>);
+
                     }//end of function
                     ).catch(err => {console.log(err);} )
  
