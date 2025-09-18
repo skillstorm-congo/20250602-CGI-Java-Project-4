@@ -19,7 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.skillstorm.clients.TimeoffServiceClient;
-import com.skillstorm.clients.UserServiceClient;
 import com.skillstorm.models.Timesheet;
 import com.skillstorm.services.TimesheetService;
 
@@ -35,19 +34,6 @@ public class TimesheetController {
 	public TimesheetController(TimesheetService svc) {
 	  this.svc = svc;
 	}
-
-	/*
-	 * In front page, header to pick on whatever page to choose a user to store in context
-	 * -> Timesheet page userId = user -> will expose what's needed
-	 * -> Trigger off a range of valid admin ids 
-	 * 
-	 * Make another context for user role types for each page to use and what to show
-	 * -> store a user object that has a role, the id
-	 * -> display dynamic content based on what the id role is
-	 * 
-	 * Make a note in the beginning "For the purposes of this presentation to not login on every page..."
-	 * 
-	 */
 	
 	//GET findAll() 1 of 11 - ADMIN
 	@GetMapping

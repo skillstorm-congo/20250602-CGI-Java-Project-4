@@ -37,7 +37,6 @@ public interface TimesheetRepository extends CrudRepository<Timesheet, Integer> 
 	@Query("SELECT t FROM Timesheet t WHERE t.dateStart <= :date AND t.dateEnd >= :date")
 	List<Timesheet> findCoveringDate(@Param("date") LocalDate date);
   
-	//method to see all available pay stubs associated to a manager id (Method 1 of 2)
 	@Transactional
 	@Modifying
 	@Query(value = "SELECT * FROM time_sheet"

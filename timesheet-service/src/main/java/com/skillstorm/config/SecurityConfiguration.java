@@ -15,7 +15,8 @@ public class SecurityConfiguration {
 	    http
 	      .csrf(csrf -> csrf.disable()) //REST + Postman
 	      .authorizeHttpRequests(auth -> auth
-	    		  .requestMatchers("/**").permitAll()
+	  	        .requestMatchers("/timesheet/**", "/actuator/**", "/swagger-ui/**", "/api-docs/**").permitAll()
+		        .anyRequest().permitAll()   //come back later
 	      )
 	      .httpBasic(Customizer.withDefaults())
 	      .formLogin(form -> form.disable());

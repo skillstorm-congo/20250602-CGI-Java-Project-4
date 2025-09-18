@@ -5,9 +5,6 @@ import axios from "axios"
 const baseUrl = 'http://localhost:9000/';
 //const userBase = "http://localhost:17000";
 
-//Resource: Axios - https://axios-http.com/docs/req_config
-axios.defaults.withCredentials = true;
-
 // ------------------------------------------------------------------
 //TIMESHEET FUNCTIONS
 

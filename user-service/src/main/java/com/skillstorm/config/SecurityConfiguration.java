@@ -30,7 +30,7 @@ public class SecurityConfiguration {
                 .requestMatchers("/user/login").authenticated()   					  //Basic AUTH -> return 200 if valid credentials         
                 .requestMatchers("/user/register", "/user/login-status").permitAll()  //Public -> used by app to see if you're logged in
                 .requestMatchers("/user/register/admin").authenticated()       		  //Basic AUTH -> return 200 if valid credentials
-                .requestMatchers("/user/employeeUser").authenticated()				  //Basic AUTH -> return 200 if valid credentials
+                .requestMatchers("/user/employeeUser").authenticated()
         		)
         
         .httpBasic(basic -> {})

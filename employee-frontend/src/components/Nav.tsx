@@ -11,10 +11,10 @@ export const Nav = () => {
             {<Link to={'/'}>Home</Link>}
             {<Link to={'/timesheet'}>Timesheet</Link>}
 
-            {<Link to={'/time-off-e'}>TimeOffPage_E</Link>}
-            {<Link to={'/pay-stub-e'}>PayStubPage_E</Link>}
-            {<Link to={'/time-off-m'}>TimeOffPage_M</Link>}
-            {<Link to={'/pay-stub-m'}>PayStubPage_M</Link>}
+            {<Link to={'/time-off-e'}>Time Off Employee</Link>}
+            {<Link to={'/pay-stub-e'}>Pay Stub Employee</Link>}
+            {<Link to={'/time-off-m'}>Time Off Manager</Link>}
+            {<Link to={'/pay-stub-m'}>Pay Stub Manager</Link>}
 
             <div style={{ marginLeft: "auto", display: "flex", gap: ".5rem", alignItems: "center" }}>
                 <label>

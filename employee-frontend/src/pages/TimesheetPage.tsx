@@ -87,18 +87,6 @@ export const Timesheet = () => {
         setLoading(true);
         setError(null);
 
-        //the methods() come from the api.ts for filter constants date, managerId, employeeId
-        //try {
-        //let response;
-        //if (date) {
-        //    response = await findByDateTimesheet(date);
-        //} else if (managerId) {
-        //    response = await findByManagerIdTimesheet(Number(managerId));
-        //} else if (employeeId) {
-        //    response = await findByEmployeeIdTimesheet(Number(employeeId));
-        //} else {
-        //    response = await findAllTimesheets();
-        //}
         try {
 
             if (scope.role === "MANAGER") {
@@ -169,9 +157,6 @@ useEffect(() => {loadTimesheetTable();}, [scope.role, scope.id, date, submitted,
         <h1 style={{ display: "flex", alignItems: "center", gap: ".75rem" }}>
             {scope.role === "MANAGER" ? "Pending Approvals (Your Team)" : "Timesheets"}
             {scope.role !== "MANAGER" && (<Link to="/timesheet/new"><button>Create New Timesheet</button></Link>)}
-            {/*Timesheets
-            <Link to="/timesheet/new"><button>Create New Timesheet</button></Link>
-            <Link to="/timesheet/${timesheetRow.id}/update"><button>Update Timesheet</button></Link> */}
         </h1>
         
         {/* Guard rail */}
@@ -201,8 +186,6 @@ useEffect(() => {loadTimesheetTable();}, [scope.role, scope.id, date, submitted,
             onChange={(e) => setDate(e.target.value)}
         />
         </label>
-
-        {/* Hide Submitted/Approved filters for MANAGER since they're locked to "pending" */}
         {scope.role !== "MANAGER" && (
 
             <>
@@ -295,7 +278,7 @@ useEffect(() => {loadTimesheetTable();}, [scope.role, scope.id, date, submitted,
                     <Th title="Sum of overtime">Overtime Hours</Th>
                     <Th title="Sum of time off">Requested Time Off</Th>
                     <Th>Comment</Th>
-                    {scope.role === "MANAGER" && <Th></Th>}
+                    <Th>Actions</Th>  
                     </tr>
                 </thead>
                 <tbody>
@@ -312,22 +295,37 @@ useEffect(() => {loadTimesheetTable();}, [scope.role, scope.id, date, submitted,
                         <Td>{formatNum(timesheetRow.totalOvertimeHours)}</Td>
                         <Td>{formatNum(timesheetRow.totalTimeOffHours)}</Td>
                         <Td>{timesheetRow.comment != null ? timesheetRow.comment : ""}</Td>
-                        {scope.role === "MANAGER" && (
-                            <Td>
-                                <div style={{ display: "flex", gap: ".5rem" }}>
-                                    <Link to={`/timesheet/${timesheetRow.id}/update`}>
-                                        <button>Open</button>
-                                    </Link>
-                                    <button
-                                        onClick={() => handleApprove(timesheetRow.id)}
-                                        disabled={approvingId === timesheetRow.id || loading}
-                                        title="Approve this timesheet"
-                                    >
-                                        {approvingId === timesheetRow.id ? "Approving…" : "Approve"}
-                                    </button>
-                                </div>
-                            </Td>
+
+                        <Td>
+                        {scope.role === "MANAGER" ? (
+                            <div style={{ display: "flex", gap: ".5rem" }}>
+                            <Link to={`/timesheet/${timesheetRow.id}/update`}>
+                                <button>Open</button>
+                            </Link>
+                            <button
+                                onClick={() => handleApprove(timesheetRow.id)}
+                                disabled={approvingId === timesheetRow.id || loading}
+                                title="Approve this timesheet"
+                            >
+                                {approvingId === timesheetRow.id ? "Approving…" : "Approve"}
+                            </button>
+                            </div>
+                        ) : (
+                            <Link to={`/timesheet/${timesheetRow.id}/update`}>
+                            <button
+                                disabled={timesheetRow.approved === true}
+                                title={
+                                timesheetRow.approved === true
+                                    ? "Approved timesheets can't be edited"
+                                    : "Edit this timesheet"
+                                }
+                            >
+                                {timesheetRow.approved === true ? "View" : "Update"}
+                            </button>
+                            </Link>
                         )}
+                        </Td>
+                        
                     </tr>
                     ))}
                     {!loading && rows.length === 0 && (
@@ -389,16 +387,3 @@ function checkMark(v: boolean | null | undefined) {
   //Unicode resource -- https://unicode.org/charts//PDF/Unicode-10.0/U100-2B00.pdf
   return v === true ? "\u2714" : "";
 }
-/*
-DO NOT DELETE UNTIL CLEAN UP --save as a start over
-export const Timesheet = () => {
-
-    return (
-        <main>
-            <h1>Timesheet Page</h1>
-            <h2>Welcome to the Employee Management TIMESHEET PAGE</h2>
-            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quaerat corrupti ipsam minus veniam eos praesentium, perspiciatis id explicabo nobis inventore itaque fugit illum deserunt soluta officia possimus eum doloremque doloribus.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit natus necessitatibus odit laudantium. Voluptas mollitia voluptates itaque, quis explicabo fuga ipsum eaque quibusdam dolorum, laboriosam in esse temporibus quo aperiam?</p>
-        </main>
-    )
-} */
