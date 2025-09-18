@@ -254,10 +254,12 @@ Run the following in order:
 <hr>
 
 <!-- Begining of Endpoints -->
-### **Postman Endpoints**  
+### **Swagger Documentation API Endpoints**  
 [Gateway](http://localhost:9000/swagger-ui/index.html)  
 
-*servers must be running
+Note:  
+- servers must be running
+- top right of the gateway link, you can navigate to different microservices
 
 <!-- End of Endpoints -->
 
