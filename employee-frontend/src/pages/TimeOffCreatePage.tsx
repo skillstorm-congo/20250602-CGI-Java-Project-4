@@ -79,7 +79,7 @@ export const TimeOffCreatePage = () => {
         ]
     );
 
-    //using our API method to retrieve all time off records
+    //API Call 1 of 1 - retrieve all time off records
     function getTimeOffs() 
     {
         getAllTimeOff().then(response => 
@@ -275,10 +275,11 @@ export const TimeOffCreatePage = () => {
         </main>
     )
 
-} //end of const TimeOffPage_E
+} //end of const TimeOffCreatePage
 
 
-//HELPER CONSTANT - table head
+//HELPER CONSTANT 
+// table head
 const Th = (p: any) => (
   <th
     {...p}
@@ -292,7 +293,7 @@ const Th = (p: any) => (
   />
 );
 
-//HELPER CONSTANT - data/value
+// data/value
 const Td = (p: any) => (
   <td
     {...p}
@@ -304,7 +305,7 @@ const Td = (p: any) => (
   />
 )
 
-//HELPER FUNCTION - flag()
+//generate checkmark, Xs, or null
 function checkMark(v: boolean | null | undefined) 
 {
   //Unicode resource -- https://unicode.org/charts//PDF/Unicode-10.0/U100-2B00.pdf
@@ -316,7 +317,7 @@ function checkMark(v: boolean | null | undefined)
  return  "";
 } 
 
-//HELPER FUNCTION - Employee Id Drop Down 
+//Employee Id Drop Down 
 function employeeDropDown(timeOffData :timeOffType[])
 {
     //set up an empty array
@@ -338,7 +339,7 @@ function employeeDropDown(timeOffData :timeOffType[])
     return uniqueIds;
 }
 
-//HELPER FUNCTION - Time Off Ids NOT AVAILABLE
+//Get Time Off Ids NOT AVAILABLE (in use time off ids)
 function usedIds(timeOffData :timeOffType[])
 {
     //set up an empty array
@@ -356,7 +357,7 @@ function usedIds(timeOffData :timeOffType[])
     return uniqueIds;
 }
 
-//HELPER FUNCTION - Generate a random postive integer for Time Off Id
+//Generate a random postive integer for Time Off Id
 function generateId(timeOffs:timeOffType[])
 {
     let valid = true;

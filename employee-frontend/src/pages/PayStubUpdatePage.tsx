@@ -103,7 +103,7 @@ export const PayStubUpdatePage = () => {
                     })
     }
 
-    //FUNCTION - Generate a table of time sheets based on employee id for the form
+    //FUNCTION 1 of 1 - Generate a table of time sheets based on employee id for the form
     async function createTimesheetTbl(employeeId: string | number | undefined)
     {
         if (employeeId)
@@ -308,7 +308,8 @@ export const PayStubUpdatePage = () => {
 } //end of const TimeOffPage_E
 
 
-//HELPER CONSTANT - table head
+//HELPER CONSTANT 
+// table head
 const Th = (p: any) => (
   <th
     {...p}
@@ -322,7 +323,7 @@ const Th = (p: any) => (
   />
 );
 
-//HELPER CONSTANT - data/value
+// data/value
 const Td = (p: any) => (
   <td
     {...p}
@@ -334,7 +335,7 @@ const Td = (p: any) => (
   />
 )
 
-//HELPER FUNCTION - flag()
+//generate checkmark, Xs, or null
 function checkMark(v: boolean | null | undefined) 
 {
   //Unicode resource -- https://unicode.org/charts//PDF/Unicode-10.0/U100-2B00.pdf

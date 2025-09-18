@@ -55,7 +55,7 @@ export const PayStubPage_M = () => {
     const [date, setDate] = useState<string>(""); // yyyy-mm-dd
     const [payStubDate, setPayStubDate] = useState<string>(""); //<Tri>("any");
 
-    //FUNCTION 1 of 2: loadTimesheetTable() - will populate findAll() first then call endpoints from controller to filter
+    //FUNCTION 1 of 2: loadPayStubTable() - will populate findAll() first then call endpoints from controller to filter
     async function loadPayStubTable() {
         setLoading(true);
         setError(null);
@@ -101,7 +101,7 @@ export const PayStubPage_M = () => {
         setPayStubDate("All");
     }
 
-    //using our API method to retrieve all pay stub records
+    //API Call 1 of 1 - retrieve all pay stub records
     function getPayStub() 
     {
         getAllPayStub().then(response => 
@@ -288,7 +288,8 @@ export const PayStubPage_M = () => {
 }//end of const PayStubPage_E
 
 
-//HELPER CONSTANT - table head
+//HELPER CONSTANT 
+// table head
 const Th = (p: any) => (
   <th
     {...p}
@@ -302,7 +303,7 @@ const Th = (p: any) => (
   />
 );
 
-//HELPER CONSTANT - data/value
+//data/value
 const Td = (p: any) => (
   <td
     {...p}
@@ -315,7 +316,7 @@ const Td = (p: any) => (
 )
 
 
-//HELPER FUNCTION - Employee Id Drop Down 
+//Employee Id Drop Down 
 function employeeDropDown(data :payStubType[])
 {
     //set up an empty array

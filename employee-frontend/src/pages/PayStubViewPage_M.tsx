@@ -37,7 +37,7 @@ export const PayStubViewPage_M = () => {
 
     );
 
-    //using our API method to retrieve a pay stub record
+    //API Call 1 of 2 - retrieve a pay stub record
     function getPayStub() 
     {
         findByIdPayStub(payStub.id).then(response => 
@@ -55,7 +55,7 @@ export const PayStubViewPage_M = () => {
         getPayStub();  
     }, [])
 
-    //using our API method to delete a pay stub record
+    //API Call 2 of 2 - delete a pay stub record
     function deletePayStubRecord() 
     {
         deletePayStub(payStub.id).then(response => 
@@ -148,10 +148,11 @@ export const PayStubViewPage_M = () => {
         </main>
     )
 
-} //end of const TimeOffPage_E
+} //end of const PayStubViewPage_M
 
 
-//HELPER CONSTANT - table head
+//HELPER CONSTANT
+// table head
 const Th = (p: any) => (
   <th
     {...p}
@@ -165,7 +166,7 @@ const Th = (p: any) => (
   />
 );
 
-//HELPER CONSTANT - data/value
+// data/value
 const Td = (p: any) => (
   <td
     {...p}

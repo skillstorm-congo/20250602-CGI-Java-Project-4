@@ -99,7 +99,7 @@ export const PayStubPage_E = () => {
         setPayStubDate("All");
     }
 
-    //using our API method to retrieve all pay stub records
+    //API Call 1 of 1 - retrieve all pay stub records
     function getPayStub() 
     {
         getAllPayStub().then(response => 
@@ -264,7 +264,8 @@ export const PayStubPage_E = () => {
 }//end of const PayStubPage_E
 
 
-//HELPER CONSTANT - table head
+//HELPER CONSTANTS
+// table head
 const Th = (p: any) => (
   <th
     {...p}
@@ -278,7 +279,7 @@ const Th = (p: any) => (
   />
 );
 
-//HELPER CONSTANT - data/value
+//data/value
 const Td = (p: any) => (
   <td
     {...p}
@@ -290,7 +291,7 @@ const Td = (p: any) => (
   />
 )
 
-//HELPER FUNCTION - Employee Id Drop Down 
+// Employee Id Drop Down 
 function employeeDropDown(data :payStubType[])
 {
     //set up an empty array

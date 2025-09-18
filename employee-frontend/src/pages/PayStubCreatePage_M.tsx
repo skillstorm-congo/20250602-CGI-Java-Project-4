@@ -96,7 +96,7 @@ export const PayStubCreatePage_M = () => {
         ]
     );
 
-    //using our API method to retrieve all pay stub records
+    //API Call 1 of 2 - retrieve all pay stub records
     function getPayStubs() 
     {
         getAllPayStub().then(response => 
@@ -106,7 +106,7 @@ export const PayStubCreatePage_M = () => {
             ).catch(err => {console.log(err);} )
     }
 
-    //FUNCTION - get a list of employee ids associated to a manager id for employee drop down box in the form
+    //API call 2 of 2 - get a list of employee ids associated to a manager id for employee drop down box in the form
     function getEmployeesIds( managerId: number)
     {
         findEmployeeIdsByManagerId(managerId).then(response =>
@@ -169,7 +169,7 @@ export const PayStubCreatePage_M = () => {
                     })
     }
     
-    //FUNCTION - Generate a table of time sheets based on employee id for the form
+    //FUNCTION 1 of Y1 - Generate a table of time sheets based on employee id for the form
     async function createTimesheetTbl(employeeId: string | number | undefined)
     {
         if (employeeId)
@@ -411,7 +411,8 @@ export const PayStubCreatePage_M = () => {
 } //end of const PayStubCreatePage_M
 
 
-//HELPER CONSTANT - table head
+//HELPER CONSTANTS
+// table head
 const Th = (p: any) => (
   <th
     {...p}
@@ -425,7 +426,7 @@ const Th = (p: any) => (
   />
 );
 
-//HELPER CONSTANT - data/value
+//  data/value
 const Td = (p: any) => (
   <td
     {...p}
@@ -437,7 +438,8 @@ const Td = (p: any) => (
   />
 )
 
-//HELPER FUNCTION - Pay Stub Ids NOT AVAILABLE
+//HELPER FUNCTIONS 
+// Pay Stub Ids NOT AVAILABLE
 function usedIds(data:payStubType[])
 {
     //set up an empty array
@@ -455,7 +457,7 @@ function usedIds(data:payStubType[])
     return uniqueIds;
 }
 
-//HELPER FUNCTION - Generate a random postive integer for Pay Stub Id
+// Generate a random postive integer for Pay Stub Id
 function generateId(data:payStubType[])
 {
     let valid = true;
@@ -473,7 +475,7 @@ function generateId(data:payStubType[])
     return randomNum;
 }
 
-//HELPER FUNCTION - flag()
+// generate checkmark, Xs or nothing
 function checkMark(v: boolean | null | undefined) 
 {
   //Unicode resource -- https://unicode.org/charts//PDF/Unicode-10.0/U100-2B00.pdf

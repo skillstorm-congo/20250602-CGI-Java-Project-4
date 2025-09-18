@@ -35,7 +35,7 @@ export const TimeOffViewPage_M = () => {
 
     );
 
-    //using our API method to retrieve a time off record
+    //API Call 1 of 2 - retrieve a time off record
     function getTimeOff() 
     {
         findByIdTimeOff(timeOff.id).then(response => 
@@ -48,7 +48,7 @@ export const TimeOffViewPage_M = () => {
             ).catch(err => {console.log(err);} )
     }
 
-    //using our API method to delete a time off record
+    //API Call 2 of 2 - delete a time off record
     function deleteTimeOffRecord() 
     {
         deleteTimeOff(timeOff.id).then(response => 
@@ -153,7 +153,8 @@ export const TimeOffViewPage_M = () => {
 } //end of const TimeOffViewPage_M
 
 
-//HELPER CONSTANT - table head
+//HELPER CONSTANT 
+// table head
 const Th = (p: any) => (
   <th
     {...p}
@@ -167,7 +168,8 @@ const Th = (p: any) => (
   />
 );
 
-//HELPER CONSTANT - data/value
+
+// data/value
 const Td = (p: any) => (
   <td
     {...p}
@@ -179,7 +181,8 @@ const Td = (p: any) => (
   />
 )
 
-//HELPER FUNCTION - flag()
+//HELPER FUNCTION 
+//generate checkmarks, Xs, or null
 function checkMark(v: boolean | null | undefined) 
 {
   //Unicode resource -- https://unicode.org/charts//PDF/Unicode-10.0/U100-2B00.pdf

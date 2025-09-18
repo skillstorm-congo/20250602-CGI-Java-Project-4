@@ -29,7 +29,7 @@ export const PayStubViewPage = () => {
 
     );
 
-    //using our API method to retrieve a pay stub record
+    //API Call 1 of 1 - retrieve a pay stub record
     function getPayStub() 
     {
         findByIdPayStub(payStub.id).then(response => 
@@ -103,10 +103,11 @@ export const PayStubViewPage = () => {
         </main>
     )
 
-} //end of const TimeOffPage_E
+} //end of const PayStubViewPage
 
 
-//HELPER CONSTANT - table head
+//HELPER CONSTANT 
+// table head
 const Th = (p: any) => (
   <th
     {...p}
@@ -120,7 +121,7 @@ const Th = (p: any) => (
   />
 );
 
-//HELPER CONSTANT - data/value
+// data/value
 const Td = (p: any) => (
   <td
     {...p}

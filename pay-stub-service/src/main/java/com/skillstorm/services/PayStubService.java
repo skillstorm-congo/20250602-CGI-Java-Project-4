@@ -39,7 +39,7 @@ public class PayStubService
 	}
 	
 
-	//find all pay stub records (Method 1 of 9)
+	//find all pay stub records (Method 1 of 10)
 	public ResponseEntity<Iterable<PayStub>> findAll()
 	{
 		Iterable<PayStub> payStubs = this.repo.findAll();
@@ -49,7 +49,7 @@ public class PayStubService
 		return ResponseEntity.ok(payStubs);
 	}
 	
-	//find a pay stub record by pay stub id (Method 2 of 9)
+	//find a pay stub record by pay stub id (Method 2 of 10)
 	public ResponseEntity<PayStub> findByPayStubId(int id)
 	{
 		Optional<PayStub> payStub = this.repo.findById(id);
@@ -59,7 +59,7 @@ public class PayStubService
 		return ResponseEntity.notFound().build();
 	}
 		
-	//find a pay stub record(s) by employee id (Method 3 of 9)
+	//find a pay stub record(s) by employee id (Method 3 of 10)
 	public ResponseEntity<Iterable<PayStub>> findByEmployeeId(int employeeId)
 	{
 		Iterable<PayStub> payStub = this.repo.findByEmployeeId(employeeId);
@@ -69,7 +69,7 @@ public class PayStubService
 		return ResponseEntity.ok(payStub);
 	}
 	
-	//find a pay stub record(s) by manager id (Method 4 of 9)
+	//find a pay stub record(s) by manager id (Method 4 of 10)
 	public ResponseEntity<Iterable<PayStub>> findByManagerId(int managerId)
 	{
 		//get all employee ids associated to a manager id
@@ -91,7 +91,7 @@ public class PayStubService
 		return ResponseEntity.ok(payStub);
 	}
 		
-	//find a pay stub record(s) by date (Method 5 of 9)
+	//find a pay stub record(s) by date (Method 5 of 10)
 	public ResponseEntity<Iterable<PayStub>> findByDate(LocalDate date)
 	{
 		Iterable<PayStub> payStub = this.repo.findByDate(date);
@@ -102,7 +102,7 @@ public class PayStubService
 	}
 		
 	
-	//create a pay stub (Method 6 of 9)
+	//create a pay stub (Method 6 of 10)
 	public PayStub createPayStub(PayStub payStub)
 	{
 		//If ID DNE, create a new record, else return Error Response, we do not want to overwrite an existing record
@@ -121,7 +121,7 @@ public class PayStubService
 		return payStubError; 
 	}
 	
-	//update an existing pay stub record (Method 7 of 9)
+	//update an existing pay stub record (Method 7 of 10)
 	public PayStub updatePayStub(int id, PayStub payStub) 
 	{
 		//if ID exists, update the record else return 404 Error Response
@@ -150,7 +150,7 @@ public class PayStubService
 	}
 	
 	
-	//delete a pay stub record (Method 8 of 9)
+	//delete a pay stub record (Method 8 of 10)
 	public ResponseEntity<PayStub> deletById(int id)
 	{
 		this.repo.deleteById(id);
@@ -158,7 +158,7 @@ public class PayStubService
 		return ResponseEntity.noContent().build();
 	}
 	
-	//find time sheet(s) by employee id (Method 9 of 9)
+	//find time sheet(s) by employee id (Method 9 of 10)
 	public ResponseEntity<Iterable<Timesheet>> findTimesheetsByEmployeeId(int employeeId)
 	{
 		//get all time sheets associated to an employee id

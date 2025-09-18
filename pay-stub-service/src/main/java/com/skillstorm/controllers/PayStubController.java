@@ -31,35 +31,35 @@ public class PayStubController
 		this.service = service;
 	}
 	
-	//find all pay stub records with Error Response (Method 1 of 9)
+	//find all pay stub records with Error Response (Method 1 of 10)
 	@GetMapping
 	public ResponseEntity<Iterable<PayStub>> findAll() 
 	{
 		return this.service.findAll();
 	}
 	
-	//find a pay stub record by pay stub id with Error Response (Method 2 of 9)
+	//find a pay stub record by pay stub id with Error Response (Method 2 of 10)
 	@GetMapping("/{id}")
 	public ResponseEntity<PayStub> findByPayStubId(@PathVariable int id)
 	{
 		return this.service.findByPayStubId(id);
 	}
 	
-	//find a pay stub record(s) by employee id with Error Response (Method 3 of 9)
+	//find a pay stub record(s) by employee id with Error Response (Method 3 of 10)
 	@GetMapping("/employee-id")
 	public ResponseEntity<Iterable<PayStub>> findByEmployeeId(@RequestParam(required=true) int employeeId)
 	{
 		return this.service.findByEmployeeId(employeeId);
 	}
 	
-	//find a pay stub record(s) by manager id with Error Response (Method 4 of 9)
+	//find a pay stub record(s) by manager id with Error Response (Method 4 of 10)
 	@GetMapping("/manager-id")
 	public ResponseEntity<Iterable<PayStub>> findByManagerId(@RequestParam(required=true) int managerId)
 	{
 		return this.service.findByManagerId(managerId);
 	}
 	
-	//find a pay stub record(s) by date with Error Response (Method 5 of 9)
+	//find a pay stub record(s) by date with Error Response (Method 5 of 10)
 	@GetMapping("/date")
 	public ResponseEntity<Iterable<PayStub>> findByDate(@RequestParam(required=true) LocalDate date)
 	{
@@ -67,7 +67,7 @@ public class PayStubController
 	}
 
 	
-	//create a pay stub (Method 6 of 9)
+	//create a pay stub (Method 6 of 10)
 	@PostMapping
 	public ResponseEntity<PayStub> createPayStub(@RequestBody PayStub payStub)
 	{
@@ -76,7 +76,7 @@ public class PayStubController
 		return this.service.findByPayStubId(newPayStub.getId());
 	}
 	
-	//update a pay stub (Method 7 of 9)
+	//update a pay stub (Method 7 of 10)
 	@PutMapping("/{id}")
 	public ResponseEntity<PayStub> updatePayStub(@PathVariable int id, @RequestBody PayStub payStub) 
 	{
@@ -85,14 +85,14 @@ public class PayStubController
 		return this.service.findByPayStubId(newPayStub.getId());
 	}
 	
-	//delete a pay stub (Method 8 of 9)
+	//delete a pay stub (Method 8 of 10)
 	@DeleteMapping("/{id}")
 	public ResponseEntity<PayStub> deleteById(@PathVariable int id)
 	{
 			return this.service.deletById(id);
 	}
 	
-	//find a pay stub record(s) by employee id with Error Response (Method 9 of 9)
+	//find a pay stub record(s) by employee id with Error Response (Method 9 of 10)
 	@GetMapping("/timesheet/{employeeId}")
 	public ResponseEntity<Iterable<Timesheet>> findTimesheetsByEmployeeId(@PathVariable int employeeId)
 	{

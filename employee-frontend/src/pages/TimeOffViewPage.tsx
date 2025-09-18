@@ -35,7 +35,7 @@ export const TimeOffViewPage = () => {
 
     );
 
-    //using our API method to retrieve a time off record
+    //API Call 1 of 2 - retrieve a time off record
     function getTimeOff() 
     {
         findByIdTimeOff(timeOff.id).then(response => 
@@ -48,7 +48,7 @@ export const TimeOffViewPage = () => {
             ).catch(err => {console.log(err);} )
     }
 
-    //using our API method to delete a time off record
+    //API Call 2 of 2 - delete a time off record
     function deleteTimeOffRecord() 
     {
         deleteTimeOff(timeOff.id).then(response => 
@@ -97,45 +97,38 @@ export const TimeOffViewPage = () => {
 
                     <tbody> 
                         {
-                            
-                                        <tr key={timeOff.id}>
-                                            <Td>{timeOff.id}</Td>
-                                            <Td>{timeOff.employeeId}</Td>
-                                            <Td>{timeOff.fiscalYearFiscalWeekStart}</Td>
-                                            <Td>{timeOff.fiscalYearFiscalWeekEnd}</Td>
-                                            <Td>{timeOff.dateStart}</Td>
-                                            <Td>{timeOff.dateEnd}</Td>
-                                            <Td>{timeOff.comment}</Td>
-                                            <Td>{checkMark(timeOff.approved)}</Td> 
-                                            <Td>{checkMark(timeOff.submitted)}</Td>
+                            <tr key={timeOff.id}>
+                                <Td>{timeOff.id}</Td>
+                                <Td>{timeOff.employeeId}</Td>
+                                <Td>{timeOff.fiscalYearFiscalWeekStart}</Td>
+                                <Td>{timeOff.fiscalYearFiscalWeekEnd}</Td>
+                                <Td>{timeOff.dateStart}</Td>
+                                <Td>{timeOff.dateEnd}</Td>
+                                <Td>{timeOff.comment}</Td>
+                                <Td>{checkMark(timeOff.approved)}</Td> 
+                                <Td>{checkMark(timeOff.submitted)}</Td>
 
-                                            {/* if submitted is false or null, then the record can still be updated */}
-                                            <td data-label="Action">
-                                                { 
-                                                    timeOff.submitted ? 
-                                                        <button>{"\u{1F6D1}"}</button>
-                                                        : 
-                                                        <button onClick={() => navigate(`update`)}>{"\u279C"}</button>
-                                                }
-                                            
-                                            </td>
+                                {/* if submitted is false or null, then the record can still be updated */}
+                                <td data-label="Action">
+                                    { 
+                                        timeOff.submitted ? 
+                                            <button>{"\u{1F6D1}"}</button>
+                                            : 
+                                            <button onClick={() => navigate(`update`)}>{"\u279C"}</button>
+                                    }
+                                </td>
 
-                                            {/* if submitted is false or null, then the record can still be deleted */}
-                                            <td data-label="Action">
-                                                { 
-                                                    timeOff.submitted ? 
-                                                        <button>{"\u{1F6D1}"}</button>
-                                                        : 
-                                                        <button onClick={() => deleteTimeOffRecord() }>{"\u279C"}</button>
-                                                }
-                                            
-                                            </td>
-                                            
-                                        </tr>
-                                    
-
-                            
-                        
+                                {/* if submitted is false or null, then the record can still be deleted */}
+                                <td data-label="Action">
+                                    { 
+                                        timeOff.submitted ? 
+                                            <button>{"\u{1F6D1}"}</button>
+                                            : 
+                                            <button onClick={() => deleteTimeOffRecord() }>{"\u279C"}</button>
+                                    }
+                                </td>
+                                
+                            </tr>
                         }
 
                     </tbody>
@@ -145,10 +138,11 @@ export const TimeOffViewPage = () => {
         </main>
     )
 
-} //end of const TimeOffPage_E
+} //end of const TimeOffViewPage
 
 
-//HELPER CONSTANT - table head
+//HELPER CONSTANT  
+// table head
 const Th = (p: any) => (
   <th
     {...p}
@@ -162,7 +156,7 @@ const Th = (p: any) => (
   />
 );
 
-//HELPER CONSTANT - data/value
+// data/value
 const Td = (p: any) => (
   <td
     {...p}
@@ -174,7 +168,8 @@ const Td = (p: any) => (
   />
 )
 
-//HELPER FUNCTION - flag()
+//HELPER FUNCTION
+//generate checkmarks, Xs, or null
 function checkMark(v: boolean | null | undefined) 
 {
   //Unicode resource -- https://unicode.org/charts//PDF/Unicode-10.0/U100-2B00.pdf

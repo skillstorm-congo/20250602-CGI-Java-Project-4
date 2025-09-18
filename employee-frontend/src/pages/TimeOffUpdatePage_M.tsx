@@ -75,7 +75,7 @@ export const TimeOffUpdatePage_M = () => {
         timeOff.approvedDate= formData.approvedDate
 
         //update the new time off record
-       updateTimeOffRecord(timeOff.id, timeOff)
+        updateTimeOffRecord(timeOff.id, timeOff)
             .then(response => {
                     console.log(response)
 
@@ -190,7 +190,8 @@ export const TimeOffUpdatePage_M = () => {
 } //end of const TimeOffUpdatePage_M
 
 
-//HELPER CONSTANT - table head
+//HELPER CONSTANT 
+// table head
 const Th = (p: any) => (
   <th
     {...p}
@@ -204,7 +205,7 @@ const Th = (p: any) => (
   />
 );
 
-//HELPER CONSTANT - data/value
+//data/value
 const Td = (p: any) => (
   <td
     {...p}
@@ -216,7 +217,8 @@ const Td = (p: any) => (
   />
 )
 
-//HELPER FUNCTION - flag()
+//HELPER FUNCTION
+//generate checkmarks, Xs, or null
 function checkMark(v: boolean | null | undefined) 
 {
   //Unicode resource -- https://unicode.org/charts//PDF/Unicode-10.0/U100-2B00.pdf

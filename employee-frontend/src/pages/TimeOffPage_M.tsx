@@ -110,7 +110,7 @@ export const TimeOffPage_M = () => {
         setApproved("any");
     }
 
-    //using our API method to retrieve all time off records
+    //API Call 1 of 1 - retrieve all time off records
     function getTimeOff() 
     {
         getAllTimeOff().then(response => 
@@ -300,7 +300,8 @@ export const TimeOffPage_M = () => {
 } //end of const TimeOffPage_M
 
 
-//HELPER CONSTANT - table head
+//HELPER CONSTANTS 
+// table head
 const Th = (p: any) => (
   <th
     {...p}
@@ -314,7 +315,7 @@ const Th = (p: any) => (
   />
 );
 
-//HELPER CONSTANT - data/value
+//data/value
 const Td = (p: any) => (
   <td
     {...p}
@@ -326,7 +327,7 @@ const Td = (p: any) => (
   />
 )
 
-//HELPER FUNCTION - flag()
+//generate checkmark, Xs, or null
 function checkMark(v: boolean | null | undefined) 
 {
   //Unicode resource -- https://unicode.org/charts//PDF/Unicode-10.0/U100-2B00.pdf
@@ -338,7 +339,7 @@ function checkMark(v: boolean | null | undefined)
  return  "";
 } 
 
-//HELPER FUNCTION - Employee Id Drop Down 
+//Employee Id Drop Down 
 function employeeDropDown(timeOffData :timeOffType[])
 {
     //set up an empty array

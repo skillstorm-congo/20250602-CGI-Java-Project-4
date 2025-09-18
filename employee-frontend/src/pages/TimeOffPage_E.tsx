@@ -56,7 +56,7 @@ export const TimeOffPage_E = () => {
     const [submitted, setSubmitted] = useState<Tri>("any");
     const [approved, setApproved] = useState<Tri>("any");
 
-    //FUNCTION 1 of 2: loadTimesheetTable() - will populate findAll() first then call endpoints from controller to filter
+    //FUNCTION 1 of 2: loadTimeOffTable() - will populate findAll() first then call endpoints from controller to filter
     async function loadTimeOffTable() {
         setLoading(true);
         setError(null);
@@ -106,7 +106,7 @@ export const TimeOffPage_E = () => {
         setApproved("any");
     }
 
-    //using our API method to retrieve all time off records
+    //API Call 1 of 1 - retrieve all time off records
     function getTimeOff() 
     {
         getAllTimeOff().then(response => 
@@ -297,7 +297,8 @@ export const TimeOffPage_E = () => {
 } //end of const TimeOffPage_E
 
 
-//HELPER CONSTANT - table head
+//HELPER CONSTANTS 
+// table head
 const Th = (p: any) => (
   <th
     {...p}
@@ -311,7 +312,7 @@ const Th = (p: any) => (
   />
 );
 
-//HELPER CONSTANT - data/value
+//data/value
 const Td = (p: any) => (
   <td
     {...p}
@@ -323,7 +324,8 @@ const Td = (p: any) => (
   />
 )
 
-//HELPER FUNCTION - flag()
+//HELPER FUNCTION 
+// generate checkmark, Xs, or null
 function checkMark(v: boolean | null | undefined) 
 {
   //Unicode resource -- https://unicode.org/charts//PDF/Unicode-10.0/U100-2B00.pdf
@@ -335,7 +337,7 @@ function checkMark(v: boolean | null | undefined)
  return  "";
 } 
 
-//HELPER FUNCTION - Employee Id Drop Down 
+//Employee Id Drop Down 
 function employeeDropDown(timeOffData :timeOffType[])
 {
     //set up an empty array
