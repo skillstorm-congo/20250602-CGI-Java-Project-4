@@ -4,11 +4,6 @@ import { findByIdPayStub} from "../api/api";
 import type { payStubType} from "../types/types";
 import { useParams} from "react-router-dom";
 
-
-{/* To Do: 
--- nice little pay stub image
-*/}
-
 export const PayStubViewPage = () => {
 
     //getting access to our quizId with useParams()
