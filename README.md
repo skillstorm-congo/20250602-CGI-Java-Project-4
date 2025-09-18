@@ -152,35 +152,65 @@ Create a full-stack web application that will facilitate employee time tracking 
 + <details> 
   <summary> Click Here To See List of Files </summary>
 
-      - quiz-api
-         - Folder containing all Java Spring Boot files
-      
-       
-      - quiz-frontend
-          - Folder containing all React files
-      
+      - FRONTEND
+
+        1) employee-frontend
+            - Folder containing all React files
+
+
+      - BACKEND
+
+        1) employee-service
+            - Folder containing all Java Spring Boot files for Employee Microservice
+    
+  
+        2) pay-stub-service
+            - Folder containing all Java Spring Boot files for Pay Stub Microservice
+    
+  
+        3) time-off-service
+            - Folder containing all Java Spring Boot files for Time Off Microservice
+    
+  
+        4) time-sheet-service
+            - Folder containing all Java Spring Boot files for Timesheet Microservice
+    
+  
+        5) user-service
+            - Folder containing all Java Spring Boot files for User Microservice
+    
+  
+        6) gateway
+            - Folder containing all Java Spring Boot files for Gateway
+    
+    
+        7) project-four-eureka-server
+            - Folder containing all Java Spring Boot files for Eureka Server
             
-      - ER_Diagram_20250816.png
-         - Image of Entitiy Relationship Diagram
+      - MYSQL
+     
+        1) Project 4.postman_collection.json
+             - JSON file of REST API Endpoints in Postman
+        
+             
+        2) project_4_schema.sql
+             - mysql file for project_4 database and table creation
+        
+             
+        3) project_4_data.sql
+             - mysql file of data insertion into each table in the project_4 database
+        
+             
+        4) project_4_queries.sql
+             - mysql file for mysql queries sanity checks
+
+
+      - MISCELLANEOUS
+
+        1) ER_Diagram_20250917.png
+            - Image of Entitiy Relationship Diagram
       
-           
-      - Quizzes API.postman_collection.json
-         - JSON file of REST API Endpoints in Postman
-      
-           
-      - quizzes_schema.sql
-         - mysql file for quiz database and table creation
-      
-           
-      - quizzes_data.sql
-         - mysql file of data insertion into each table in the quiz database
-      
-           
-      - quizzes_test_queries.sql
-         - mysql file for mysql queries sanity checks
-      
-           
-      - README.md
+        2) README.md
 
 </details>
 
@@ -238,125 +268,9 @@ Quiz Score Page:
 
 <!-- Begining of Endpoints -->
 ### **Postman Endpoints**  
-14 Endpoints
-  + <details>
-      <summary>GET/results</summary>
-      &emsp;Objective: See all results<br>
-      &emsp;Input(s): n/a<br>
-      &emsp;Output(s): Returns all results <br>
-      &emsp;Table(s): result
-    </details>
+[Gateway](http://localhost:9000/swagger-ui/index.html)  
+*servers must be running
 
-  + <details>
-    <summary>GET/results/{id}</summary>
-    &emsp;Objective: See a result by result id<br>
-    &emsp;Input(s): parameter -> location <br>
-    &emsp;&emsp;&emsp;&emsp;&emsp;result id -> url parameter <br>
-    &emsp;Output(s): Returns a result by result id <br>
-    &emsp;Table(s): result
-  </details>
-  
-  + <details>
-    <summary>GET/results/?quizId={quizid}</summary>
-    &emsp;Objective: See all results by quiz id<br>
-    &emsp;Input(s): parameter -> location <br>
-    &emsp;&emsp;&emsp;&emsp;&emsp; quizId -> Query Params Key <br>
-    &emsp;&emsp;&emsp;&emsp;&emsp; quiz id -> Query Params Value <br>
-    &emsp;Output(s): Returns all results by quiz id<br>
-    &emsp;Table(s): result
-  </details>
-
-  + <details>
-      <summary>GET/answers</summary>
-      &emsp;Objective: See all answers<br>
-      &emsp;Input(s): n/a<br>
-      &emsp;Output(s): Returns all answers <br>
-      &emsp;Table(s): answer
-    </details>
-
-  + <details>
-    <summary>GET/answers/{id}</summary>
-    &emsp;Objective: See a answer by answer id<br>
-    &emsp;Input(s): parameter -> location <br>
-    &emsp;&emsp;&emsp;&emsp;&emsp;answer id -> url parameter <br>
-    &emsp;Output(s): Returns an answer by answer id <br>
-    &emsp;Table(s): answer
-  </details>
-  
-  + <details>
-    <summary>GET/answers/?questionId={questionId}</summary>
-    &emsp;Objective: See all answers by question Id<br>
-    &emsp;Input(s): parameter -> location <br>
-    &emsp;&emsp;&emsp;&emsp;&emsp; questionId -> Query Params Key <br>
-    &emsp;&emsp;&emsp;&emsp;&emsp; question id -> Query Params Value <br>
-    &emsp;Output(s): Returns all answers by question id<br>
-    &emsp;Table(s): answer
-  </details>
-
-  + <details>
-      <summary>POST/answers/submit</summary>
-      &emsp;Objective: Submit user answers and retrieve result<br>
-      &emsp;Input(s): Quiz Object in JSON Body<br>
-      &emsp;Output(s): Returns results <br>
-      &emsp;Table(s): quiz
-    </details>
-
-  + <details>
-      <summary>GET/quizzes</summary>
-      &emsp;Objective: See all of the quizzes<br>
-      &emsp;Input(s): none
-      &emsp;Output(s): Returns the data from the table for all quizzes<br>
-      &emsp;Table(s): quiz
-    </details>
-    
-  + <details>
-      <summary>GET/quizzes?quiz={id}</summary>
-      &emsp;Objective: See a quiz by entering the id<br>
-      &emsp;Input(s): parameter -> location
-      &emsp;Output(s): Returns the quiz object by it's id <br>
-      &emsp;Table(s): quiz
-    </details>
-    
-  + <details>
-      <summary>GET/quizzes?subject={subject}</summary>
-      &emsp;Objective: See quizzes based on their subject type<br>
-      &emsp;Input(s): parameter -> location
-      &emsp;Output(s): Returns the quizzes that have a specific subject type <br>
-      &emsp;Table(s): quiz
-    </details>
-    
-  + <details>
-      <summary>GET/questions</summary>
-      &emsp;Objective: See all of the questions<br>
-      &emsp;Input(s): none
-      &emsp;Output(s): Returns the data from the table for all questions<br>
-      &emsp;Table(s): question
-    </details>
-    
-  + <details>
-      <summary>GET/questions?question={id}</summary>
-      &emsp;Objective: See the specific question by their id<br>
-      &emsp;Input(s): parameter -> location
-      &emsp;Output(s): Returns the data from the table about that specific question<br>
-      &emsp;Table(s): question
-  </details>
-  
-  + <details>
-      <summary>GET/questions?quiz={quizId}</summary>
-      &emsp;Objective: See all of the questions that are connected to a specific quiz's id<br>
-      &emsp;Input(s): parameter -> location
-      &emsp;Output(s): Returns the data from the table for all questions that share the same quiz id<br>
-      &emsp;Table(s): question
-    </details>
-
-  + <details>
-      <summary>GET/questions/random?quiz={quizId}</summary>
-      &emsp;Objective: See all of the questions in random order for a specific quiz's id<br>
-      &emsp;Input(s): parameter -> location
-      &emsp;Output(s): Returns the data from the table for all questions into a list but in random order<br>
-      &emsp;Table(s): question
-     </details>
-  
 <!-- End of Endpoints -->
 
 
