@@ -242,7 +242,7 @@ This application/website is a central HR resource hub for timesheets, time off r
 
 Run the following in order:
 - MySql Database
-- Spring Boot (*install libraries/dependencies)
+- Spring Boot (*install libraries/dependencies, create .env files)
 - React (*install libraries/dependencies)
 
 <hr>
