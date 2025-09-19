@@ -244,7 +244,7 @@ export const PayStubUpdatePage = () => {
 
             {/*Begining of Form*/}
             <div> 
-            <h2>Update a Pay Stub Form</h2>
+            <h2>Update a Pay Stub</h2>
             <form onSubmit={handleSubmit(handleInitialSubmit)}>
                 
                 <label htmlFor = "time sheet id 1"> Time Sheet Id 1: </label> 
@@ -281,14 +281,16 @@ export const PayStubUpdatePage = () => {
                     </button>
                         
                     {/* Submit button to Update Pay Stub Record */}
-                    <input style={{ backgroundColor: 'green', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '5px', margin: '10px' }} type="submit" />
-                </div>  
+                    <button style={{ backgroundColor: 'green', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '5px', margin: '10px' }} 
+                    type= "button"
+                    onClick={handleInitialSubmit}>Save/Submit</button>
+                </div>
 
                 {showConfirm && (
                     <div>
                         <p>Are you sure you want to submit?</p>
                         <button style={{ backgroundColor: 'orange', color: 'black', padding: '10px 20px', border: 'none', borderRadius: '5px' , margin: '10px'}}
-                                onClick={handleSubmit(onSubmit)}>Yes, Submit</button>
+                                onClick={handleSubmit(onSubmit)}>Yes, Save/Submit</button>
 
                         <button style={{ backgroundColor: 'orange', color: 'black', padding: '10px 20px', border: 'none', borderRadius: '5px' , margin: '10px'}}
                                 onClick={handleCancelConfirm}>Cancel</button>

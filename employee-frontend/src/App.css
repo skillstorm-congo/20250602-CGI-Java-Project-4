@@ -152,3 +152,7 @@ form h3 span {
   td { border: none; border-bottom: 1px solid var(--line); }
   td::before { content: attr(data-label); font-weight: 600; display: block; margin-bottom: 4px; color: var(--muted); }
 }
+
+button, select{
+    cursor: pointer
+}
