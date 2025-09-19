@@ -242,7 +242,7 @@ This application/website is a central HR resource hub for timesheets, time off r
 
 Run the following in order:
 - MySql Database
-- Spring Boot (*install libraries/dependencies)
+- Spring Boot (*install libraries/dependencies, create .env files)
 - React (*install libraries/dependencies)
 
 <hr>
@@ -252,6 +252,15 @@ Run the following in order:
 <details>
 <summary>Click Here to See Image</summary>
 <img alt="webpages.png" src="https://github.com/skillstorm-congo/20250602-CGI-Java-Project-4/blob/main/webpages.png?raw=true" data-hpc="true" class="Box-sc-g0xbh4-0 fzFXnm">
+</details>
+
+<hr>
+
+### **UX/UI Design MockUps**  
+<details>
+<summary>Click Here to See Image</summary>
+  <img alt="UX-UI-MockUp-1.png" src="https://raw.githubusercontent.com/skillstorm-congo/20250602-CGI-Java-Project-4/main/UX-UI-MockUp/UX-UI-MockUp-1.png">
+  <img alt="UX-UI-MockUp-2.png" src="https://raw.githubusercontent.com/skillstorm-congo/20250602-CGI-Java-Project-4/main/UX-UI-MockUp/UX-UI-MockUp-2.png">
 </details>
 
 <hr>
