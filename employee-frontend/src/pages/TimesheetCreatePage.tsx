@@ -40,7 +40,7 @@ export const TimesheetCreatePage = () => {
             employeeId: 101013,
             dateStart: "20250707",
             dateEnd: "20250711",
-            comment: "Timesheet EXAMPLE",
+            comment: "Notes",
             timeOffId: null,
             regularHoursDay1: 8,
             regularHoursDay2: 2,
@@ -220,8 +220,9 @@ export const TimesheetCreatePage = () => {
     return (
         <main>
             <h1>Timesheet Creation Page</h1>
-            <p>A Timesheet request is created by an employee. These requests' state are: not submitted or submitted. If they have been submitted then their state are: not approved or approved.</p>
-            <p>IMPORTANT NOTE: Only a manager can approve a timesheet and once a timesheet record has been submitted, an employee can no longer UPDATE the request. Reach out to your manager for timesheet requests that have an APPROVED status.</p>
+            <p>A Timesheet request is created by an employee both regular or manager. These requests' state are: not submitted <strong>or</strong> submitted.</p> 
+            <p>If they have been submitted then their state are: not approved or approved.</p>
+            <p><strong>Important Note:</strong> Only a manager can approve a timesheet and once a timesheet record has been submitted, an employee can <strong>no longer update</strong> the request. Reach out to your manager for timesheet requests that have an <strong>APPROVED</strong> status.</p>
 
             {/*Begining of Table*/}
             <h2>Example of a Timesheet Record</h2>
@@ -238,16 +239,16 @@ export const TimesheetCreatePage = () => {
                             <Th>Employee Id</Th>
                             <Th>Date Start</Th>
                             <Th>Date End</Th>
-                            <Th>Reg Hours Mon</Th>
-                            <Th>Reg Hours Tue</Th>
-                            <Th>Reg Hours Wed</Th>
-                            <Th>Reg Hours Thu</Th>
-                            <Th>Reg Hours Fri</Th>
-                            <Th>OT Hours Mon</Th>
-                            <Th>OT Hours Tue</Th>
-                            <Th>OT Hours Wed</Th>
-                            <Th>OT Hours Thu</Th>
-                            <Th>OT Hours Fri</Th>
+                            <Th>Reg-Mon</Th>
+                            <Th>Reg-Tue</Th>
+                            <Th>Reg-Wed</Th>
+                            <Th>Reg-Thu</Th>
+                            <Th>Reg-Fri</Th>
+                            <Th>OT-Mon</Th>
+                            <Th>OT-Tue</Th>
+                            <Th>OT-Wed</Th>
+                            <Th>OT-Thu</Th>
+                            <Th>OT-Fri</Th>
                             <Th>Comment</Th>                          
                         </tr>
                     </thead>
@@ -279,7 +280,7 @@ export const TimesheetCreatePage = () => {
             <br /><br />
             <form onSubmit={handleSubmit(handleInitialSubmit)}>
               {/* Employee & Dates */}
-              <label>
+              <label style={{ display: "inline-flex", alignItems: "center", gap: "12px" }}>
                 Employee Id 
                 <select {...register("employeeId", { ...asInt, required: true })}>
                   {employeeDropDown(createTimesheets).map((id) => (
@@ -290,7 +291,7 @@ export const TimesheetCreatePage = () => {
 
               <br /><br />
 
-              <label>
+              <label style={{ display: "inline-flex", alignItems: "center", gap: "12px" }}>
                 Date Start
                 <input
                   type="date"
@@ -300,7 +301,7 @@ export const TimesheetCreatePage = () => {
 
               <br /><br />
 
-              <label>
+              <label style={{ display: "inline-flex", alignItems: "center", gap: "12px" }}>
                 Date End
                 <input
                   type="date"
@@ -319,41 +320,52 @@ export const TimesheetCreatePage = () => {
               <br /><br />
 
               {/* Hours grid */}
-              <div style={gridStyle}>
+              <div style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr 1fr",
+                gap: "12px 24px",
+                }}>
+                {/* Extra space before Regular rows */}
+                <div style={{ gridColumn: "1 / -1", height: 12 }} />   
+
                 {/* Column 1 */}
-                <div style={colStyle}>
-                  <Field label="Regular MON" name="regularHoursDay1" />
-                  <Field label="Regular THU" name="regularHoursDay4" />
-                  <Field label="Overtime MON" name="overtimeHoursDay1" />
-                  <Field label="Overtime THU" name="overtimeHoursDay4" />
-                </div>
+                {/* Row 1: Regular Mon/Tue/Wed */}
+                <Field label="Regular: Monday"    name="regularHoursDay1" />
+                <Field label="Regular: Tuesday"   name="regularHoursDay2" />
+                <Field label="Regular: Wednesday" name="regularHoursDay3" />
 
-                {/* Column 2 */}
-                <div style={colStyle}>
-                  <Field label="Regular TUE" name="regularHoursDay2" />
-                  <Field label="Regular FRI" name="regularHoursDay5" />
-                  <Field label="Overtime TUE" name="overtimeHoursDay2" />
-                  <Field label="Overtime FRI" name="overtimeHoursDay5" />
-                </div>
+                {/* Row 2: Regular Thu/Fri/(empty) */}
+                <Field label="Regular: Thursday"  name="regularHoursDay4" />
+                <Field label="Regular: Friday"    name="regularHoursDay5" />
+                <div aria-hidden />
 
-                {/* Column 3 */}
-                <div style={colStyle}>
-                  <Field label="Regular WED" name="regularHoursDay3" />
-                  <Field label="Overtime WED" name="overtimeHoursDay3" />
-                  {/* (Add time-off fields here later if you decide to capture them on create) */}
-                </div>
+                {/* Extra space before Overtime rows */}
+                <div style={{ gridColumn: "1 / -1", height: 20 }} />
+
+                {/* Row 3: OT Mon/Tue/Wed */}
+                <Field label="Overtime: Monday"   name="overtimeHoursDay1" />
+                <Field label="Overtime: Tuesday"  name="overtimeHoursDay2" />
+                <Field label="Overtime: Wednesday" name="overtimeHoursDay3" />
+
+                {/* Row 4: OT Thu/Fri/(empty) */}
+                <Field label="Overtime: Thursday" name="overtimeHoursDay4" />
+                <Field label="Overtime: Friday"   name="overtimeHoursDay5" />
+                <div aria-hidden />
               </div>
 
               {/* Comment */}
+              {/* Extra space after Overtime rows */}
+              <div style={{ gridColumn: "1 / -1", height: 20 }} />
               <label style={{ display: "grid", gap: "6px", marginTop: "6px" }}>
-                <div>Comment or Notes about Timesheet</div>
+                <div>Comment
+                </div>
                 <textarea rows={4} {...register("comment")} style={{ width: "100%", padding: "8px" }} />
               </label>
 
               {/* Actions */}
               <div style={{ marginTop: "16px", display: "flex", gap: "12px" }}>
                 <button type="submit" style={{ padding: "8px 14px" }}>
-                  CREATE timesheet
+                  Create
                 </button>
                 <button
                   type="button"
@@ -404,7 +416,6 @@ export const TimesheetCreatePage = () => {
     )
 
 } //end of const CreateTimesheetPage
-
 
 //HELPER CONSTANT - table head
 const Th = (p: any) => (
