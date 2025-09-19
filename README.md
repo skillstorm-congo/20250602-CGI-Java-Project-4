@@ -256,6 +256,15 @@ Run the following in order:
 
 <hr>
 
+### **UX/UI Design MockUps**  
+<details>
+<summary>Click Here to See Image</summary>
+  <img alt="UX-UI-MockUp-1.png" src="https://raw.githubusercontent.com/skillstorm-congo/20250602-CGI-Java-Project-4/main/UX-UI-MockUp/UX-UI-MockUp-1.png">
+  <img alt="UX-UI-MockUp-2.png" src="https://raw.githubusercontent.com/skillstorm-congo/20250602-CGI-Java-Project-4/main/UX-UI-MockUp/UX-UI-MockUp-2.png">
+</details>
+
+<hr>
+
 <!-- Begining of Endpoints -->
 ### **Swagger Documentation API Endpoints**  
 [Gateway](http://localhost:9000/swagger-ui/index.html)  
