@@ -278,7 +278,8 @@ useEffect(() => {loadTimesheetTable();}, [scope.role, scope.id, date, submitted,
                     <Th title="Sum of overtime">Overtime Hours</Th>
                     <Th title="Sum of time off">Requested Time Off</Th>
                     <Th>Comment</Th>
-                    <Th>Actions</Th>  
+                    {(scope.role && scope.id) && <Th>Actions</Th>  
+                    }
                     </tr>
                 </thead>
                 <tbody>

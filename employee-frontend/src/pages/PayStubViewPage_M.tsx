@@ -58,9 +58,8 @@ export const PayStubViewPage_M = () => {
     //API Call 2 of 2 - delete a pay stub record
     function deletePayStubRecord() 
     {
-        deletePayStub(payStub.id).then(response => 
+        deletePayStub(payStub.id).then(() => 
             {
-                setPayStub(response.data);
                 navigate(`/pay-stub-m`);
             }
             ).catch(err => {console.log(err);} )

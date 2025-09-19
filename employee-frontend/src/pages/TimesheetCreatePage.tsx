@@ -262,6 +262,7 @@ export const TimesheetCreatePage = () => {
                                 <Td>{createTimesheetExample.dateEnd}</Td>
                                 <Td>{createTimesheetExample.regularHoursDay1}</Td>
                                 <Td>{createTimesheetExample.regularHoursDay2}</Td>
+                                <Td>{createTimesheetExample.regularHoursDay3}</Td>
                                 <Td>{createTimesheetExample.regularHoursDay4}</Td>
                                 <Td>{createTimesheetExample.regularHoursDay5}</Td>
                                 <Td>{createTimesheetExample.overtimeHoursDay1}</Td>

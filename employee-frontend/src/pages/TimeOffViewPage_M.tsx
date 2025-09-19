@@ -54,6 +54,7 @@ export const TimeOffViewPage_M = () => {
         deleteTimeOff(timeOff.id).then(response => 
             {
                 setTimeOff(response.data);
+                navigate(`/time-off-m`);
             }
             ).catch(err => {console.log(err);} )
     }
