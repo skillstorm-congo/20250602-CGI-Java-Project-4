@@ -200,7 +200,7 @@ export const TimeOffCreatePage = () => {
 
            {/*Begining of Form*/}
             <div> 
-            <h2>Create a Time Off Request Form</h2>
+            <h2>Create a Time Off Request</h2>
             <form onSubmit={handleSubmit(handleInitialSubmit)}> {/* {handleSubmit(onSubmit)}> */}
                 {/* employeeid, dateStart, dateEnd, comment, submitted, submittedDate */}
 
@@ -249,14 +249,16 @@ export const TimeOffCreatePage = () => {
                 </button>
                     
                 {/* Submit button to Update Time Off Record */}
-                    <input style={{ backgroundColor: 'green', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '5px', margin: '10px' }} type="submit" />
+                    <button style={{ backgroundColor: 'green', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '5px', margin: '10px' }} 
+                    type= "button"
+                    onClick={handleInitialSubmit}>Save/Submit</button>
                 </div>  
 
                 {showConfirm && (
                     <div>
                     <p>Are you sure you want to submit?</p>
                     <button style={{ backgroundColor: 'orange', color: 'black', padding: '10px 20px', border: 'none', borderRadius: '5px' , margin: '10px'}}
-                            onClick={handleSubmit(onSubmit)}>Yes, Submit</button>
+                            onClick={handleSubmit(onSubmit)}>Yes, Save/Submit</button>
 
                     <button style={{ backgroundColor: 'orange', color: 'black', padding: '10px 20px', border: 'none', borderRadius: '5px' , margin: '10px'}}
                             onClick={handleCancelConfirm}>Cancel</button>
