@@ -61,6 +61,7 @@ export const PayStubViewPage_M = () => {
         deletePayStub(payStub.id).then(response => 
             {
                 setPayStub(response.data);
+                navigate(`/pay-stub-m`);
             }
             ).catch(err => {console.log(err);} )
     }
@@ -114,7 +115,7 @@ export const PayStubViewPage_M = () => {
                                 <Td>{payStub.totalRegularHours}</Td>
                                 <Td>{payStub.totalOvertimeHours}</Td>
                                 <Td>{payStub.totalTimeOffHours}</Td>
-                                <Td>{payStub.totalPaid}</Td>
+                                <Td>{"$" + payStub.totalPaid.toFixed(2)}</Td>
 
                                 {/* if approved is false or null and submitted is true, then the record can still be updated to approved */}
                                 <td data-label="Action">

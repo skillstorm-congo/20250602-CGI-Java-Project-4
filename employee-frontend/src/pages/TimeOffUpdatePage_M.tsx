@@ -142,15 +142,15 @@ export const TimeOffUpdatePage_M = () => {
 
             {/*Begining of Form*/}
             <div> 
-            <h2>Update a Time Off Request Form</h2>
+            <h2>Approve/Decline a Time Off Request</h2>
             <form onSubmit={handleSubmit(handleInitialSubmit)}>
                 
-                <label htmlFor = "approved"> Check Box to Approve: </label>
+                <label htmlFor = "approved"> Check Box to Approve (Uncheck Box to Decline): </label>
                 <input type = "checkbox" id = "approved" {...register(`approved`, {required: false})}></input> 
                 {errors.approved && <p style={{color: 'red'}}>Please Check the box</p>}
                 <br></br><br></br>
 
-                <label htmlFor = "approved date"> Approved Date: </label>
+                <label htmlFor = "approved date"> Approve/Decline Date: </label>
                 <input type = "date" id = "approved date" {...register(`approvedDate`, {required: true})}></input> 
                 {errors.approvedDate && <p style={{color: 'red'}}>Please Enter an Approved Date</p>}
                 <br></br><br></br>

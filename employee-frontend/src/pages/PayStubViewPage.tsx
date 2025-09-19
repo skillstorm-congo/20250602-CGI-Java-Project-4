@@ -91,7 +91,7 @@ export const PayStubViewPage = () => {
                                 <Td>{payStub.totalRegularHours}</Td>
                                 <Td>{payStub.totalOvertimeHours}</Td>
                                 <Td>{payStub.totalTimeOffHours}</Td>
-                                <Td>{payStub.totalPaid}</Td>
+                                <Td>{"$" + payStub.totalPaid.toFixed(2)}</Td>
 
                             </tr>
                         }
